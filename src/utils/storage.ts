@@ -1,0 +1,148 @@
+import type { UserData, KBCache } from '../types'
+
+const USER_DATA_KEY = 'tc_user_data'
+const KB_CACHE_KEY = 'tc_kb_cache'
+
+const DEFAULT_USER_DATA: UserData = {
+  version: '1.0',
+  created_at: new Date().toISOString(),
+  profile: {
+    display_name: null,
+    chosen_name: null,
+    pronouns: null,
+    pronouns_other: null,
+    name_status: null,
+    change_types: [],
+    gender_marker_target: null,
+    active_tracks: [],
+    safety: {
+      housing_status: null,
+      housing_note: null,
+      out_to_household: null,
+      household_supportive: null,
+      shared_accounts: null,
+      shared_devices: null,
+      workplace_safety: null,
+      overall_flexibility: null,
+      safety_note: '',
+    },
+    out_contexts: {
+      close_friends: null,
+      partner: null,
+      family: null,
+      work: null,
+      publicly: null,
+    },
+    jurisdiction: { country: null, region: null },
+    documents_obtained: [],
+    started_at: null,
+    access: {
+      internet_home: true,
+      internet_public_only: false,
+      printer_home: false,
+      printer_access: false,
+      printer_access_note: '',
+      copier_access: false,
+      phone_reliable: false,
+      video_call_capable: false,
+      transportation: null,
+      transportation_note: '',
+    },
+    presence: {
+      overall_level: 'some_guidance',
+      open_doors: false,
+      per_track: {},
+    },
+    contributor_settings: {
+      privacy_level: 'manual',
+      prompting_level: 'contextual',
+      involvement_level: 'observer',
+      github_connected: false,
+    },
+  },
+  checklist: {},
+  custom_items: [],
+  people: {},
+}
+
+export function readUserData(): UserData {
+  try {
+    const raw = localStorage.getItem(USER_DATA_KEY)
+    if (!raw) return structuredClone(DEFAULT_USER_DATA)
+    return JSON.parse(raw) as UserData
+  } catch {
+    return structuredClone(DEFAULT_USER_DATA)
+  }
+}
+
+export function writeUserData(data: UserData): void {
+  try {
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('Could not save your data. Your device storage may be full.', e)
+  }
+}
+
+export function updateUserData(patch: (data: UserData) => UserData | void): UserData {
+  const current = readUserData()
+  const result = patch(current)
+  const next = result ?? current
+  writeUserData(next)
+  return next
+}
+
+export function exportUserData(): string {
+  const data = readUserData()
+  return JSON.stringify(data, null, 2)
+}
+
+export function importUserData(json: string): { ok: boolean; error?: string } {
+  try {
+    const parsed = JSON.parse(json)
+    if (!parsed.version || !parsed.profile || !parsed.checklist) {
+      return { ok: false, error: 'This file does not look like a Transition Companion export.' }
+    }
+    writeUserData(parsed as UserData)
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'The file could not be read. Check that it is valid JSON.' }
+  }
+}
+
+export function clearUserData(): void {
+  localStorage.removeItem(USER_DATA_KEY)
+}
+
+export function hasUserData(): boolean {
+  return localStorage.getItem(USER_DATA_KEY) !== null
+}
+
+// ── KB Cache ──────────────────────────────────────────────────────────────────
+
+export function readKBCache(): KBCache | null {
+  try {
+    const raw = localStorage.getItem(KB_CACHE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as KBCache
+  } catch {
+    return null
+  }
+}
+
+export function writeKBCache(cache: KBCache): void {
+  try {
+    localStorage.setItem(KB_CACHE_KEY, JSON.stringify(cache))
+  } catch (e) {
+    console.error('Could not cache knowledge base data. Your device storage may be full.', e)
+  }
+}
+
+export function clearKBCache(): void {
+  localStorage.removeItem(KB_CACHE_KEY)
+}
+
+export function isKBCacheValid(cache: KBCache, ttlHours = 24): boolean {
+  const fetched = new Date(cache.fetched_at).getTime()
+  const age = Date.now() - fetched
+  return age < ttlHours * 60 * 60 * 1000
+}

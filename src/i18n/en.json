@@ -1,0 +1,279 @@
+{
+  "app": {
+    "name": "Transition Companion",
+    "tagline": "Your checklist. Your pace. Your choices."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "contribute": "Contribute"
+  },
+  "landing": {
+    "start": "Start your checklist",
+    "import": "I already have a checklist",
+    "github": "View on GitHub",
+    "description": "A personal tool for navigating gender transition — legal, medical, social, and personal. Everything stays on your device."
+  },
+  "onboarding": {
+    "skip": "Skip for now",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Let's go",
+    "step_of": "Step {{current}} of {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "This is your tool.",
+        "body": "You decide what goes in it, what you share, and what you do with it. Nothing leaves your device.",
+        "subtitle": "No account. No cloud. No assumptions."
+      },
+      "about_you": {
+        "title": "A little about you",
+        "subtitle": "All of this is optional. You can change anything later.",
+        "name_label": "What would you like to be called in this app?",
+        "name_placeholder": "Your name or whatever feels right",
+        "pronouns_label": "Pronouns",
+        "pronouns_options": {
+          "she_her": "she/her",
+          "he_him": "he/him",
+          "they_them": "they/them",
+          "she_they": "she/they",
+          "he_they": "he/they",
+          "custom": "Let me type my own",
+          "prefer_not_to_say": "Prefer not to say",
+          "not_sure_yet": "Not sure yet"
+        },
+        "here_for_label": "What are you here for?",
+        "here_for_note": "Check any that apply. You can check all of them or none.",
+        "here_for_options": {
+          "legal_name": "Changing my legal name",
+          "gender_marker": "Changing my gender marker",
+          "medical": "Navigating medical transition",
+          "social": "Navigating social transition / coming out",
+          "supporting": "Supporting someone else",
+          "exploring": "Just exploring"
+        },
+        "gender_marker_target_label": "If changing your gender marker, what marker are you updating to?",
+        "gender_marker_target_placeholder": "M, F, X, or whatever applies"
+      },
+      "location": {
+        "title": "Where are you?",
+        "subtitle": "This helps us show you the right steps and flag anything specific to your area.",
+        "country_label": "Country",
+        "country_placeholder": "Search countries...",
+        "region_label": "State or region",
+        "region_placeholder": "Select...",
+        "no_kb_data": "We do not have specific information for your area yet. We will still help you find the right direction for each item, and you can add what you discover."
+      },
+      "documents": {
+        "title": "What documents do you have?",
+        "subtitle": "These help figure out what steps are available to you right now.",
+        "options": {
+          "court_order": "Court order / legal name change decree",
+          "birth_certificate": "Updated birth certificate",
+          "social_security": "Updated Social Security card",
+          "photo_id": "Updated government photo ID (driver's license, state ID, or passport)",
+          "none": "None of these yet",
+          "not_sure": "Not sure"
+        },
+        "no_docs_note": "That is completely fine. You can still build your list and see the full path ahead. We will highlight what is available to you now and what opens up as documents arrive."
+      },
+      "safety": {
+        "title": "Safety and access",
+        "subtitle": "This helps understand what is actually available to you right now. It also helps flag things that might need more care in your situation. Everything here stays on your device.",
+        "housing_label": "Housing situation",
+        "housing_options": {
+          "independent": "Independent (alone or with a supportive household)",
+          "family_or_others": "Living with family or others who may not be supportive",
+          "transitional": "In transitional or unstable housing",
+          "prefer_not_to_say": "Prefer not to say"
+        },
+        "privacy_label": "Account and device privacy",
+        "privacy_options": {
+          "private": "Private accounts and devices that only I access",
+          "some_shared": "Some shared accounts or devices",
+          "mostly_shared": "Mostly shared",
+          "prefer_not_to_say": "Complicated / prefer not to say"
+        },
+        "workplace_label": "Workplace",
+        "workplace_options": {
+          "out_supported": "Out at work and supported",
+          "out_complicated": "Out at work but complicated",
+          "not_out": "Not out at work",
+          "not_employed": "Not currently employed",
+          "prefer_not_to_say": "Prefer not to say"
+        },
+        "flexibility_label": "Overall flexibility right now",
+        "flexibility_options": {
+          "a_lot": "A lot — I can move freely on most of this",
+          "some": "Some — there are areas where I need to be careful",
+          "not_much": "Not much — I need to be thoughtful about nearly everything",
+          "varies": "It varies a lot by area"
+        },
+        "transportation_label": "Getting places",
+        "transportation_options": {
+          "car": "Car",
+          "public_transit": "Public transit",
+          "ride_share": "Ride share / depends on someone else",
+          "limited": "Limited mobility or transportation",
+          "prefer_not_to_say": "Prefer not to say"
+        },
+        "equipment_label": "Access to equipment",
+        "equipment_options": {
+          "printer_home": "Home printer/copier",
+          "printer_nearby": "Printer/copier nearby (library, office store, etc.)",
+          "printer_difficult": "Difficult to access",
+          "phone": "Reliable phone",
+          "video_call": "Video call capable"
+        },
+        "footer_note": "You can update any of this anytime. The app will never hide items from you based on your answers here — it will flag what needs extra care."
+      },
+      "presence": {
+        "title": "How do you want this app to show up for you?",
+        "subtitle": "Different people need different things from a tool like this. There is no right answer.",
+        "level_label": "What would be most helpful overall?",
+        "levels": {
+          "just_the_path": {
+            "label": "Just the path",
+            "description": "Show me the checklist and stay out of the way. I will ask if I need more."
+          },
+          "some_guidance": {
+            "label": "Some guidance",
+            "description": "I would appreciate context and occasional suggestions along the way."
+          },
+          "walk_with_me": {
+            "label": "Walk with me",
+            "description": "I am still working things out. I would welcome more support and gentle prompts toward things I might not think to look for."
+          }
+        },
+        "level_note": "None of these is more advanced or more valid than the others.",
+        "open_doors_label": "Would you like the app to occasionally surface things you might not know to look for — community groups, resources others have found helpful, ways to explore before making anything official?",
+        "open_doors_yes": "Yes",
+        "open_doors_no": "No",
+        "per_track_note": "You can set this differently for each track. For now your overall setting applies everywhere, and you can adjust per-track from the dashboard at any time."
+      },
+      "categories": {
+        "title": "Build your list",
+        "subtitle": "For each section, check what applies to you. No item is pre-selected. There is no pressure to include anything.",
+        "skip_category": "Skip this whole section",
+        "add_custom": "Add something else",
+        "relationship_note": "Whether, when, and how to come out to anyone is entirely your choice. Nothing in this section is a suggestion."
+      },
+      "contributor": {
+        "title": "One more thing",
+        "subtitle": "This app gets better as more people use it and share what they learn. You decide how much you want to be part of that.",
+        "privacy_label": "When you complete an item, share a note about how it went?",
+        "privacy_options": {
+          "manual": "Only if I choose to, one at a time",
+          "always_include": "Yes, include my notes automatically",
+          "never_include": "No, keep my notes private always"
+        },
+        "prompting_label": "Prompt me to contribute?",
+        "prompting_options": {
+          "contextual": "When it seems relevant",
+          "proactive": "Regularly",
+          "off": "Never"
+        },
+        "involvement_label": "How involved do you want to be?",
+        "involvement_options": {
+          "observer": "Just using the app",
+          "reporter": "I would flag outdated info if I found it",
+          "contributor": "I might submit updates or corrections"
+        }
+      },
+      "summary": {
+        "title": "You are set.",
+        "subtitle": "Here is what you have added so far.",
+        "your_list": "Your starting list",
+        "available_now": "Available now",
+        "danger_flags": "Things to be aware of",
+        "start": "Let's go"
+      }
+    }
+  },
+  "dashboard": {
+    "track_switcher": "Track",
+    "tracks": {
+      "legal": "Legal",
+      "medical": "Medical",
+      "social": "Social",
+      "personal": "Personal",
+      "supporter": "Supporter"
+    },
+    "start_here": "Start here",
+    "available_now": "Available now",
+    "blocked": "waiting on {{blocker}}",
+    "access_filter": "Show only what I can do with my current access",
+    "quick_add": "Add item",
+    "no_items": "Nothing here yet.",
+    "danger_banner_label": "Some items need your attention"
+  },
+  "item": {
+    "status": {
+      "not_started": "Not started",
+      "in_progress": "In progress",
+      "complete": "Complete",
+      "at_risk": "At risk",
+      "revoked": "Revoked",
+      "skipped": "Skipped",
+      "not_applicable": "Not applicable",
+      "cant_right_now": "Blocked"
+    },
+    "importance": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "modes": {
+      "online": "Online",
+      "in_person": "In person",
+      "mail": "By mail",
+      "phone": "By phone",
+      "preparation": "Preparation"
+    },
+    "add_blocker": "Add a blocker",
+    "notes_label": "Your notes",
+    "notes_placeholder": "What you know, what you tried, what helped.",
+    "official_link": "Official page",
+    "info_link": "More information",
+    "immutable_label": "This document cannot be changed",
+    "report_issue": "Something looks wrong with this information"
+  },
+  "blockers": {
+    "types": {
+      "document": "Waiting on a document",
+      "relationship": "Involves someone else",
+      "safety": "Safety concern",
+      "readiness": "Not ready yet",
+      "waiting": "Waiting",
+      "financial": "Financial",
+      "custom": "Other"
+    },
+    "show_workaround": "Ways to work around this",
+    "hide_workaround": "Hide workarounds"
+  },
+  "errors": {
+    "kb_load_failed": "Could not load the knowledge base. Your checklist data is safe. Check your connection and try refreshing.",
+    "storage_full": "Your device storage is full. Your data has not been lost, but new changes may not save. Try clearing your browser cache.",
+    "import_invalid": "This file does not look like a Transition Companion export. Check that you selected the right file.",
+    "import_parse_error": "The file could not be read. Check that it is valid JSON."
+  },
+  "settings": {
+    "title": "Settings",
+    "export": "Export your data",
+    "import": "Import data",
+    "import_confirm": "This will replace your current checklist with the imported data. Your existing data will be lost unless you export it first.",
+    "clear": "Clear all data",
+    "clear_warning": "This will permanently delete your checklist and all your notes. Export your data first if you want to keep it.",
+    "clear_confirm": "Delete everything",
+    "kb_refresh": "Refresh knowledge base",
+    "kb_last_updated": "Last updated {{date}}"
+  },
+  "contribute": {
+    "title": "Contribute",
+    "intro": "Found something outdated or wrong? You can flag it here. Your personal notes are never included — only the process information.",
+    "issue_label": "Open a GitHub issue (no account required)",
+    "pr_label": "Submit a correction (GitHub account required)",
+    "privacy_note": "Only information about the process is shared, not your personal notes or checklist."
+  }
+}

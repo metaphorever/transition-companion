@@ -40,9 +40,15 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 1 — Scaffold and Foundations**
+**PHASE: 2 — Dependency Graph and Ordering Logic**
 **Status: COMPLETE**
-**Last session: Full scaffold delivered — types, storage.ts, kb.ts, ordering.ts placeholder, en.json, Zustand store, React Router shell, Landing page. Build clean, pushed to GitHub.**
+**Last session: ordering.ts implemented as a pure read-only utility (no store/UI wiring — that's Phase 4). Public API: `buildDependencyGraph`, `detectCycles`, `topologicalSort`, `transitiveDependents`/`transitiveRequirements`, `SATISFYING_STATUSES`/`isSatisfying`, `getSatisfiedSlugs`, `isActiveStoredBlocker`, `computeItemAvailability`/`computeAllAvailability`, `filterAvailableNow`/`filterBlocked`/`filterCompleted`, `recommendStartHere`, `itemsUnlockedBy`. 52-test vitest suite covers DAG construction, cycle detection, topological order, status semantics, availability rules, the no-cascade rule (completing SSA makes the license available, not complete), and "start here" scoring. Vitest installed as devDependency; `npm test` / `npm run test:watch` scripts added. `npm run build` clean.**
+
+**Notes for future phases:**
+
+- **Status semantics decided** (in code): `complete` and `at_risk` satisfy a document dependency (the user still has the document); `revoked` does not (it was actively reversed); all other statuses do not. Codified as `SATISFYING_STATUSES` in [src/utils/ordering.ts](src/utils/ordering.ts).
+- **Type drift to address before Phase 6 (Blocker UI)**: [src/types/index.ts](src/types/index.ts) `BlockerType` lists `financial` but the design doc lists `legal | access` instead. `Blocker` is also missing the `severity` field (`minor | moderate | significant | absolute`) and uses `BlockerResolvable = boolean | 'maybe'` where the design doc specifies `yes | no | maybe | eventually | unknown`. The dependency-graph logic does not depend on these mismatches (it only branches on `type === 'document'` and `user_defined`), so Phase 2 left the types untouched. Reconcile when the Blocker UI is built.
+- **"Start here" scoring** is `importance_weight + 50 * downstream_count + 200 * first_active_track_match`. Tweak in `recommendStartHere` if Phase 4 testing shows the wrong items getting surfaced for real users.
 
 ---
 

@@ -90,9 +90,6 @@ function PageShell({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Alert for user's item status = at_risk
-// Copy follows design doc Alert Messaging Guidelines.
-// CARRYOVER NOTE: copy in this block needs Opus review (see CLAUDE.md Phase 5 notes).
 function AtRiskAlert({ entry, item }: { entry: ChecklistEntry; item: KBItem }) {
   const { t } = useTranslation()
   const completedOn = entry.completed_at ? fmtDate(entry.completed_at) : null

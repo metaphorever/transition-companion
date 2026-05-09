@@ -46,7 +46,6 @@ Check the current build phase below. The phase determines which model should be 
 
 **Notes for future phases:**
 
-- **Phase 5 carryover — at_risk/revoked alert copy needs Opus review**: The `AtRiskAlert` and `RevokedAlert` components follow all design doc tone guidelines but have not had an Opus review pass. The strings to review are `at_risk_*` and `revoked_*` keys in `src/i18n/en.json`. Run a focused Opus session on those strings alone before Phase 5 ships to real users.
 - **Phase 5 carryover — KB-triggered at_risk not yet wired**: `setItemStatus` logs transitions manually, but the flow where a KB update (`gender_marker_change.status → danger`) auto-queues an `at_risk` notice on the user's checklist entry is not implemented. Wire this in `initKB`/`refreshKB` during Phase 8 or 9.
 - **Phase 5 carryover — custom items have no detail page**: `/item/:slug` is KB-only. Custom items from quick-add have no detail/edit view. Phase 6 or a post-Phase-6 pass should add this.
 - **Phase 5 carryover — legal advice note per-view**: Design doc says once per session is sufficient. Currently appears on each relevant page. Phase 9 can add session tracking if desired.

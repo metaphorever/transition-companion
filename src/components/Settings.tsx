@@ -734,11 +734,22 @@ function SafetySection() {
 // ── Presence level section ────────────────────────────────────────────────────
 
 const PRESENCE_LEVELS: PresenceLevel[] = ['just_the_path', 'some_guidance', 'walk_with_me']
+const SETTINGS_TRACKS = ['legal', 'medical', 'social', 'personal', 'supporter'] as const
 
 function PresenceSection() {
   const { t } = useTranslation()
   const presence = useAppStore((s) => s.userData.profile.presence)
   const patchProfile = useAppStore((s) => s.patchProfile)
+
+  function setPerTrack(track: string, value: string) {
+    const updated = { ...presence.per_track }
+    if (value === '') {
+      delete updated[track]
+    } else {
+      updated[track] = value as PresenceLevel
+    }
+    patchProfile({ presence: { ...presence, per_track: updated } })
+  }
 
   return (
     <Section title={t('settings.section_presence')}>
@@ -776,6 +787,30 @@ function PresenceSection() {
               />
               <span className="text-sm">{opt.label}</span>
             </label>
+          ))}
+        </div>
+      </Field>
+
+      <Field label={t('settings.presence_per_track_heading')}>
+        <div className="space-y-2">
+          {SETTINGS_TRACKS.map((track) => (
+            <div key={track} className="flex items-center justify-between gap-4">
+              <span className="text-sm text-neutral-700 capitalize">
+                {t(`dashboard.tracks.${track}`)}
+              </span>
+              <select
+                value={presence.per_track[track] ?? ''}
+                onChange={(e) => setPerTrack(track, e.target.value)}
+                className="text-sm border border-neutral-300 rounded px-2 py-1 bg-white text-neutral-700 focus:outline-none focus:border-neutral-600"
+              >
+                <option value="">{t('settings.presence_per_track_default')}</option>
+                {PRESENCE_LEVELS.map((level) => (
+                  <option key={level} value={level}>
+                    {t(`onboarding.steps.presence.levels.${level}.label`)}
+                  </option>
+                ))}
+              </select>
+            </div>
           ))}
         </div>
       </Field>

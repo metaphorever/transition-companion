@@ -9,7 +9,14 @@ import {
 } from '../../utils/ordering'
 import type { ItemAvailability } from '../../utils/ordering'
 import { findDangerFlags } from '../../utils/onboarding'
-import type { CustomItem, KBItem, UserAccess } from '../../types'
+import type { CustomItem, ItemImportance, KBItem, UserAccess } from '../../types'
+
+const IMPORTANCE_ORDER: Record<ItemImportance, number> = {
+  critical: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
+}
 
 const TRACKS = ['legal', 'medical', 'social', 'personal', 'supporter'] as const
 type TrackSlug = (typeof TRACKS)[number]
@@ -144,6 +151,20 @@ export default function Dashboard() {
 
     return { customAvailable: avail, customBlocked: blocked, customCompleted: done }
   }, [userData.custom_items, activeTrack])
+
+  // KB items not on the user's checklist — surfaced when open_doors is on or walk_with_me is active
+  const openDoorsItems = useMemo(() => {
+    if (!kb) return []
+    const shouldShow =
+      profile.presence.open_doors || profile.presence.overall_level === 'walk_with_me'
+    if (!shouldShow) return []
+
+    return Object.values(kb.items)
+      .filter((item) => !checklistSlugs.has(item.slug))
+      .filter((item) => !activeTrack || item.track === activeTrack)
+      .sort((a, b) => (IMPORTANCE_ORDER[a.importance] ?? 4) - (IMPORTANCE_ORDER[b.importance] ?? 4))
+      .slice(0, 5)
+  }, [kb, profile.presence, checklistSlugs, activeTrack])
 
   // Unfiltered progress counts for the warm label (all tracks)
   const { totalOnList, totalCompleted } = useMemo(() => {
@@ -395,6 +416,39 @@ export default function Dashboard() {
                     {t(`item.status.${c.status}`)}
                   </span>
                 </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Open doors / walk_with_me resource surfacing */}
+        {openDoorsItems.length > 0 && (
+          <section className="mb-8" aria-labelledby="open-doors-heading">
+            <h2
+              id="open-doors-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.open_doors_heading')}
+            </h2>
+            <div className="space-y-2">
+              {openDoorsItems.map((item) => (
+                <Link
+                  key={item.slug}
+                  to={`/item/${item.slug}`}
+                  className="block px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-700">{item.label}</span>
+                    {activeTrack === null && item.track && (
+                      <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                        {t(`dashboard.tracks.${item.track}`)}
+                      </span>
+                    )}
+                  </div>
+                  {item.description && (
+                    <p className="text-xs text-neutral-500 mt-0.5 line-clamp-2">{item.description}</p>
+                  )}
+                </Link>
               ))}
             </div>
           </section>

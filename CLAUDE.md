@@ -40,11 +40,14 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 9 — Contribution Flow and Settings**
+**PHASE: 10 — Presence Level System (rendering pass)**
 **Status: COMPLETE**
-**Last session: Built full Settings screen (all onboarding answers editable: profile, location, documents, safety/access, presence, contributor dials, People Map link, KB refresh, export/import/clear data management). Built Contribute screen (pre-filled GitHub issue URL generator + JSON clipboard copy, per-item or standalone). Updated landing copy to distinguish private data from process contributions. Build clean, 52 tests pass.**
+**Last session: Wired up all three presence levels across the app. `just_the_path` already suppressed extras; added `UnlocksHint` to ItemDetail (shown at `some_guidance`/`walk_with_me`, lists items that become available when this one completes, computed from KB `requires` fields since `required_by` in the snapshot is unpopulated). Added open_doors / walk_with_me resource surfacing to Dashboard: shows KB items not in the user's checklist when `open_doors` is true OR `overall_level` is `walk_with_me`, ordered by importance, capped at 5. Added per-track presence override selects to Settings PresenceSection — computation was already correct, now there's UI to set them. Build clean, 52 tests pass.**
 
 **Notes for future phases:**
+
+- **Phase 10 carryover — `required_by` field unpopulated in KB snapshot**: All dependency edges are declared only in the requiring item's `requires` array (e.g., `il-dl.requires = ['ssa-name']`). The `required_by` field on KB items is always `[]` in the current snapshot. `UnlocksHint` correctly derives dependents by scanning all items for `requires.includes(slug)` — this is correct and doesn't need the field. If the KB eventually populates `required_by`, the ordering graph's merge logic handles both directions.
+- **Phase 10 carryover — open_doors description text**: The KB `description` field is used in the open_doors section cards. All current items have descriptions, but if a future item has a null or empty description the card still renders cleanly (description only shows when truthy).
 
 - **Phase 9 carryover — `transition-kb/` needs its own GitHub repo**: The app fetches from `https://raw.githubusercontent.com/metaphorever/transition-kb/main/`. Until that repo exists the app uses the bundled snapshot — fine for development.
 - **Phase 9 carryover — vite.config.ts updated**: Added `server.port` to respect `process.env.PORT` for the Claude preview system. This is a dev-only change; does not affect build.

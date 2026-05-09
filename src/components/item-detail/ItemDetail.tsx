@@ -232,6 +232,43 @@ function GmcBanner({ gmc }: { gmc: GenderMarkerChange }) {
   )
 }
 
+// Shown at some_guidance and walk_with_me when this item unlocks others on completion
+function UnlocksHint({
+  item,
+  kb,
+  presenceLevel,
+}: {
+  item: KBItem
+  kb: { items: Record<string, KBItem> }
+  presenceLevel: PresenceLevel
+}) {
+  const { t } = useTranslation()
+  if (presenceLevel === 'just_the_path') return null
+
+  const unlocked = Object.values(kb.items).filter((i) => i.requires.includes(item.slug))
+  if (unlocked.length === 0) return null
+
+  return (
+    <section className="mb-6 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+      <p className="text-xs font-medium text-neutral-500 mb-2">
+        {t('item_detail.unlocks_heading')}
+      </p>
+      <ul className="space-y-1">
+        {unlocked.map((u) => (
+          <li key={u.slug}>
+            <Link
+              to={`/item/${u.slug}`}
+              className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+            >
+              {u.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 // Immutable item notice
 function ImmutableNotice({ item }: { item: KBItem }) {
   const { t } = useTranslation()
@@ -581,6 +618,9 @@ export default function ItemDetail() {
           ))}
         </div>
       </section>
+
+      {/* Unlocks hint — shown at some_guidance and walk_with_me */}
+      {kb && <UnlocksHint item={item} kb={kb} presenceLevel={presenceLevel} />}
 
       {/* Blockers */}
       {slug && <BlockersSection slug={slug} entry={entry} presenceLevel={presenceLevel} />}

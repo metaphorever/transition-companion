@@ -239,6 +239,7 @@
       "aligned_with_goal": "A good place to begin."
     },
     "available_now": "Available now",
+    "open_doors_heading": "You might also find useful",
     "blocked_section": "Waiting on something",
     "completed_section": "Done",
     "blocked": "waiting on {{blocker}}",
@@ -312,6 +313,8 @@
     "section_documents": "Documents you have",
     "section_safety": "Safety and access",
     "section_presence": "Presence level",
+    "presence_per_track_heading": "Per-track settings",
+    "presence_per_track_default": "Same as overall",
     "section_contributor": "Contributing",
     "section_people": "People",
     "section_kb": "Knowledge base",
@@ -387,6 +390,7 @@
     "notes_private_note": "Your notes stay on this device and are never shared.",
     "history_heading": "History",
     "history_on": "on {{date}}",
+    "unlocks_heading": "Completing this opens up",
     "report": "Something looks wrong with this information"
   },
   "people_map": {

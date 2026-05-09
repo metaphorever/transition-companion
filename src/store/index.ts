@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem } from '../types'
+import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -105,10 +105,15 @@ export const useAppStore = create<AppState>((set, get) => ({
   setItemStatus: (slug, status) => {
     get().patchUserData((data) => {
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      const logEntry: StatusLogEntry = {
+        status,
+        at: new Date().toISOString().split('T')[0],
+      }
       data.checklist[slug] = {
         ...entry,
         status,
         completed_at: status === 'complete' ? new Date().toISOString() : entry.completed_at,
+        status_log: [...(entry.status_log ?? []), logEntry],
       }
     })
   },

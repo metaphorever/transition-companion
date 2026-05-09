@@ -24,7 +24,7 @@ export interface Category {
 export type ItemImportance = 'critical' | 'high' | 'medium' | 'low'
 export type PresenceLevel = 'just_the_path' | 'some_guidance' | 'walk_with_me'
 export type ProcessMode = 'online' | 'in_person' | 'mail' | 'phone' | 'preparation'
-export type GenderMarkerStatus = 'current' | 'danger' | 'unavailable' | 'unknown'
+export type GenderMarkerStatus = 'current' | 'caution' | 'danger' | 'unavailable' | 'varies' | 'unknown'
 
 export interface ProcessStep {
   step: number
@@ -275,6 +275,13 @@ export interface Blocker {
 
 // ── Checklist Entry ───────────────────────────────────────────────────────────
 
+export interface StatusLogEntry {
+  status: ItemStatus
+  at: string        // ISO date string (date-only, YYYY-MM-DD)
+  note?: string | null
+  reason?: string | null
+}
+
 export interface ChecklistEntry {
   status: ItemStatus
   completed_at: string | null
@@ -286,6 +293,7 @@ export interface ChecklistEntry {
   blockers: Blocker[]
   notes: string
   custom_fields: Record<string, unknown>
+  status_log?: StatusLogEntry[]
 }
 
 // ── Custom Item ───────────────────────────────────────────────────────────────

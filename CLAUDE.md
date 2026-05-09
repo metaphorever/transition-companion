@@ -238,6 +238,13 @@ Phases run in separate worktrees. Without discipline, the next worktree starts o
 2. Merge (or fast-forward) the worktree branch to `main` and push to `origin/main`. Do not leave phase work sitting only on a feature branch — the next phase will branch from main and miss it.
 3. **Standing permission**: the user has authorized end-of-phase commits and fast-forward pushes to `origin/main` without re-asking each time. Use `git push origin <branch>:main` from the worktree to fast-forward main directly. Still surface the proposed commit message and the push target before running so the user can object — just don't block waiting for an explicit yes. Force-push to main is never permitted; if a fast-forward isn't possible, stop and ask.
 
+**At the end of every phase session — final message to the user:**
+
+After the commit and push, always close with:
+> "Next session: **[Phase N — Name]** · Model: **[model]** · Effort: **[level]**"
+
+One line. No explanation needed unless something is unusual. This makes it easy for the user to configure the next session before opening it.
+
 **At the start of every phase session — before writing any code:**
 
 1. Confirm model + effort match the current phase (rule #1 above).

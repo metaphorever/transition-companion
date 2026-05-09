@@ -46,6 +46,7 @@ Check the current build phase below. The phase determines which model should be 
 
 **Notes for future phases:**
 
+- **Copy pass (Phase 9 or standalone) — landing screen privacy message**: Current copy ("Nothing leaves your device") will be inaccurate once contribution is live. Needs to distinguish private data (stays on device always) from process knowledge (can be shared, only with explicit permission). Tone: short, clear, accurate — not alarming. Something like: "Your personal information stays on your device. Anything you share to help others is your choice, every time." Exact wording is open; the private/public distinction is the requirement.
 - **Phase 7 carryover — People Map not yet surfaced from Settings**: Settings is a Phase 9 placeholder. When Settings is built, add a link there.
 - **Phase 7 carryover — `items_they_need_to_update` are free-text strings**: Stored as `string[]` on the `Person` record. If Phase 9 wants to link them to actual KB item slugs, that's a data migration + schema change.
 - **Phase 6 carryover — `document` type not user-addable in UI**: Stored document blockers are ignored by `isActiveStoredBlocker` (graph is source of truth). The UI correctly exposes only the 7 user-defined types. No change needed unless the design evolves.

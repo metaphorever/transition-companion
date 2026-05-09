@@ -213,6 +213,7 @@
   },
   "dashboard": {
     "track_switcher": "Track",
+    "all_tracks": "All",
     "tracks": {
       "legal": "Legal",
       "medical": "Medical",
@@ -220,13 +221,37 @@
       "personal": "Personal",
       "supporter": "Supporter"
     },
+    "greet": "Hello, {{name}}.",
+    "settings": "Settings",
+    "progress": {
+      "not_started": "Your list is ready.",
+      "getting_started": "You've made a start.",
+      "underway": "You're making your way.",
+      "well_along": "You've covered a lot of ground.",
+      "nearly_done": "Almost everything is done.",
+      "all_done": "You've done everything on your list."
+    },
     "start_here": "Start here",
+    "start_here_reason": {
+      "critical_foundation": "This one unlocks a lot from here.",
+      "unlocks_many": "Completing this opens up several more items.",
+      "high_importance": "High priority.",
+      "aligned_with_goal": "A good place to begin."
+    },
     "available_now": "Available now",
+    "blocked_section": "Waiting on something",
+    "completed_section": "Done",
     "blocked": "waiting on {{blocker}}",
     "access_filter": "Show only what I can do with my current access",
     "quick_add": "Add item",
+    "quick_add_placeholder": "What do you want to add?",
+    "quick_add_cancel": "Cancel",
     "no_items": "Nothing here yet.",
-    "danger_banner_label": "Some items need your attention"
+    "no_available": "Nothing is ready to act on right now. Items will appear here as their dependencies are met.",
+    "no_items_on_list": "Nothing on your list yet. You can add items here or go back through setup.",
+    "danger_banner_label": "Some items need your attention",
+    "kb_loading": "Loading...",
+    "kb_error": "Could not load your checklist data. Your saved information is safe. Check your connection and try refreshing."
   },
   "item": {
     "status": {

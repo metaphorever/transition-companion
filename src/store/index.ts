@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry } from '../types'
+import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -35,6 +35,11 @@ interface AppState {
   getOrCreateEntry: (slug: string) => ChecklistEntry
   addItemToChecklist: (slug: string) => void
   removeItemFromChecklist: (slug: string) => void
+
+  // Blocker actions
+  addBlocker: (slug: string, blocker: Omit<Blocker, 'id'>) => void
+  updateBlocker: (slug: string, blockerId: string, patch: Partial<Omit<Blocker, 'id'>>) => void
+  removeBlocker: (slug: string, blockerId: string) => void
 
   // Custom item actions
   addCustomItem: (item: Omit<CustomItem, 'id' | 'status'>) => void
@@ -140,6 +145,41 @@ export const useAppStore = create<AppState>((set, get) => ({
   removeItemFromChecklist: (slug) => {
     get().patchUserData((data) => {
       delete data.checklist[slug]
+    })
+  },
+
+  addBlocker: (slug, blocker) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      const id = `blocker-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      data.checklist[slug] = {
+        ...entry,
+        blockers: [...entry.blockers, { id, ...blocker }],
+      }
+    })
+  },
+
+  updateBlocker: (slug, blockerId, patch) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        blockers: entry.blockers.map((b) =>
+          b.id === blockerId ? { ...b, ...patch } : b
+        ),
+      }
+    })
+  },
+
+  removeBlocker: (slug, blockerId) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        blockers: entry.blockers.filter((b) => b.id !== blockerId),
+      }
     })
   },
 

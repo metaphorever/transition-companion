@@ -378,5 +378,69 @@
     "issue_label": "Open a GitHub issue (no account required)",
     "pr_label": "Submit a correction (GitHub account required)",
     "privacy_note": "Only information about the process is shared, not your personal notes or checklist."
+  },
+  "blockers": {
+    "heading": "What is in the way",
+    "intro": "Anything blocking this — bureaucratic, legal, financial, personal, or otherwise. Whatever you say is the reason is the reason.",
+    "add_first": "Add a blocker",
+    "add_another": "Add another blocker",
+    "edit": "Edit",
+    "remove": "Remove",
+    "save_new": "Save blocker",
+    "save_changes": "Save changes",
+    "cancel": "Cancel",
+    "person_label": "About: {{name}}",
+    "resolvable_label": "Resolvable:",
+    "workaround_heading": "A way around this",
+    "show_workaround": "There may be a way around this",
+    "hide_workaround": "Hide",
+    "field_type": "Type of blocker",
+    "field_label": "What is in the way",
+    "field_label_placeholder": "Describe it in your own words",
+    "field_person": "Which person",
+    "field_person_none": "Not tied to a specific person",
+    "no_people_yet": "You can add people in the People Map. For now, describe the blocker in the field above.",
+    "field_severity": "How significant is this for you",
+    "field_severity_unset": "Not set",
+    "field_resolvable": "Do you think this can resolve",
+    "field_resolvable_note": "Anything to add about that",
+    "field_resolvable_note_placeholder": "Optional",
+    "field_workaround_available": "There may be a way around this",
+    "field_workaround_note_placeholder": "What might work instead",
+    "field_suppress_workaround": "Don't surface this workaround to me",
+    "field_suppress_workaround_hint": "Some blockers shouldn't have an alternative offered. The note stays in your data either way.",
+    "type": {
+      "document": "Document",
+      "legal": "Legal",
+      "access": "Access",
+      "safety": "Safety",
+      "relationship": "Relationship",
+      "readiness": "Readiness",
+      "waiting": "Waiting",
+      "custom": "Other"
+    },
+    "type_hint": {
+      "document": "A required document is not yet obtained.",
+      "legal": "A law, policy, or active legal situation is in the way.",
+      "access": "A practical access barrier — internet, transportation, cost.",
+      "safety": "Proceeding could put your safety or stability at risk.",
+      "relationship": "A specific person or relationship is a factor.",
+      "readiness": "You are not ready yet. That is reason enough.",
+      "waiting": "Blocked on an external timeline you don't control.",
+      "custom": "Something else. Free text."
+    },
+    "severity": {
+      "minor": "Minor",
+      "moderate": "Moderate",
+      "significant": "Significant",
+      "absolute": "Absolute"
+    },
+    "resolvable": {
+      "yes": "Yes",
+      "no": "No",
+      "maybe": "Maybe",
+      "eventually": "Eventually",
+      "unknown": "Unknown"
+    }
   }
 }

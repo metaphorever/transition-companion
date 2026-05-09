@@ -251,14 +251,26 @@ export interface UserProfile {
 
 export type BlockerType =
   | 'document'
-  | 'relationship'
+  | 'legal'
+  | 'access'
   | 'safety'
+  | 'relationship'
   | 'readiness'
   | 'waiting'
-  | 'financial'
   | 'custom'
 
-export type BlockerResolvable = boolean | 'maybe'
+export type BlockerResolvable =
+  | 'yes'
+  | 'no'
+  | 'maybe'
+  | 'eventually'
+  | 'unknown'
+
+export type BlockerSeverity =
+  | 'minor'
+  | 'moderate'
+  | 'significant'
+  | 'absolute'
 
 export interface Blocker {
   id: string
@@ -267,7 +279,9 @@ export interface Blocker {
   kb_dependency?: string
   person_ref?: string
   user_defined: boolean
+  severity?: BlockerSeverity
   resolvable: BlockerResolvable
+  resolvable_note?: string
   workaround_available: boolean
   workaround_note?: string
   suppress_workaround?: boolean

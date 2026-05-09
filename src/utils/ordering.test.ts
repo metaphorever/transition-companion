@@ -442,11 +442,12 @@ describe('getSatisfiedSlugs', () => {
 describe('isActiveStoredBlocker', () => {
   it('treats non-document blockers as active', () => {
     for (const type of [
-      'relationship',
+      'legal',
+      'access',
       'safety',
+      'relationship',
       'readiness',
       'waiting',
-      'financial',
       'custom',
     ] as Blocker['type'][]) {
       expect(isActiveStoredBlocker(blocker({ id: 't', type }))).toBe(true)

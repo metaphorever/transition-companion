@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
+import BlockersSection from './BlockersSection'
 import type {
   ChecklistEntry,
   GenderMarkerChange,
@@ -580,6 +581,9 @@ export default function ItemDetail() {
           ))}
         </div>
       </section>
+
+      {/* Blockers */}
+      {slug && <BlockersSection slug={slug} entry={entry} presenceLevel={presenceLevel} />}
 
       {/* Notes */}
       <section className="mb-8" aria-labelledby="notes-heading">

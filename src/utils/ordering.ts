@@ -6,9 +6,9 @@
 //      never stored as records on a checklist entry. Marking a required item
 //      complete therefore "auto-resolves" document dependencies on next read.
 //
-//   2. User-defined blockers (relationship, safety, readiness, waiting,
-//      legal, access, custom) ARE stored on the checklist entry. The graph
-//      treats them as opaque — only the user can mark them resolved.
+//   2. User-defined blockers (legal, access, safety, relationship, readiness,
+//      waiting, custom) ARE stored on the checklist entry. The graph treats
+//      them as opaque — only the user can mark them resolved.
 //
 //   3. Completion never cascades. Marking a required item complete makes its
 //      dependents AVAILABLE, not AUTOMATICALLY complete. This module only

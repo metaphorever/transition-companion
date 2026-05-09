@@ -252,7 +252,12 @@
     "no_items_on_list": "Nothing on your list yet. You can add items here or go back through setup.",
     "danger_banner_label": "Some items need your attention",
     "kb_loading": "Loading...",
-    "kb_error": "Could not load your checklist data. Your saved information is safe. Check your connection and try refreshing."
+    "kb_error": "Could not load your checklist data. Your saved information is safe. Check your connection and try refreshing.",
+    "recurring_link": "Recurring",
+    "recurring_due_heading": "Due",
+    "recurring_intentions_heading": "Things to keep in mind",
+    "subtask_overdue_flag": "step overdue",
+    "subtask_overdue_hint": "One or more sub-tasks on this item are past their due date"
   },
   "item": {
     "status": {
@@ -391,6 +396,23 @@
     "history_heading": "History",
     "history_on": "on {{date}}",
     "unlocks_heading": "Completing this opens up",
+    "subtasks_heading": "Your steps",
+    "subtask_add_prompt": "Add a step",
+    "subtask_label_placeholder": "What is the next step",
+    "subtask_due_date": "Due date (optional)",
+    "subtask_note_placeholder": "Note (optional)",
+    "subtask_add": "Add",
+    "subtask_save": "Save",
+    "subtask_cancel": "Cancel",
+    "subtask_edit": "Edit",
+    "subtask_remove": "Remove",
+    "subtask_check": "Mark done",
+    "subtask_uncheck": "Mark not done",
+    "subtask_past_due": "due {{date}}",
+    "recovery_heading": "You may want to look at",
+    "recovery_intro": "These items sometimes become relevant when this status changes.",
+    "recovery_add": "Add to my list",
+    "recovery_on_list": "On your list",
     "report": "Something looks wrong with this information"
   },
   "people_map": {
@@ -497,6 +519,41 @@
     "json_copy": "Copy JSON",
     "json_copied": "Copied to clipboard",
     "issue_open": "Open issue"
+  },
+  "recurring": {
+    "title": "Recurring items",
+    "back": "Back to dashboard",
+    "intro": "Things you do regularly — appointments, check-ins, renewals. These surface on your dashboard when they are coming up or overdue.",
+    "empty": "Nothing added yet.",
+    "add": "Add a recurring item",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "remove": "Remove",
+    "log": "Log it",
+    "due_label": "Due {{label}}",
+    "upcoming_label": "Coming up {{label}}",
+    "last_logged": "Last logged {{date}}",
+    "every_n_days": "every {{n}} days",
+    "mode": {
+      "fixed": "On a schedule",
+      "manual": "I set the date each time",
+      "open": "No set timing"
+    },
+    "mode_hint": {
+      "fixed": "You set an interval (e.g. every 90 days). The next date computes automatically when you log it.",
+      "manual": "You pick the next date each time. Useful when the timing varies or depends on appointments.",
+      "open": "A standing intention with no specific due date. It stays visible in a soft section on your dashboard."
+    },
+    "form_label": "What is it",
+    "form_label_placeholder": "What do you want to track",
+    "form_mode": "How does the timing work",
+    "form_interval": "Every how many days",
+    "form_interval_placeholder": "e.g. 90",
+    "form_next_date": "Next date",
+    "form_track": "Track",
+    "form_notes": "Notes (optional)",
+    "form_notes_placeholder": "Anything you want to remember"
   },
   "blockers": {
     "heading": "What is in the way",

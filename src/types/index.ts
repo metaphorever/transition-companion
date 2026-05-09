@@ -99,6 +99,10 @@ export interface KBItem {
   last_verified: string
   verified_by: string
   sources: Source[]
+  // Slugs of other KB items that become relevant when this item hits at_risk or revoked.
+  // UI surfaces these as "you may want to look at" — user decides whether to add them.
+  // Optional: not all items have recovery paths.
+  recovery_items?: string[]
 }
 
 // ── Sequences ─────────────────────────────────────────────────────────────────
@@ -296,6 +300,15 @@ export interface StatusLogEntry {
   reason?: string | null
 }
 
+export interface SubTask {
+  id: string
+  label: string
+  done: boolean
+  done_at: string | null
+  note: string | null
+  due_date: string | null  // YYYY-MM-DD; past due_date surfaces a quiet flag on item cards
+}
+
 export interface ChecklistEntry {
   status: ItemStatus
   completed_at: string | null
@@ -308,6 +321,7 @@ export interface ChecklistEntry {
   notes: string
   custom_fields: Record<string, unknown>
   status_log?: StatusLogEntry[]
+  sub_tasks: SubTask[]
 }
 
 // ── Custom Item ───────────────────────────────────────────────────────────────
@@ -363,6 +377,25 @@ export interface Person {
   user_notes: string
 }
 
+// ── Recurring Items ───────────────────────────────────────────────────────────
+
+// Three modes on a single type — transitions naturally as the user's situation solidifies.
+// fixed: next due = last_logged_at + interval_days (pure arithmetic)
+// manual: user sets next_date each time they log/book
+// open: standing intention, no dates, never marked overdue
+export type RecurringItemMode = 'fixed' | 'manual' | 'open'
+
+export interface RecurringItem {
+  id: string
+  label: string
+  mode: RecurringItemMode
+  interval_days: number | null  // used by fixed; optional nudge for manual
+  next_date: string | null      // YYYY-MM-DD; stored for manual mode, null for fixed/open
+  last_logged_at: string | null // YYYY-MM-DD; set when user logs completion
+  track: string
+  notes: string
+}
+
 // ── Root UserData ─────────────────────────────────────────────────────────────
 
 export interface UserData {
@@ -371,6 +404,7 @@ export interface UserData {
   profile: UserProfile
   checklist: Record<string, ChecklistEntry>
   custom_items: CustomItem[]
+  recurring_items: RecurringItem[]
   people: Record<string, Person>
 }
 

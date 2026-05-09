@@ -10,6 +10,7 @@ import type {
   KBItem,
   PresenceLevel,
   ProcessMode,
+  SubTask,
   UserProfile,
 } from '../../types'
 
@@ -32,6 +33,7 @@ const DEFAULT_ENTRY: ChecklistEntry = {
   blockers: [],
   notes: '',
   custom_fields: {},
+  sub_tasks: [],
 }
 
 function getEffectiveLevel(profile: UserProfile, track: string): PresenceLevel {
@@ -459,6 +461,278 @@ function ProcessSection({ item }: { item: KBItem }) {
   )
 }
 
+// Sub-tasks for a checklist entry — user-created steps, not KB process steps
+function SubTasksSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) {
+  const { t } = useTranslation()
+  const addSubTask = useAppStore((s) => s.addSubTask)
+  const updateSubTask = useAppStore((s) => s.updateSubTask)
+  const removeSubTask = useAppStore((s) => s.removeSubTask)
+  const toggleSubTask = useAppStore((s) => s.toggleSubTask)
+
+  const [addingLabel, setAddingLabel] = useState('')
+  const [addingDueDate, setAddingDueDate] = useState('')
+  const [showAdd, setShowAdd] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editLabel, setEditLabel] = useState('')
+  const [editDueDate, setEditDueDate] = useState('')
+  const [editNote, setEditNote] = useState('')
+
+  const today = new Date().toISOString().split('T')[0]
+  const subTasks: SubTask[] = entry.sub_tasks ?? []
+
+  const handleAdd = () => {
+    const label = addingLabel.trim()
+    if (!label) return
+    addSubTask(slug, {
+      label,
+      note: null,
+      due_date: addingDueDate || null,
+    })
+    setAddingLabel('')
+    setAddingDueDate('')
+    setShowAdd(false)
+  }
+
+  const startEdit = (t: SubTask) => {
+    setEditingId(t.id)
+    setEditLabel(t.label)
+    setEditDueDate(t.due_date ?? '')
+    setEditNote(t.note ?? '')
+  }
+
+  const saveEdit = (id: string) => {
+    updateSubTask(slug, id, {
+      label: editLabel.trim() || editLabel,
+      due_date: editDueDate || null,
+      note: editNote.trim() || null,
+    })
+    setEditingId(null)
+  }
+
+  return (
+    <section className="mb-8" aria-labelledby="subtasks-heading">
+      <h2
+        id="subtasks-heading"
+        className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+      >
+        {t('item_detail.subtasks_heading')}
+      </h2>
+
+      {subTasks.length > 0 && (
+        <ul className="space-y-2 mb-3">
+          {subTasks.map((task) => {
+            const isPastDue = !task.done && task.due_date && task.due_date < today
+            return (
+              <li key={task.id}>
+                {editingId === task.id ? (
+                  <div className="px-3 py-3 border border-neutral-300 rounded-lg space-y-2">
+                    <input
+                      type="text"
+                      value={editLabel}
+                      onChange={(e) => setEditLabel(e.target.value)}
+                      className="w-full px-2 py-1.5 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+                    />
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <label className="text-xs text-neutral-500 block mb-0.5">
+                          {t('item_detail.subtask_due_date')}
+                        </label>
+                        <input
+                          type="date"
+                          value={editDueDate}
+                          onChange={(e) => setEditDueDate(e.target.value)}
+                          className="w-full px-2 py-1.5 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+                        />
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      value={editNote}
+                      onChange={(e) => setEditNote(e.target.value)}
+                      placeholder={t('item_detail.subtask_note_placeholder')}
+                      className="w-full px-2 py-1.5 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => saveEdit(task.id)}
+                        disabled={!editLabel.trim()}
+                        className="px-3 py-1.5 bg-neutral-900 text-white text-xs rounded disabled:opacity-40"
+                      >
+                        {t('item_detail.subtask_save')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(null)}
+                        className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900"
+                      >
+                        {t('item_detail.subtask_cancel')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-3 px-3 py-2.5 border border-neutral-200 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => toggleSubTask(slug, task.id)}
+                      className={`flex-shrink-0 mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                        task.done
+                          ? 'bg-neutral-900 border-neutral-900 text-white'
+                          : 'border-neutral-400 hover:border-neutral-600'
+                      }`}
+                      aria-label={task.done ? t('item_detail.subtask_uncheck') : t('item_detail.subtask_check')}
+                    >
+                      {task.done && <span className="text-xs leading-none">✓</span>}
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-sm ${task.done ? 'line-through text-neutral-400' : 'text-neutral-900'}`}>
+                        {task.label}
+                      </span>
+                      {task.due_date && !task.done && (
+                        <span className={`ml-2 text-xs ${isPastDue ? 'text-neutral-700 font-medium' : 'text-neutral-400'}`}>
+                          {isPastDue ? t('item_detail.subtask_past_due', { date: task.due_date }) : task.due_date}
+                        </span>
+                      )}
+                      {task.note && (
+                        <p className="text-xs text-neutral-500 mt-0.5">{task.note}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => startEdit(task)}
+                        className="text-xs text-neutral-400 hover:text-neutral-700"
+                      >
+                        {t('item_detail.subtask_edit')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeSubTask(slug, task.id)}
+                        className="text-xs text-neutral-400 hover:text-neutral-700"
+                      >
+                        {t('item_detail.subtask_remove')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+
+      {showAdd ? (
+        <div className="px-3 py-3 border border-neutral-200 rounded-lg space-y-2">
+          <input
+            type="text"
+            value={addingLabel}
+            onChange={(e) => setAddingLabel(e.target.value)}
+            placeholder={t('item_detail.subtask_label_placeholder')}
+            className="w-full px-2 py-1.5 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+            autoFocus
+            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+          />
+          <div>
+            <label className="text-xs text-neutral-500 block mb-0.5">
+              {t('item_detail.subtask_due_date')}
+            </label>
+            <input
+              type="date"
+              value={addingDueDate}
+              onChange={(e) => setAddingDueDate(e.target.value)}
+              className="w-full px-2 py-1.5 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleAdd}
+              disabled={!addingLabel.trim()}
+              className="px-3 py-1.5 bg-neutral-900 text-white text-xs rounded disabled:opacity-40"
+            >
+              {t('item_detail.subtask_add')}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setShowAdd(false); setAddingLabel(''); setAddingDueDate('') }}
+              className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900"
+            >
+              {t('item_detail.subtask_cancel')}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowAdd(true)}
+          className="text-sm text-neutral-500 hover:text-neutral-900 underline-offset-2 hover:underline"
+        >
+          + {t('item_detail.subtask_add_prompt')}
+        </button>
+      )}
+    </section>
+  )
+}
+
+// Surface recovery-path KB items when item is at_risk or revoked.
+// User decides whether to add any of them to their checklist.
+function RecoveryItemsSection({
+  item,
+  kb,
+  onAddToChecklist,
+}: {
+  item: KBItem
+  kb: { items: Record<string, KBItem> }
+  onAddToChecklist: (slug: string) => void
+}) {
+  const { t } = useTranslation()
+  const checklist = useAppStore((s) => s.userData.checklist)
+
+  const recoveryItems = (item.recovery_items ?? [])
+    .map((slug) => kb.items[slug])
+    .filter(Boolean) as KBItem[]
+
+  if (recoveryItems.length === 0) return null
+
+  return (
+    <section className="mb-6 px-4 py-4 bg-neutral-50 border border-neutral-200 rounded-lg">
+      <p className="text-xs font-medium text-neutral-500 mb-2">
+        {t('item_detail.recovery_heading')}
+      </p>
+      <p className="text-sm text-neutral-700 mb-3">{t('item_detail.recovery_intro')}</p>
+      <ul className="space-y-2">
+        {recoveryItems.map((r) => {
+          const alreadyOnList = r.slug in checklist
+          return (
+            <li key={r.slug} className="flex items-center justify-between gap-3">
+              <Link
+                to={`/item/${r.slug}`}
+                className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900 flex-1"
+              >
+                {r.label}
+              </Link>
+              {!alreadyOnList && (
+                <button
+                  type="button"
+                  onClick={() => onAddToChecklist(r.slug)}
+                  className="text-xs text-neutral-500 hover:text-neutral-900 flex-shrink-0 underline underline-offset-2"
+                >
+                  {t('item_detail.recovery_add')}
+                </button>
+              )}
+              {alreadyOnList && (
+                <span className="text-xs text-neutral-400 flex-shrink-0">
+                  {t('item_detail.recovery_on_list')}
+                </span>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ItemDetail() {
@@ -470,6 +744,7 @@ export default function ItemDetail() {
   const userData = useAppStore((s) => s.userData)
   const setItemStatus = useAppStore((s) => s.setItemStatus)
   const setItemNotes = useAppStore((s) => s.setItemNotes)
+  const addItemToChecklist = useAppStore((s) => s.addItemToChecklist)
 
   const item = slug && kb ? (kb.items[slug] ?? null) : null
   const entry = (slug ? userData.checklist[slug] : null) ?? DEFAULT_ENTRY
@@ -547,6 +822,15 @@ export default function ItemDetail() {
       {currentStatus === 'at_risk' && <AtRiskAlert entry={entry} item={item} />}
       {currentStatus === 'revoked' && <RevokedAlert entry={entry} />}
 
+      {/* Recovery path items — shown when at_risk or revoked */}
+      {(currentStatus === 'at_risk' || currentStatus === 'revoked') && kb && (
+        <RecoveryItemsSection
+          item={item}
+          kb={kb}
+          onAddToChecklist={addItemToChecklist}
+        />
+      )}
+
       {/* KB-level danger/caution/unknown/unavailable banner */}
       {showGmcBanner && gmc && <GmcBanner gmc={gmc} />}
 
@@ -621,6 +905,9 @@ export default function ItemDetail() {
 
       {/* Unlocks hint — shown at some_guidance and walk_with_me */}
       {kb && <UnlocksHint item={item} kb={kb} presenceLevel={presenceLevel} />}
+
+      {/* Sub-tasks (user-created steps, not KB process steps) */}
+      {slug && <SubTasksSection slug={slug} entry={entry} />}
 
       {/* Blockers */}
       {slug && <BlockersSection slug={slug} entry={entry} presenceLevel={presenceLevel} />}

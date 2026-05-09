@@ -9,6 +9,7 @@ import ItemDetail from './components/item-detail/ItemDetail'
 import Contribute from './components/contribute/Contribute'
 import Settings from './components/Settings'
 import PeopleMap from './components/people/PeopleMap'
+import RecurringItems from './components/recurring/RecurringItems'
 
 function AppRoutes() {
   const initKB = useAppStore(s => s.initKB)
@@ -28,6 +29,7 @@ function AppRoutes() {
       <Route path="/contribute" element={<Contribute />} />
       <Route path="/contribute/:slug" element={<Contribute />} />
       <Route path="/people" element={<PeopleMap />} />
+      <Route path="/recurring" element={<RecurringItems />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

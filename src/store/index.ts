@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person } from '../types'
+import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person, RecurringItem, SubTask } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -50,6 +50,19 @@ interface AppState {
   addCustomItem: (item: Omit<CustomItem, 'id' | 'status'>) => void
   removeCustomItem: (id: string) => void
 
+  // Recurring item actions
+  addRecurringItem: (item: Omit<RecurringItem, 'id'>) => void
+  updateRecurringItem: (id: string, patch: Partial<Omit<RecurringItem, 'id'>>) => void
+  removeRecurringItem: (id: string) => void
+  // Log completion: sets last_logged_at to today; for fixed mode next_date stays null (computed on the fly)
+  logRecurringItem: (id: string) => void
+
+  // Sub-task actions (on checklist entries)
+  addSubTask: (slug: string, task: Omit<SubTask, 'id' | 'done' | 'done_at'>) => void
+  updateSubTask: (slug: string, taskId: string, patch: Partial<Omit<SubTask, 'id'>>) => void
+  removeSubTask: (slug: string, taskId: string) => void
+  toggleSubTask: (slug: string, taskId: string) => void
+
   // KB actions
   initKB: () => Promise<void>
   forceRefreshKB: () => Promise<void>
@@ -61,6 +74,7 @@ const DEFAULT_ENTRY: ChecklistEntry = {
   blockers: [],
   notes: '',
   custom_fields: {},
+  sub_tasks: [],
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -223,6 +237,91 @@ export const useAppStore = create<AppState>((set, get) => ({
   removeCustomItem: (id) => {
     get().patchUserData((data) => {
       data.custom_items = data.custom_items.filter((c) => c.id !== id)
+    })
+  },
+
+  addRecurringItem: (item) => {
+    get().patchUserData((data) => {
+      const id = `rec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      data.recurring_items = [...(data.recurring_items ?? []), { id, ...item }]
+    })
+  },
+
+  updateRecurringItem: (id, patch) => {
+    get().patchUserData((data) => {
+      data.recurring_items = (data.recurring_items ?? []).map((r) =>
+        r.id === id ? { ...r, ...patch } : r
+      )
+    })
+  },
+
+  removeRecurringItem: (id) => {
+    get().patchUserData((data) => {
+      data.recurring_items = (data.recurring_items ?? []).filter((r) => r.id !== id)
+    })
+  },
+
+  logRecurringItem: (id) => {
+    get().patchUserData((data) => {
+      const today = new Date().toISOString().split('T')[0]
+      data.recurring_items = (data.recurring_items ?? []).map((r) => {
+        if (r.id !== id) return r
+        if (r.mode === 'fixed') {
+          return { ...r, last_logged_at: today }
+        }
+        return { ...r, last_logged_at: today, next_date: null }
+      })
+    })
+  },
+
+  addSubTask: (slug, task) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      const id = `st-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      data.checklist[slug] = {
+        ...entry,
+        sub_tasks: [...(entry.sub_tasks ?? []), { id, done: false, done_at: null, ...task }],
+      }
+    })
+  },
+
+  updateSubTask: (slug, taskId, patch) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        sub_tasks: (entry.sub_tasks ?? []).map((t) =>
+          t.id === taskId ? { ...t, ...patch } : t
+        ),
+      }
+    })
+  },
+
+  removeSubTask: (slug, taskId) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        sub_tasks: (entry.sub_tasks ?? []).filter((t) => t.id !== taskId),
+      }
+    })
+  },
+
+  toggleSubTask: (slug, taskId) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      const today = new Date().toISOString().split('T')[0]
+      data.checklist[slug] = {
+        ...entry,
+        sub_tasks: (entry.sub_tasks ?? []).map((t) => {
+          if (t.id !== taskId) return t
+          const done = !t.done
+          return { ...t, done, done_at: done ? today : null }
+        }),
+      }
     })
   },
 

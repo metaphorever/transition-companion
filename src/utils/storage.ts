@@ -64,6 +64,7 @@ const DEFAULT_USER_DATA: UserData = {
   },
   checklist: {},
   custom_items: [],
+  recurring_items: [],
   people: {},
 }
 
@@ -96,6 +97,7 @@ function mergeWithDefaults(stored: UserData): UserData {
     profile,
     checklist: stored.checklist ?? {},
     custom_items: stored.custom_items ?? [],
+    recurring_items: stored.recurring_items ?? [],
     people: stored.people ?? {},
   }
 }

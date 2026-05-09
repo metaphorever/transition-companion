@@ -9,6 +9,7 @@ import {
 } from '../../utils/ordering'
 import type { ItemAvailability } from '../../utils/ordering'
 import { findDangerFlags } from '../../utils/onboarding'
+import { groupRecurringItems, getEffectiveDueDate, dueDateLabel } from '../../utils/recurring'
 import type { CustomItem, ItemImportance, KBItem, UserAccess } from '../../types'
 
 const IMPORTANCE_ORDER: Record<ItemImportance, number> = {
@@ -179,6 +180,27 @@ export default function Dashboard() {
     return { totalOnList: total, totalCompleted: done }
   }, [availability, checklistSlugs, userData.custom_items])
 
+  const today = useMemo(() => new Date().toISOString().split('T')[0], [])
+
+  // Recurring items grouped by urgency, filtered by active track
+  const recurringGroups = useMemo(() => {
+    const filtered = (userData.recurring_items ?? []).filter(
+      (r) => !activeTrack || r.track === activeTrack
+    )
+    return groupRecurringItems(filtered, today)
+  }, [userData.recurring_items, today, activeTrack])
+
+  // Set of checklist slugs that have at least one undone past-due sub-task
+  const pastDueSubTaskSlugs = useMemo(() => {
+    const slugs = new Set<string>()
+    for (const [slug, entry] of Object.entries(userData.checklist)) {
+      if ((entry.sub_tasks ?? []).some((t) => !t.done && t.due_date && t.due_date < today)) {
+        slugs.add(slug)
+      }
+    }
+    return slugs
+  }, [userData.checklist, today])
+
   const progressKey = getProgressKey(totalCompleted, totalOnList)
   const allCompleted = completedItems.length + customCompleted.length
   const displayName = profile.display_name ?? profile.chosen_name
@@ -206,6 +228,9 @@ export default function Dashboard() {
             {t('app.name')}
           </Link>
           <div className="flex items-center gap-4">
+            <Link to="/recurring" className="text-sm text-neutral-600 hover:text-neutral-900">
+              {t('dashboard.recurring_link')}
+            </Link>
             <Link to="/people" className="text-sm text-neutral-600 hover:text-neutral-900">
               {t('people_map.dashboard_link')}
             </Link>
@@ -297,6 +322,35 @@ export default function Dashboard() {
           <p className="text-sm text-neutral-400 mb-6">{t('dashboard.kb_loading')}</p>
         )}
 
+        {/* Recurring — overdue and due today */}
+        {(recurringGroups.overdue.length > 0 || recurringGroups.dueToday.length > 0) && (
+          <section className="mb-8" aria-labelledby="recurring-due-heading">
+            <h2
+              id="recurring-due-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.recurring_due_heading')}
+            </h2>
+            <div className="space-y-2">
+              {[...recurringGroups.overdue, ...recurringGroups.dueToday].map((item) => {
+                const due = getEffectiveDueDate(item)
+                return (
+                  <Link
+                    key={item.id}
+                    to="/recurring"
+                    className="flex items-center justify-between px-4 py-3 border border-neutral-300 rounded-lg hover:border-neutral-500 transition-colors"
+                  >
+                    <span className="text-sm text-neutral-900">{item.label}</span>
+                    <span className="text-xs text-neutral-500 ml-3 flex-shrink-0">
+                      {due ? dueDateLabel(due, today) : ''}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
         {/* Start here */}
         {startHere.length > 0 && (
           <section className="mb-8" aria-labelledby="start-here-heading">
@@ -347,6 +401,7 @@ export default function Dashboard() {
             <div className="space-y-2">
               {availableNow.map((a) => {
                 const item = kb!.items[a.slug]
+                const hasPastDueSubTask = pastDueSubTaskSlugs.has(a.slug)
                 return (
                   <Link
                     key={a.slug}
@@ -354,11 +409,18 @@ export default function Dashboard() {
                     className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
                   >
                     <span className="text-sm text-neutral-900">{item?.label ?? a.slug}</span>
-                    {activeTrack === null && item?.track && (
-                      <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
-                        {t(`dashboard.tracks.${item.track}`)}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                      {hasPastDueSubTask && (
+                        <span className="text-xs text-neutral-500" title={t('dashboard.subtask_overdue_hint')}>
+                          {t('dashboard.subtask_overdue_flag')}
+                        </span>
+                      )}
+                      {activeTrack === null && item?.track && (
+                        <span className="text-xs text-neutral-400">
+                          {t(`dashboard.tracks.${item.track}`)}
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 )
               })}
@@ -447,6 +509,34 @@ export default function Dashboard() {
                   </div>
                   {item.description && (
                     <p className="text-xs text-neutral-500 mt-0.5 line-clamp-2">{item.description}</p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Recurring — open/intentions (no dates, standing intentions) */}
+        {recurringGroups.intentions.length > 0 && (
+          <section className="mb-8" aria-labelledby="recurring-intentions-heading">
+            <h2
+              id="recurring-intentions-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.recurring_intentions_heading')}
+            </h2>
+            <div className="space-y-2">
+              {recurringGroups.intentions.map((item) => (
+                <Link
+                  key={item.id}
+                  to="/recurring"
+                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
+                >
+                  <span className="text-sm text-neutral-700">{item.label}</span>
+                  {activeTrack === null && item.track && (
+                    <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                      {t(`dashboard.tracks.${item.track}`, { defaultValue: item.track })}
+                    </span>
                   )}
                 </Link>
               ))}

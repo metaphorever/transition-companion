@@ -199,6 +199,95 @@ Each file must validate against `item.schema.json` and include a `last_verified`
 - Per-track overrides work correctly
 - Presence level affects rendering only — all data is always accessible at every level
 
+### Phase 11 — Recurring Items, Sub-tasks, and Recovery Paths
+**Model: Sonnet · Effort: high**
+
+- `RecurringItem` type (fixed/manual/open modes) in UserData, separate from KB and custom items
+- `SubTask[]` on `ChecklistEntry` — user-created steps, distinct from read-only KB process steps
+- `recovery_items?: string[]` on `KBItem` — forward-path items surfaced when status is at_risk or revoked
+- Dashboard: overdue/due-today recurring items at top; open intentions in soft section; track-filtered
+- Past-due sub-tasks surface as a quiet flag on item cards in the dashboard
+- `/recurring` route with full add/edit/remove/log management UI
+
+### Phase 12 — Deploy and Dogfood
+**Model: Sonnet · Effort: medium**
+
+*This is a technical phase followed by a sustained personal use period before Phase 13 begins.*
+
+Technical work:
+- Deploy the app to your website (static hosting, Vite build output)
+- Set up any CI/CD needed for future deploys (GitHub Actions or equivalent)
+- Confirm the app loads correctly on mobile (responsive check, no broken layouts)
+- Confirm localStorage behaves correctly across browsers you actually use
+- Set up the `transition-kb` GitHub repo so the live app fetches from it instead of the bundled snapshot
+
+Dogfooding period (no Claude Code session needed):
+- Enter your own real data — checklist items, blockers, people, recurring items
+- Use the app daily for at least 2–3 weeks before moving to Phase 13
+- Keep a running note (a simple text file, not in the app) of friction points, missing things, things that feel wrong, and things that work well
+- The goal is first-person evidence, not a feature wish list
+
+### Phase 13 — First Impressions Review
+**Model: Opus · Effort: high**
+
+*This is a planning and analysis session, not primarily a code session. The output is a prioritized friction list and a set of proposed changes — not merged code.*
+
+- Review the notes collected during dogfooding
+- Identify the difference between: (a) bugs, (b) copy/UX friction, (c) missing features that genuinely block real use, (d) nice-to-haves that can wait
+- For each item in (a) and (b): decide whether to fix immediately or batch
+- For items in (c): decide which belong before public beta and which belong after
+- For items in (d): add to the backlog notes in CLAUDE.md and move on
+- Output: an updated phase map with any new phases added between here and Phase 15, and a clear list of what is blocking beta
+
+Opus is appropriate here because the judgment calls — what counts as blocking vs. acceptable for beta — are load-bearing and easy to get wrong under pressure.
+
+### Phase 14 — MVP to Public Beta Roadmap
+**Model: Opus · Effort: high**
+
+*This is a planning session only. No code is written.*
+
+- Take the output of Phase 13 and write a specific, sequenced roadmap from current state to public beta
+- Define what "public beta" means: what must be true, what can be rough, what is explicitly out of scope
+- Identify anything that changes the app's posture for public use vs. personal use: privacy copy, data handling notice, "this app stores nothing on our servers" statement, any legal/safety language that needs review
+- Decide on beta access model: open link, invite-only, soft launch
+- Update CLAUDE.md with the agreed scope and sequence
+
+### Phase 15 — Open Public Beta
+**Model: Sonnet (for code fixes) · Effort: varies**
+
+*The phase begins with the beta launch and stays open until the beta closes. Sessions during this phase are fix-and-polish sprints driven by Phase 13/14 findings, not feature development.*
+
+- Execute the specific changes identified in Phase 14
+- No new features during beta unless they directly unblock beta users
+- Each session should be scoped to a single, well-defined fix or improvement
+- Monitor for any data safety, privacy, or accessibility issues and treat those as blocking
+- Keep a running log of beta feedback (separate from CLAUDE.md — a living doc or issue tracker)
+
+### Phase 16 — Beta Feedback to v1.0 Roadmap
+**Model: Opus · Effort: high**
+
+*Planning session only. No code. Output is a committed roadmap for v1.0.*
+
+- Synthesize beta feedback into themes: what consistently confused people, what was missing, what worked
+- Distinguish between feedback that reflects personal use cases vs. feedback that reflects the app's core purpose
+- Make explicit decisions about what goes into v1.0 vs. what gets deferred to v2
+- Write the v1.0 definition: what is in, what is not, what "done" means
+- Update CLAUDE.md with the v1.0 scope
+
+### Phase 17 — v2 and Beyond (placeholder)
+**Model: TBD**
+
+*Not planned in detail yet. Decisions from Phase 16 will define what actually belongs here.*
+
+Known candidates (from earlier design conversations):
+- Health and transition logging system (separate app, shared privacy model — see backlog note)
+- Plural system awareness (see names/pronouns design notes)
+- Photo management / timeline (scoped version only — recurring reminder + storage reference, not a photo app)
+- ICS calendar export for recurring items
+- Expanded KB coverage (more states, more item types)
+- Contribution pipeline maturation (structured submissions, community verification)
+- Quick-exit / privacy mode (flagged as must-not-preclude in v1 architecture)
+
 ---
 
 ## Language constraints (enforced throughout)

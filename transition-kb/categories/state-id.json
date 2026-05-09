@@ -1,0 +1,9 @@
+{
+  "slug": "state-id",
+  "label": "State Identity and Voting",
+  "description": "State-issued identity documents and voter registration.",
+  "track": "legal",
+  "icon_key": "id-card",
+  "sort_order": 2,
+  "tags": ["identity", "state", "driver-license", "voter-registration"]
+}

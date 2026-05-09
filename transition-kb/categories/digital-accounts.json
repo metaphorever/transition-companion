@@ -1,0 +1,9 @@
+{
+  "slug": "digital-accounts",
+  "label": "Digital and Online Accounts",
+  "description": "Online accounts, apps, and digital services.",
+  "track": "social",
+  "icon_key": "globe",
+  "sort_order": 5,
+  "tags": ["digital", "online", "accounts", "apps", "streaming"]
+}

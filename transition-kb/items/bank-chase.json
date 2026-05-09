@@ -1,0 +1,87 @@
+{
+  "slug": "bank-chase",
+  "label": "Chase",
+  "category": "banking",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update your legal name on your Chase accounts, cards, and records.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["il-dl"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Visit a Chase branch in person with your updated government-issued ID and legal name change documentation. Chase does not process legal name changes online or by phone.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Gather your updated government-issued photo ID (driver's license or passport) and your legal name change documentation (court order).",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Visit any Chase branch. Let the associate know you need to update your legal name on your accounts.",
+        "modes": ["in_person"],
+        "note": "Branch locations are available at chase.com/branch-atm."
+      },
+      {
+        "step": 3,
+        "description": "The associate updates your name on all accounts. New debit and credit cards will be ordered and mailed. Your account and card numbers remain the same.",
+        "modes": ["in_person"],
+        "note": null
+      },
+      {
+        "step": 4,
+        "description": "Log in to chase.com or the Chase app to confirm the name is updated in your online profile. Update any saved payment methods elsewhere that reference your old name.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Updated government-issued photo ID",
+      "Legal name change documentation (court order)"
+    ],
+    "modes_available": ["in_person"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "An in-person branch visit is required."
+    },
+    "cost": "Free",
+    "estimated_time_days": "Same-day update in branch; 5 to 7 business days for new cards.",
+    "url_official": "https://www.chase.com/personal/banking/customer-service",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": "Chase's non-discrimination policy covers gender identity and expression. The CFPB accepts complaints about discriminatory treatment by financial institutions.",
+  "presence_level_content": {
+    "some_guidance": "Same process as most major banks — updated ID plus court order, in person.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.chase.com",
+      "label": "Chase",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "slug": "lgbtq-health-centers",
+  "label": "LGBTQ+ Health Centers",
+  "category": "healthcare-access",
+  "track": "medical",
+  "subcategory": null,
+  "description": "LGBTQ+ health centers are community health organizations that provide affirming primary care, mental health services, and often gender-affirming care on a sliding-scale fee. Many also offer legal clinics and social services.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Find an LGBTQ+ health center near you through the national directory at lgbtqiahealthdepartment.org or your local LGBTQ+ community center, then contact them to establish care.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Search for LGBTQ+ health centers in your area using the GLMA provider directory, the National LGBTQIA+ Health Education Center's resources, or your local LGBTQ+ community center's referral list.",
+        "modes": ["online"],
+        "note": "In the Chicago area: Howard Brown Health (howardbrown.org) provides comprehensive affirming care at multiple locations."
+      },
+      {
+        "step": 2,
+        "description": "Contact the center to learn about new patient availability, accepted insurance, and sliding-scale options if you are uninsured or underinsured.",
+        "modes": ["phone", "online"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Schedule a new patient appointment. Bring any relevant medical records if you are transferring care.",
+        "modes": ["phone", "online"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["in_person", "online", "phone"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": true,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": "Many LGBTQ+ health centers offer telehealth appointments."
+    },
+    "cost": "Sliding scale based on income at most community health centers. Insurance accepted at most locations.",
+    "estimated_time_days": "Varies by location and availability.",
+    "url_official": "https://howardbrown.org",
+    "url_info": "https://www.glma.org/find-a-provider",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "LGBTQ+ health centers often provide care where you do not have to explain yourself or justify your needs. For many people, having a primary care provider who is already familiar with trans health makes all the difference.",
+    "walk_with_me": "Finding affirming healthcare is not always easy, and the search itself can be discouraging. If you have had bad experiences with providers, it makes sense to take your time. These organizations exist specifically to lower those barriers."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://howardbrown.org",
+      "label": "Howard Brown Health",
+      "retrieved": "2025-05-01"
+    },
+    {
+      "url": "https://www.glma.org/find-a-provider",
+      "label": "GLMA Provider Directory",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

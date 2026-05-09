@@ -1,0 +1,91 @@
+{
+  "slug": "il-dl",
+  "label": "Illinois Driver's License / State ID",
+  "category": "state-id",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update your name and, if applicable, gender marker on your Illinois driver's license or state ID card. An updated Illinois ID is commonly required by banks, employers, and other institutions.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": "IL" },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Visit an Illinois Secretary of State Driver Services facility in person with your updated SSA card (or proof of SSA name change), your court order, and your current license or ID. Pay the replacement fee.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Gather required documents: your legal name change documentation (court order or updated SSA card), proof of Illinois residency (two documents such as a utility bill and a bank statement), and your current driver's license or state ID.",
+        "modes": ["preparation"],
+        "note": "Illinois follows REAL ID requirements. You will need documents that together prove your full legal name, date of birth, SSN, Illinois residency, and lawful status."
+      },
+      {
+        "step": 2,
+        "description": "Locate your nearest Illinois Secretary of State Driver Services facility. Facilities are available across the state; appointments are recommended.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Visit the facility in person. Present your documents to the clerk and request a name change and, if applicable, a gender marker update. You will have your photo taken and receive a temporary paper license.",
+        "modes": ["in_person"],
+        "note": "For a gender marker change, Illinois requires a written certification from a licensed physician, surgeon, or psychologist that you have undergone appropriate treatment for gender transition, or a court order. Illinois markers available: M, F, and X."
+      },
+      {
+        "step": 4,
+        "description": "Pay the replacement fee. Your updated license or ID arrives by mail within 15 business days.",
+        "modes": ["in_person"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Court order for legal name change or updated SSA card",
+      "Proof of Illinois residency (two documents)",
+      "Current driver's license or state ID"
+    ],
+    "modes_available": ["in_person"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "An in-person visit to a Driver Services facility is required. Appointments are recommended and available online."
+    },
+    "cost": "$30 for a replacement driver's license; $20 for a replacement state ID (fees may vary).",
+    "estimated_time_days": "15 business days for the updated card to arrive by mail after the in-person visit.",
+    "url_official": "https://www.ilsos.gov/facilities/facilitylist.html",
+    "url_info": "https://www.ilsos.gov/departments/drivers/REALID/home.html",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "current",
+    "status_note": "Illinois offers M, F, and X gender markers on driver's licenses and state IDs. A written certification from a licensed physician, surgeon, or psychologist is required, or a court order. No surgery requirement.",
+    "status_date": "2023-01-01",
+    "markers_historically_available": ["M", "F"],
+    "markers_currently_available": ["M", "F", "X"],
+    "advocacy_links": [
+      { "label": "Illinois Secretary of State: Gender Marker Change", "url": "https://www.ilsos.gov" },
+      { "label": "Transformative Justice Law Project of Illinois", "url": "https://www.tjlp.org" }
+    ]
+  },
+  "discrimination_notes": "Illinois Human Rights Act prohibits discrimination based on sexual orientation and gender identity. Staff at Driver Services facilities are required to treat you with respect throughout the process.",
+  "presence_level_content": {
+    "some_guidance": "An updated driver's license or state ID is often the most-requested document when updating other records — banks, employers, and utilities frequently use it as proof of identity. Doing this soon after SSA makes the rest of the list move faster.",
+    "walk_with_me": "The in-person aspect means you will be presenting yourself and your documents to someone you have not met. Most people find the process straightforward, but it makes sense to plan for a moment of decompression afterward."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.ilsos.gov/departments/drivers/REALID/home.html",
+      "label": "Illinois Secretary of State: REAL ID",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

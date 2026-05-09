@@ -1,0 +1,72 @@
+{
+  "slug": "hulu-account",
+  "label": "Hulu",
+  "category": "digital-accounts",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the display name on your Hulu account. Hulu uses a display name that you can set without legal documentation.",
+  "importance": "low",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to hulu.com, go to Account settings, and update your account name.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Log in to hulu.com. Click on your profile name in the top right and select Account.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Under Your Account, click on your name or profile details to edit. Update your name and save.",
+        "modes": ["online"],
+        "note": "Individual profiles within a Hulu account can also be renamed independently under the Manage Profiles section."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://secure.hulu.com/account",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Display name only — no documentation needed.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://secure.hulu.com/account",
+      "label": "Hulu: Account Settings",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

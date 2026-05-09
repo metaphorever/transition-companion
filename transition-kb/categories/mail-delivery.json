@@ -1,0 +1,9 @@
+{
+  "slug": "mail-delivery",
+  "label": "Mail and Delivery",
+  "description": "Postal services and mail delivery accounts.",
+  "track": "social",
+  "icon_key": "mail",
+  "sort_order": 4,
+  "tags": ["mail", "usps", "postal", "delivery"]
+}

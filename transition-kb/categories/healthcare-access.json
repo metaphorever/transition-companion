@@ -1,0 +1,9 @@
+{
+  "slug": "healthcare-access",
+  "label": "Healthcare Access",
+  "description": "Resources and pathways for gender-affirming and trans-competent healthcare.",
+  "track": "medical",
+  "icon_key": "heart",
+  "sort_order": 1,
+  "tags": ["healthcare", "medical", "affirming", "resources", "informed-consent"]
+}

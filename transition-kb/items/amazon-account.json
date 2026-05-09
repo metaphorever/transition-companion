@@ -1,0 +1,72 @@
+{
+  "slug": "amazon-account",
+  "label": "Amazon",
+  "category": "digital-accounts",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the name on your Amazon account, which appears on orders, Prime membership, and communications from Amazon.",
+  "importance": "low",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to amazon.com, go to Account and Lists > Account, then select Login and Security to update your name.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Log in to amazon.com. Hover over Account and Lists in the top right, then click Account.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Under Login and Security, click Edit next to your name. Enter your new name and save.",
+        "modes": ["online"],
+        "note": "You may be asked to re-enter your password to confirm the change."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://www.amazon.com/gp/css/account/info/view.html",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Quick online update. Your order history, Prime membership, and saved addresses are not affected.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.amazon.com/gp/css/account/info/view.html",
+      "label": "Amazon: Your Account",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

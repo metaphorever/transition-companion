@@ -1,0 +1,38 @@
+{
+  "slug": "us-marriage-cert",
+  "label": "U.S. Marriage Certificate",
+  "category": "vital-records",
+  "track": "legal",
+  "subcategory": null,
+  "description": "A marriage certificate records the names of both parties as they were at the time of the ceremony. In most U.S. states, this record cannot be amended to reflect a later legal name change — it is a historical record of what was true on that date.",
+  "importance": "medium",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": true,
+  "immutable_note": "A marriage certificate is a contemporaneous record of a legal event. In most U.S. states, it cannot be amended to reflect names that were not in effect at the time of the marriage.",
+  "immutable_compassion_note": "This is one of the documents where the law simply has not caught up. Your marriage happened, it was real, and the certificate remains valid — it just reflects your name as it was at that moment. Many agencies have ways to work with this, and you are not without options.",
+  "workarounds": [
+    "Present your marriage certificate alongside your court order for legal name change. Most agencies and institutions accept this combination as proof that both names belong to the same person.",
+    "Some states allow a name amendment to be attached to a marriage certificate as a separate order — this does not alter the original certificate, but creates an official link between the two names. Check your state's vital records office.",
+    "For passport applications and similar documents, a combination of your marriage certificate plus a court order (or updated ID) is the standard approach when the names differ."
+  ],
+  "process": null,
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Agencies that ask for a marriage certificate alongside a name-changed ID are familiar with this situation. Presenting both documents together is the accepted practice.",
+    "walk_with_me": "It can feel strange that a document about your marriage does not reflect your name. Some people find it helps to think of it as a record of a day — not a definition of who you are now."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": []
+}

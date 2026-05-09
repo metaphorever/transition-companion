@@ -1,0 +1,78 @@
+{
+  "slug": "fsa-id",
+  "label": "Federal Student Aid (FSA ID)",
+  "category": "financial-gov",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update your name on your FSA ID account, used to sign and submit federal student aid applications (FAFSA) and to access Federal Student Aid accounts. Your FSA ID is linked to your SSA records.",
+  "importance": "medium",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to studentaid.gov and update your name in your profile. Your FSA ID name must match your SSA records exactly. Complete SSA first.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Log in to your account at studentaid.gov. Go to your profile and update your legal name to match your SSA records.",
+        "modes": ["online"],
+        "note": "Your FSA ID is validated against Social Security Administration records. Allow at least two weeks after your SSA update before updating FSA — the systems sync on a delay."
+      },
+      {
+        "step": 2,
+        "description": "If your email address, username, or other account details have also changed, update those at the same time.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Verify you can still log in and that your name displays correctly. If you have any active loans or aid applications, confirm they reflect the updated name.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate once SSA has processed your name change (allow 10 to 14 business days after SSA).",
+    "url_official": "https://studentaid.gov/fsa-id/sign-in",
+    "url_info": "https://studentaid.gov/help-center/answers/article/how-to-update-my-name",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "If you have active student loans or are planning to submit a FAFSA, keeping your FSA ID name current is important — name mismatches can delay processing.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://studentaid.gov",
+      "label": "Federal Student Aid",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

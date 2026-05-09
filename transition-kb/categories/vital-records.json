@@ -1,0 +1,9 @@
+{
+  "slug": "vital-records",
+  "label": "Vital Records",
+  "description": "Official records documenting life events, including birth and marriage certificates.",
+  "track": "legal",
+  "icon_key": "document",
+  "sort_order": 3,
+  "tags": ["vital", "birth", "marriage", "certificate", "records"]
+}

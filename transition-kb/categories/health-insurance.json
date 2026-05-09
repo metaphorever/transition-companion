@@ -1,0 +1,9 @@
+{
+  "slug": "health-insurance",
+  "label": "Health Insurance",
+  "description": "Health insurance policy records and coverage documentation.",
+  "track": "social",
+  "icon_key": "shield",
+  "sort_order": 3,
+  "tags": ["insurance", "health", "coverage", "benefits"]
+}

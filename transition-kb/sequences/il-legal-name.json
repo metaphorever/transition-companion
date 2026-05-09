@@ -1,0 +1,44 @@
+{
+  "slug": "il-legal-name",
+  "label": "Legal Name Change — Illinois",
+  "description": "A recommended order for updating name and gender marker records across government agencies and institutions in Illinois. Each phase builds on the previous one.",
+  "track": "legal",
+  "jurisdiction": "US-IL",
+  "phases": [
+    {
+      "phase": 1,
+      "label": "Foundation",
+      "description": "These two steps unlock most of what comes after. SSA is the anchor for employment and tax records. An updated birth certificate is required for first-time passport applications and is one of the strongest identity documents.",
+      "items": ["ssa-name", "il-birth-cert"],
+      "note": "SSA and birth certificate can be done in either order or simultaneously. SSA is typically faster."
+    },
+    {
+      "phase": 2,
+      "label": "Identity Documents",
+      "description": "Government-issued photo ID and travel documents. An updated driver's license or state ID is required by banks, employers, and many other institutions.",
+      "items": ["il-dl", "us-passport", "us-passport-card"],
+      "note": "The driver's license is required before most phase 3 and 4 updates. Passport and passport card can be done simultaneously."
+    },
+    {
+      "phase": 3,
+      "label": "Government Records",
+      "description": "Voter registration, federal student aid, and tax records.",
+      "items": ["il-voter-reg", "fsa-id", "irs-name"],
+      "note": "The IRS name update happens automatically after SSA — no separate action needed. Verify it on your next tax return."
+    },
+    {
+      "phase": 4,
+      "label": "Financial and Employment",
+      "description": "Banking, payroll, and insurance records.",
+      "items": ["employer-hr", "bank-boa", "bank-chase", "bank-wells-fargo", "bank-generic", "health-insurance-generic"],
+      "note": null
+    },
+    {
+      "phase": 5,
+      "label": "Digital and Mail",
+      "description": "Online accounts and postal services.",
+      "items": ["usps-informed-delivery", "google-account", "apple-id", "amazon-account", "netflix-account", "hulu-account"],
+      "note": "These can be done at any point — no dependencies. Many take only a few minutes."
+    }
+  ]
+}

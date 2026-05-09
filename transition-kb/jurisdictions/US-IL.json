@@ -1,0 +1,10 @@
+{
+  "jurisdiction": { "country": "US", "region": "IL" },
+  "label": "Illinois",
+  "item_overrides": {},
+  "region_specific_items": [
+    "il-dl",
+    "il-birth-cert",
+    "il-voter-reg"
+  ]
+}

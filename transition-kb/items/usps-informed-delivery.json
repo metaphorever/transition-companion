@@ -1,0 +1,72 @@
+{
+  "slug": "usps-informed-delivery",
+  "label": "USPS Informed Delivery",
+  "category": "mail-delivery",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the name on your USPS Informed Delivery account, which provides daily email previews of incoming mail and packages.",
+  "importance": "low",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to your USPS.com account and update your name in account settings. If you do not have an Informed Delivery account, you can skip this step — it is not a required document.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Log in to your account at usps.com. Navigate to Account Settings and update your name fields.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "If your address has also changed, submit a Change of Address form (PS Form 3575) online at usps.com or in person at your local post office.",
+        "modes": ["online", "in_person"],
+        "note": "Name changes at the same address do not require a Change of Address form."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://informeddelivery.usps.com",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "This is a quick online update. It does not affect mail delivery or require any documentation.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://informeddelivery.usps.com",
+      "label": "USPS Informed Delivery",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

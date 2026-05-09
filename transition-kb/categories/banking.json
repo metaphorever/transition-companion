@@ -1,0 +1,9 @@
+{
+  "slug": "banking",
+  "label": "Banking and Finance",
+  "description": "Bank accounts and financial institution records.",
+  "track": "social",
+  "icon_key": "bank",
+  "sort_order": 1,
+  "tags": ["banking", "finance", "accounts", "credit"]
+}

@@ -1,0 +1,9 @@
+{
+  "slug": "federal-id",
+  "label": "Federal Identity Documents",
+  "description": "Identity documents issued by the federal government, including SSA records and passports.",
+  "track": "legal",
+  "icon_key": "id-card",
+  "sort_order": 1,
+  "tags": ["identity", "federal", "government", "ssa", "passport"]
+}

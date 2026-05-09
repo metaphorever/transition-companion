@@ -1,0 +1,9 @@
+{
+  "slug": "employer",
+  "label": "Employer Records",
+  "description": "Payroll, HR, and employment records.",
+  "track": "social",
+  "icon_key": "briefcase",
+  "sort_order": 2,
+  "tags": ["employer", "hr", "payroll", "work", "employment"]
+}

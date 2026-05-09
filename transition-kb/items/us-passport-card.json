@@ -1,0 +1,87 @@
+{
+  "slug": "us-passport-card",
+  "label": "U.S. Passport Card",
+  "category": "federal-id",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update your name and gender marker on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically.",
+  "importance": "medium",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Apply simultaneously with or separately from a passport book. Use Form DS-11 if applying for the first time or if a significant name change is involved; use Form DS-82 for routine renewals. The process is identical to a passport book — you can request both on the same application.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Complete Form DS-11 or DS-82 (same as for a passport book) and check the box indicating you also want a passport card.",
+        "modes": ["preparation"],
+        "note": "Applying for both the book and the card at the same time saves the execution fee — you only pay it once."
+      },
+      {
+        "step": 2,
+        "description": "Gather the same documents required for a passport book: legal name change documentation, current passport or proof of citizenship, and two passport photos.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Submit in person at a passport acceptance facility (DS-11) or by mail (DS-82). Processing timelines are the same as for a passport book.",
+        "modes": ["in_person", "mail"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Completed application form (DS-11 or DS-82)",
+      "Legal name change documentation (court order)",
+      "Current or most recent passport or passport card",
+      "Proof of U.S. citizenship (for DS-11)",
+      "Two passport photos (2x2 inches)"
+    ],
+    "modes_available": ["in_person", "mail"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": "optional",
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "DS-11 requires in-person submission. DS-82 can be mailed."
+    },
+    "cost": "$65 for the card alone, plus the $35 execution fee for DS-11. If applying alongside a passport book, the card adds only $30 to the total.",
+    "estimated_time_days": "42 to 56 days routine; 14 to 21 days expedited.",
+    "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/passport-card.html",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "danger",
+    "status_note": "Same restrictions apply as for the passport book. As of January 2025, only M and F are available. The X marker was suspended by executive order. Consult an LGBTQ+ legal organization before applying for a gender marker change.",
+    "status_date": "2025-01-20",
+    "markers_historically_available": ["M", "F", "X"],
+    "markers_currently_available": ["M", "F"],
+    "advocacy_links": [
+      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
+      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
+    ]
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "If you are already applying for a passport book, adding a passport card at the same time costs only $30 extra and saves a second in-person trip. The card is wallet-sized and useful for domestic ID purposes.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://travel.state.gov/content/travel/en/passports/need-passport/passport-card.html",
+      "label": "U.S. Department of State: Passport Card",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

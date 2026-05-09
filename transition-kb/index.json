@@ -1,0 +1,52 @@
+{
+  "items": [
+    "ssa-name",
+    "il-birth-cert",
+    "il-dl",
+    "us-passport",
+    "us-passport-card",
+    "il-voter-reg",
+    "usps-informed-delivery",
+    "fsa-id",
+    "irs-name",
+    "bank-boa",
+    "bank-chase",
+    "bank-wells-fargo",
+    "bank-generic",
+    "employer-hr",
+    "health-insurance-generic",
+    "google-account",
+    "apple-id",
+    "amazon-account",
+    "netflix-account",
+    "hulu-account",
+    "us-marriage-cert",
+    "informed-consent",
+    "lgbtq-health-centers"
+  ],
+  "categories": [
+    "federal-id",
+    "state-id",
+    "vital-records",
+    "financial-gov",
+    "banking",
+    "employer",
+    "health-insurance",
+    "mail-delivery",
+    "digital-accounts",
+    "healthcare-access"
+  ],
+  "tracks": [
+    "legal",
+    "medical",
+    "social",
+    "personal",
+    "supporter"
+  ],
+  "sequences": [
+    "il-legal-name"
+  ],
+  "jurisdictions": [
+    "US-IL"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "slug": "bank-boa",
+  "label": "Bank of America",
+  "category": "banking",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update your legal name on your Bank of America accounts, cards, and records.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["il-dl"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Visit a Bank of America financial center in person with your updated government-issued ID and your legal name change documentation. Name changes cannot be completed online or by phone.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Gather your updated government-issued photo ID (driver's license or passport with your new name) and your legal name change documentation (court order).",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Visit a Bank of America financial center. Inform the associate that you need to update your legal name on your accounts.",
+        "modes": ["in_person"],
+        "note": "You can locate the nearest financial center using the branch locator at bankofamerica.com."
+      },
+      {
+        "step": 3,
+        "description": "The associate will update your name across all accounts. New debit and credit cards with your updated name will be ordered and mailed to you.",
+        "modes": ["in_person"],
+        "note": "Your existing card numbers and account numbers do not change. Your old cards remain functional until the new ones arrive."
+      },
+      {
+        "step": 4,
+        "description": "Review your online banking profile to confirm the name is updated there as well. Update any automatic payments or linked accounts that use your name.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Updated government-issued photo ID (driver's license or passport)",
+      "Legal name change documentation (court order)"
+    ],
+    "modes_available": ["in_person"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "An in-person visit to a financial center is required."
+    },
+    "cost": "Free",
+    "estimated_time_days": "Same-day name update in branch; 5 to 7 business days for new cards to arrive.",
+    "url_official": "https://www.bankofamerica.com/customer-service/contact-us/",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": "Bank of America has non-discrimination policies that include gender identity and expression. If you experience discriminatory treatment, you can file a complaint with the Consumer Financial Protection Bureau (CFPB).",
+  "presence_level_content": {
+    "some_guidance": "Bank name changes require an in-person visit. Calling ahead to confirm what documents they want can save a second trip.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.bankofamerica.com",
+      "label": "Bank of America",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

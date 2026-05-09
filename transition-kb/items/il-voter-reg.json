@@ -1,0 +1,81 @@
+{
+  "slug": "il-voter-reg",
+  "label": "Illinois Voter Registration",
+  "category": "state-id",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update your name and address on your Illinois voter registration. Keeping your registration current ensures your ballot is counted and your registration stays active.",
+  "importance": "medium",
+  "jurisdiction": { "country": "US", "region": "IL" },
+  "requires": ["il-dl"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Update your voter registration online at vote.org or through the Illinois State Board of Elections, or visit your county clerk's office in person. You can also register or update at a Driver Services facility when updating your license.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Go to the Illinois online voter registration portal at ova.elections.il.gov. You will need your Illinois driver's license or state ID number (updated with your new name) and the last four digits of your SSN.",
+        "modes": ["online"],
+        "note": "Online updates require a current Illinois license or state ID. If yours is not yet updated, update that first."
+      },
+      {
+        "step": 2,
+        "description": "Alternatively, complete a paper voter registration application (available at the State Board of Elections website or your county clerk's office) and submit it by mail or in person.",
+        "modes": ["mail", "in_person"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "You will receive a confirmation by mail once your registration is updated. Verify your registration status at ova.elections.il.gov before the next election.",
+        "modes": ["preparation"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Illinois driver's license or state ID (updated with new name)",
+      "Last four digits of SSN"
+    ],
+    "modes_available": ["online", "mail", "in_person"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": "optional",
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "2 to 5 days for online processing; up to 14 days for mail or in-person.",
+    "url_official": "https://ova.elections.il.gov",
+    "url_info": "https://www.elections.il.gov/voter-registration/register-to-vote",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Updating your registration online takes about five minutes once your license is updated. Mismatched names between your ID and voter roll can cause delays at the polls.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.elections.il.gov/voter-registration/register-to-vote",
+      "label": "Illinois State Board of Elections: Register to Vote",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

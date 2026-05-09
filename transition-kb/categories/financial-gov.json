@@ -1,0 +1,9 @@
+{
+  "slug": "financial-gov",
+  "label": "Tax and Financial Records",
+  "description": "Government financial records, tax filings, and federal student aid.",
+  "track": "legal",
+  "icon_key": "document",
+  "sort_order": 4,
+  "tags": ["tax", "financial", "government", "irs", "fsa", "student-aid"]
+}

@@ -1,0 +1,89 @@
+{
+  "slug": "informed-consent",
+  "label": "Informed Consent for HRT",
+  "category": "healthcare-access",
+  "track": "medical",
+  "subcategory": null,
+  "description": "Informed consent is a model of care for hormone replacement therapy (HRT) that does not require a mental health referral or diagnosis before prescribing. Providers who use this model explain the effects, risks, and process of HRT, and then prescribe based on your decision as a capable adult.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Find a provider who practices informed consent, schedule a new patient appointment, review the consent materials together, and begin the prescription process. Many Planned Parenthood locations and LGBTQ+ health centers use this model.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Find an informed consent provider near you. Resources include the FOLX Health directory, Planned Parenthood's gender affirming care locator, GLMA (the LGBTQ+ medical association), and local LGBTQ+ community centers.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Schedule a new patient appointment and confirm the provider uses an informed consent model. Some providers have waitlists; telehealth providers can often see you sooner.",
+        "modes": ["phone", "online"],
+        "note": "Telehealth providers like Plume, Folx, and QueerDoc offer nationwide services and typically have shorter wait times."
+      },
+      {
+        "step": 3,
+        "description": "At your appointment, the provider will review the effects and risks of HRT with you, answer your questions, and have you sign an informed consent form. A prescription is typically issued at this or a follow-up visit.",
+        "modes": ["in_person", "online"],
+        "note": null
+      },
+      {
+        "step": 4,
+        "description": "After starting HRT, follow-up labs and appointments monitor your levels and overall health. Frequency varies by provider and how long you have been on HRT.",
+        "modes": ["in_person"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["in_person", "online", "phone"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": true,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": "Telehealth options are widely available and do not require travel."
+    },
+    "cost": "Varies. Many providers accept insurance. Lab work is typically billed separately. Telehealth services range from $30 to $150 per month depending on whether insurance is used.",
+    "estimated_time_days": "Varies widely by provider availability. Telehealth often within 1 to 2 weeks; in-person providers may have longer waits.",
+    "url_official": null,
+    "url_info": "https://www.folxhealth.com",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": "Section 1557 of the Affordable Care Act prohibits discrimination based on sex (including gender identity) in health care programs receiving federal funds. Some states have additional protections; others have enacted restrictions on gender-affirming care for adults. Illinois has affirmed the right to gender-affirming care.",
+  "presence_level_content": {
+    "some_guidance": "Informed consent providers exist in most metropolitan areas and across telehealth. If a provider tells you they require a mental health referral or a specific diagnosis to prescribe HRT, they are using a gatekeeping model — you can look for a provider who does not.",
+    "walk_with_me": "Starting HRT is a significant step for many people — one that can take time to think through, and also one that people sometimes wait longer than they need to because the process seems harder than it is. If you have questions about what the process looks like, your first appointment with an informed consent provider is the right place to ask them."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.glma.org",
+      "label": "GLMA: Health Professionals Advancing LGBTQ Equality",
+      "retrieved": "2025-05-01"
+    },
+    {
+      "url": "https://www.plannedparenthood.org/learn/gender-identity/transgender",
+      "label": "Planned Parenthood: Gender Affirming Care",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

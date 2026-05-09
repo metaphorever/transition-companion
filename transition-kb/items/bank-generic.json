@@ -1,0 +1,81 @@
+{
+  "slug": "bank-generic",
+  "label": "Other Bank or Credit Union",
+  "category": "banking",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update your legal name at other financial institutions — banks, credit unions, or investment accounts. The general process is similar across most institutions: in-person visit, updated ID, and name change documentation.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["il-dl"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Contact your financial institution to confirm their specific name change process, then visit in person with your updated ID and legal name change documentation. Most institutions follow a similar process.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Call or check your institution's website to confirm what documents they require for a legal name change. Requirements vary slightly by institution.",
+        "modes": ["phone", "online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Gather your updated government-issued photo ID (driver's license or passport) and your legal name change documentation (court order).",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Visit the institution in person. Request a legal name update on all accounts. Ask about debit and credit card replacements at the same time.",
+        "modes": ["in_person"],
+        "note": "Some credit unions and smaller banks may also accept mailed documentation — ask when you call ahead."
+      },
+      {
+        "step": 4,
+        "description": "Confirm the update in your online banking profile and review any automatic payments or linked accounts.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Updated government-issued photo ID",
+      "Legal name change documentation (court order)"
+    ],
+    "modes_available": ["in_person", "phone"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": true,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "An in-person visit is typically required. Call ahead to confirm."
+    },
+    "cost": "Free",
+    "estimated_time_days": "Varies by institution. Typically same-day update with new cards in 5 to 10 business days.",
+    "url_official": null,
+    "url_info": null,
+    "notes": "If you have investment accounts (brokerage, IRA, 401k), those may have their own name change process — often handled through the institution's customer service line or a separate form."
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": "The Equal Credit Opportunity Act and other federal laws protect against discrimination in financial services. The CFPB (consumerfinance.gov) handles complaints about financial institution discrimination.",
+  "presence_level_content": {
+    "some_guidance": "If you have accounts at multiple smaller institutions, it can help to call each one first — some will accept mailed documents, which saves in-person trips.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": []
+}

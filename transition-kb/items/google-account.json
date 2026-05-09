@@ -1,0 +1,72 @@
+{
+  "slug": "google-account",
+  "label": "Google Account",
+  "category": "digital-accounts",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the name on your Google Account. This name appears in Gmail, Google Docs, Google Meet, and other Google services.",
+  "importance": "medium",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to your Google Account and update your name in the personal info settings. No documentation is required. Your email address does not change.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Go to myaccount.google.com and sign in. Navigate to Personal Info.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Click on your name and update your first and last name. Click Save.",
+        "modes": ["online"],
+        "note": "You can change your name up to three times every 90 days. There is no requirement to use a legal name."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://myaccount.google.com/personal-info",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "This takes about two minutes. Your Gmail address does not change — only the display name that appears in emails you send and in Google products.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://myaccount.google.com/personal-info",
+      "label": "Google Account: Personal Info",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "slug": "apple-id",
+  "label": "Apple ID",
+  "category": "digital-accounts",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the name on your Apple ID, which appears in iCloud, the App Store, FaceTime, and other Apple services.",
+  "importance": "medium",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Sign in to appleid.apple.com and update your name in account settings. Alternatively, update on your iPhone or iPad through Settings > your name > Name, Phone Numbers, Email.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Go to appleid.apple.com and sign in with your Apple ID. Under Personal Information, click on your name and update it. Click Done.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "On iPhone or iPad: go to Settings, tap your name at the top, then tap Name, Phone Numbers, Email. Tap your name to edit it.",
+        "modes": ["online"],
+        "note": "Your Apple ID email address does not change unless you explicitly update it."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://appleid.apple.com",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Quick online update, no documentation needed. Your Apple ID email and any purchases remain unchanged.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://appleid.apple.com",
+      "label": "Apple ID Account",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

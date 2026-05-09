@@ -1,0 +1,90 @@
+{
+  "slug": "health-insurance-generic",
+  "label": "Health Insurance",
+  "category": "health-insurance",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update your legal name with your health insurance provider. The name on your insurance card should match the name you use at medical appointments to avoid billing and coverage issues.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Contact your health insurance provider's member services line or log in to your member portal to request a legal name change. Most insurers require a copy of your legal name change documentation.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Call the member services number on the back of your insurance card, or log in to your insurer's member portal. Ask about the process for a legal name change.",
+        "modes": ["phone", "online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Submit your legal name change documentation as directed — by mail, fax, or through the insurer's secure portal. You may also be asked for a copy of your updated ID.",
+        "modes": ["mail", "online"],
+        "note": "Some insurers accept scanned copies; others require originals. Ask when you call."
+      },
+      {
+        "step": 3,
+        "description": "A new insurance card with your updated name will be mailed to you. Processing typically takes 5 to 15 business days.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 4,
+        "description": "Once updated, inform your primary care provider, pharmacy, and any specialists you see regularly, so your records at each location can be updated to match.",
+        "modes": ["preparation"],
+        "note": "Mismatches between your insurance name and your provider's records can cause claim processing delays."
+      }
+    ],
+    "documents_required": [
+      "Legal name change documentation (court order or updated birth certificate)",
+      "Copy of updated government-issued ID (may be requested)"
+    ],
+    "modes_available": ["phone", "online", "mail"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": "optional",
+      "phone": true,
+      "copies": true,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "5 to 15 business days for updated card.",
+    "url_official": null,
+    "url_info": null,
+    "notes": "If your insurance is through your employer, the update may go through HR rather than directly through the insurer. Check with HR first."
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "varies",
+    "status_note": "Policies on gender marker changes vary significantly by insurer. Some update on request with a physician's letter; others follow the gender marker on your government ID. Coverage for gender-affirming care also varies by plan. Contact your insurer's member services to understand your specific plan's policies.",
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": [
+      { "label": "National Center for Transgender Equality: Insurance", "url": "https://transequality.org/know-your-rights/health-care" },
+      { "label": "Transgender Law Center", "url": "https://transgenderlawcenter.org" }
+    ]
+  },
+  "discrimination_notes": "The Affordable Care Act's Section 1557 prohibits discrimination based on sex (including gender identity) by health insurers receiving federal funding. If you are denied coverage or treated differently because of your gender identity, the Office for Civil Rights at the Department of Health and Human Services accepts complaints.",
+  "presence_level_content": {
+    "some_guidance": "Updating your insurance name does not require an in-person visit. A phone call or online request with documentation is typically sufficient.",
+    "walk_with_me": "If your insurance currently has the wrong name, it is worth updating before any scheduled procedures or appointments — it avoids billing issues that can take months to resolve."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://transequality.org/know-your-rights/health-care",
+      "label": "NCTE: Health Care Rights",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

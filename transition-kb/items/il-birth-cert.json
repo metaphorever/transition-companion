@@ -1,0 +1,97 @@
+{
+  "slug": "il-birth-cert",
+  "label": "Illinois Birth Certificate",
+  "category": "vital-records",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Amend your Illinois birth certificate to reflect your updated name and, if applicable, gender marker. An amended birth certificate is one of the strongest identity documents and is often required for passport applications.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": "IL" },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "File a Petition for Correction of Certificate of Birth (form VS-134) with the Illinois Department of Public Health. For a name change, attach your court order. For a gender marker change, Illinois allows self-certification as of 2023 — no surgical requirement.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Obtain form VS-134 (Petition for Correction of Certificate of Birth) from the Illinois Department of Public Health website or a county clerk's office.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "For a name change: attach a certified copy of your court order for legal name change. For a gender marker change: complete the self-certification section on the form. Both changes can be done on a single petition.",
+        "modes": ["preparation"],
+        "note": "Illinois law (410 ILCS 535/17) allows gender marker amendment based on self-attestation — no physician letter or surgery is required."
+      },
+      {
+        "step": 3,
+        "description": "Have your signature notarized on the completed form.",
+        "modes": ["in_person"],
+        "note": "Notary services are available at many banks, UPS Stores, and some libraries."
+      },
+      {
+        "step": 4,
+        "description": "Mail the completed notarized petition, supporting documents, and payment to the Illinois Department of Public Health, Division of Vital Records.",
+        "modes": ["mail"],
+        "note": null
+      },
+      {
+        "step": 5,
+        "description": "Your amended birth certificate is mailed to you. Processing time is typically 4 to 8 weeks. Expedited options are available for an additional fee.",
+        "modes": ["preparation"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Completed and notarized form VS-134",
+      "Certified copy of court order (for name change)",
+      "Payment (check or money order)"
+    ],
+    "modes_available": ["mail"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": "optional",
+      "phone": false,
+      "copies": false,
+      "notary": true,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "$15 for the first certified copy; $2 for each additional copy ordered at the same time. Expedited processing is available for an additional fee.",
+    "estimated_time_days": "28 to 56 days standard processing; faster with expedite option.",
+    "url_official": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/amendment.html",
+    "url_info": null,
+    "notes": "Order at least two certified copies — one for your own records and one if a passport application or other agency requires an original."
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "current",
+    "status_note": "Illinois allows self-certification for gender marker amendment on birth certificates as of 2023. Available markers are M, F, and X. No medical documentation or surgery is required.",
+    "status_date": "2023-01-01",
+    "markers_historically_available": ["M", "F"],
+    "markers_currently_available": ["M", "F", "X"],
+    "advocacy_links": [
+      { "label": "Illinois Department of Public Health — Birth Records", "url": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records" },
+      { "label": "Heartland Alliance — Trans Legal Resources", "url": "https://www.heartlandalliance.org" }
+    ]
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "An updated birth certificate is often required for a first-time passport and is widely accepted as primary identification. If you were born in Illinois, amending it early can simplify several later steps.",
+    "walk_with_me": "The notarization step can feel like a lot for a form that is simply correcting a record to reflect who you are. Some people find it helpful to frame it that way — this is a correction, not a petition."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/amendment.html",
+      "label": "IDPH: Amendment of Birth Records",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "slug": "netflix-account",
+  "label": "Netflix",
+  "category": "digital-accounts",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update the display name on your Netflix account. Netflix accounts use a display name that you can set to any name you choose — no legal documentation is required.",
+  "importance": "low",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Log in to netflix.com, go to Account settings, and update your account name. This is a display name only.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Log in to netflix.com. Click on your profile icon in the top right, then select Account.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Under Membership and Billing, click Change next to your name (or email). Update the account name and save.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online"],
+    "access_requirements": {
+      "internet": "required",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Immediate.",
+    "url_official": "https://www.netflix.com/YourAccount",
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "Netflix uses a display name only — no legal name is required and no documentation is needed.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.netflix.com/YourAccount",
+      "label": "Netflix: Your Account",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

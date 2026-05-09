@@ -1,0 +1,100 @@
+{
+  "slug": "us-passport",
+  "label": "U.S. Passport",
+  "category": "federal-id",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update your name and, if applicable, gender marker on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Submit a passport application (DS-11 for a new passport or first-time applicants; DS-82 if your current passport is less than 15 years old and issued after age 16) with your legal name change documentation and current photos. Applications are submitted at a passport acceptance facility or, for DS-82, by mail.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Determine which form applies to you. Use DS-82 if your current passport was issued when you were 16 or older and is less than 15 years old. Use DS-11 for all other situations, including if your name differs significantly from the name on your current passport.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Gather required documents: your legal name change documentation (court order), your current or most recent passport, proof of U.S. citizenship if applying with DS-11, and two recent passport photos.",
+        "modes": ["preparation"],
+        "note": "Photos must be 2x2 inches, taken within the last 6 months, against a plain white or off-white background."
+      },
+      {
+        "step": 3,
+        "description": "Complete your application form. Forms are available at travel.state.gov and at many post offices and passport acceptance facilities.",
+        "modes": ["preparation", "online"],
+        "note": null
+      },
+      {
+        "step": 4,
+        "description": "For DS-11 applications: submit in person at a passport acceptance facility. For DS-82 applications: mail your completed application with original documents and payment. Facilities include many post offices and county clerks.",
+        "modes": ["in_person", "mail"],
+        "note": "Original documents are returned to you along with your new passport."
+      },
+      {
+        "step": 5,
+        "description": "Pay the application fee. Routine processing takes 6 to 8 weeks; expedited processing (additional fee) takes 2 to 3 weeks. Track your application status at travel.state.gov.",
+        "modes": ["preparation"],
+        "note": null
+      }
+    ],
+    "documents_required": [
+      "Completed application form (DS-11 or DS-82)",
+      "Legal name change documentation (court order)",
+      "Current or most recent passport",
+      "Proof of U.S. citizenship (for DS-11: original or certified birth certificate)",
+      "Two passport photos (2x2 inches)"
+    ],
+    "modes_available": ["in_person", "mail"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": "optional",
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": true,
+      "travel_note": "DS-11 applications require an in-person visit to a passport acceptance facility. DS-82 applications can be submitted by mail."
+    },
+    "cost": "$130 application fee plus $35 execution fee for DS-11 (in-person); $130 by mail for DS-82. Expedited processing adds $60. Photo fee ($15–$20) if obtaining photos at the facility.",
+    "estimated_time_days": "42 to 56 days routine; 14 to 21 days expedited.",
+    "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
+    "url_info": "https://travel.state.gov/content/travel/en/passports.html",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "danger",
+    "status_note": "As of early 2025, federal executive orders suspended the X gender marker option for U.S. passports. Only M and F are currently available. Changes between M and F now require a physician's statement or medical documentation, reversing the previous self-certification policy. This is being challenged in court. Consult an LGBTQ+ legal organization for current guidance before applying for a gender marker change.",
+    "status_date": "2025-01-20",
+    "markers_historically_available": ["M", "F", "X"],
+    "markers_currently_available": ["M", "F"],
+    "advocacy_links": [
+      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
+      { "label": "ACLU: Passport Gender Marker", "url": "https://www.aclu.org" },
+      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
+    ]
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "A passport is accepted everywhere a driver's license is, and by many places that do not accept a state ID. If you travel internationally or want a federal ID with no state residency requirement, it is worth doing alongside or shortly after your driver's license.",
+    "walk_with_me": "Some people feel relief holding a passport with their correct name — it is one of the most portable pieces of documentation you carry. Others find the fees and wait time discouraging. Both are valid responses to a process that should be simpler."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
+      "label": "U.S. Department of State: Update a Passport",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "slug": "irs-name",
+  "label": "IRS Name Update",
+  "category": "financial-gov",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Your name with the IRS updates automatically after the SSA processes your name change. No separate IRS form is required for the name change itself. This item is here so you know what to expect and can verify it on your next tax return.",
+  "importance": "medium",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "No action is needed beyond completing your SSA name change. The IRS receives name updates directly from the SSA. Allow approximately two weeks after your SSA change is processed before filing taxes.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Complete your SSA name change first. The IRS receives updated name information from the SSA during regular data exchanges, typically within two to four weeks.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "When you file your next tax return, use your new legal name exactly as it appears in your updated SSA records. Your SSN does not change.",
+        "modes": ["preparation"],
+        "note": "If you file before the SSA-IRS sync has completed, your name may not match IRS records, which can delay processing. Filing electronically reduces this risk — tax software can flag mismatches."
+      },
+      {
+        "step": 3,
+        "description": "If your address has also changed, file Form 8822 (Change of Address) with the IRS. This is separate from the name update and must be done manually.",
+        "modes": ["mail"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["preparation"],
+    "access_requirements": {
+      "internet": false,
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "2 to 4 weeks after SSA processes your name change.",
+    "url_official": "https://www.irs.gov/individuals/how-do-i-notify-irs-my-address-has-changed",
+    "url_info": "https://www.irs.gov/faqs/irs-procedures/name-changes",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "This one takes care of itself. Once SSA processes your change, the IRS update happens automatically. Mark this complete after your first tax filing with the new name goes through without issues.",
+    "walk_with_me": null
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.irs.gov/faqs/irs-procedures/name-changes",
+      "label": "IRS: Name Changes",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

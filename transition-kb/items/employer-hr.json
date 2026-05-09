@@ -1,0 +1,87 @@
+{
+  "slug": "employer-hr",
+  "label": "Employer / HR Records",
+  "category": "employer",
+  "track": "social",
+  "subcategory": null,
+  "description": "Update your legal name and, if applicable, other records with your employer's HR or payroll department. Payroll records must match your SSA name for accurate tax reporting.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": ["ssa-name"],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Contact your HR or payroll department to request a legal name update. Most employers require your updated Social Security card (or written SSA confirmation) and a government-issued ID with your new name.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Contact your HR or payroll department — by email, phone, or in person — and ask about their process for a legal name change.",
+        "modes": ["preparation", "phone"],
+        "note": "Every employer's process is slightly different. Some have a form to complete; others just need your documents."
+      },
+      {
+        "step": 2,
+        "description": "Gather the documents your employer requires. This typically includes your updated Social Security card (or a letter from SSA confirming your new name) and an updated government-issued photo ID.",
+        "modes": ["preparation"],
+        "note": "Some employers only need one of these; ask what they specifically require."
+      },
+      {
+        "step": 3,
+        "description": "Submit the documents as directed — in person, by email, or through your employer's HR portal.",
+        "modes": ["in_person", "online"],
+        "note": null
+      },
+      {
+        "step": 4,
+        "description": "Confirm that payroll, benefits, email address (if applicable), directory listing, and badge or access credentials are all updated. Ask HR to confirm your W-2 will reflect the new name.",
+        "modes": ["preparation"],
+        "note": "Name mismatches on W-2s cause issues at tax time. Verify before the end of the year."
+      }
+    ],
+    "documents_required": [
+      "Updated Social Security card or written SSA confirmation of name change",
+      "Updated government-issued photo ID (driver's license or passport)"
+    ],
+    "modes_available": ["in_person", "online", "phone"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": true,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": "Varies by employer. Payroll updates are typically processed in the next pay cycle.",
+    "url_official": null,
+    "url_info": null,
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": "Title VII of the Civil Rights Act, as interpreted by the Supreme Court in Bostock v. Clayton County (2020), prohibits employment discrimination based on gender identity and sexual orientation. Illinois law provides additional protections under the Illinois Human Rights Act. If you experience discrimination in this process, the EEOC and Illinois Department of Human Rights both accept complaints.",
+  "presence_level_content": {
+    "some_guidance": "Updating payroll records is important for accurate W-2s. HR departments handle name changes routinely — you do not need to explain more than you want to.",
+    "walk_with_me": "Navigating this at work involves people who know you, which can feel different from dealing with an anonymous government agency. You get to decide what you share and how. HR is legally required to keep your records confidential."
+  },
+  "last_verified": "2025-05-01",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.eeoc.gov/discrimination-type/sex-discrimination",
+      "label": "EEOC: Sex Discrimination",
+      "retrieved": "2025-05-01"
+    }
+  ]
+}

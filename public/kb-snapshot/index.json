@@ -1,8 +1,2531 @@
 {
-  "fetched_at": "2025-01-01T00:00:00.000Z",
-  "items": {},
-  "categories": {},
-  "tracks": {},
-  "sequences": {},
-  "jurisdictions": {}
+  "fetched_at": "2026-05-09T13:20:18.370Z",
+  "items": {
+    "ssa-name": {
+      "slug": "ssa-name",
+      "label": "Social Security Administration",
+      "category": "federal-id",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name with the Social Security Administration. Your SSA records affect tax filing, employment verification, and many downstream documents. This is typically the first step in a legal name change.",
+      "importance": "critical",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Submit Form SS-5 with your legal name change documentation at a local SSA office or by mail. A replacement card with your updated name arrives by mail in about two weeks.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Gather your legal name change document. This is typically a court order for a name change, an updated birth certificate showing your new name, or a marriage certificate.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Gather proof of identity: your current Social Security card, a U.S. passport, or a state-issued driver's license or ID.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Complete Form SS-5 (Application for a Social Security Card). The form is available at ssa.gov or at any SSA office.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "You can fill out the form online but must submit in person or by mail with original documents."
+          },
+          {
+            "step": 4,
+            "description": "Submit your application at a local SSA office or by mail. If mailing, SSA will return your original documents. Call ahead to confirm whether your local office currently accepts mail submissions.",
+            "modes": [
+              "in_person",
+              "mail"
+            ],
+            "note": null
+          },
+          {
+            "step": 5,
+            "description": "Your new Social Security card arrives by mail, typically within 10 to 14 business days. Keep it somewhere safe. For most downstream updates, you will provide your SSN and new name — the card itself is rarely required.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Legal name change document (court order, updated birth certificate, or marriage certificate)",
+          "Proof of identity (current Social Security card, U.S. passport, or driver's license/state ID)"
+        ],
+        "modes_available": [
+          "in_person",
+          "mail"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person visit to a local SSA office is typically required. Some offices accept mail submissions — call ahead to confirm."
+        },
+        "cost": "Free",
+        "estimated_time_days": "10 to 14 business days for the new card to arrive after submitting.",
+        "url_official": "https://www.ssa.gov/forms/ss-5.pdf",
+        "url_info": "https://www.ssa.gov/personal-record/change-name.html",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "danger",
+        "status_note": "As of January 2025, federal executive orders directed the SSA to recognize only binary sex designations (M or F). The X marker option is no longer available, and changes between M and F now require documentation rather than self-certification. This is being litigated. Check current SSA policy and consult an LGBTQ+ legal organization before attempting a gender marker update.",
+        "status_date": "2025-01-20",
+        "markers_historically_available": [
+          "M",
+          "F",
+          "X"
+        ],
+        "markers_currently_available": [
+          "M",
+          "F"
+        ],
+        "advocacy_links": [
+          {
+            "label": "Lambda Legal",
+            "url": "https://www.lambdalegal.org"
+          },
+          {
+            "label": "ACLU LGBTQ+ Rights",
+            "url": "https://www.aclu.org/lgbtq-rights"
+          },
+          {
+            "label": "National Center for Transgender Equality",
+            "url": "https://transequality.org"
+          }
+        ]
+      },
+      "discrimination_notes": "Federal law prohibits discrimination based on sex, which courts have interpreted to include gender identity in employment contexts. SSA staff are required to process your application regardless of your appearance or presentation.",
+      "presence_level_content": {
+        "some_guidance": "SSA is the anchor for most downstream name changes. Employment records, tax filings, and financial institutions often verify your name against SSA records. Doing this first prevents mismatches that slow other updates.",
+        "walk_with_me": "This step tends to feel significant. The process itself is administrative and often quick, but you may want someone with you or to plan some time afterward. There is no right way to feel about it."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.ssa.gov/personal-record/change-name.html",
+          "label": "SSA: Change Your Name",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "il-birth-cert": {
+      "slug": "il-birth-cert",
+      "label": "Illinois Birth Certificate",
+      "category": "vital-records",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Amend your Illinois birth certificate to reflect your updated name and, if applicable, gender marker. An amended birth certificate is one of the strongest identity documents and is often required for passport applications.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": "IL"
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "File a Petition for Correction of Certificate of Birth (form VS-134) with the Illinois Department of Public Health. For a name change, attach your court order. For a gender marker change, Illinois allows self-certification as of 2023 — no surgical requirement.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Obtain form VS-134 (Petition for Correction of Certificate of Birth) from the Illinois Department of Public Health website or a county clerk's office.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "For a name change: attach a certified copy of your court order for legal name change. For a gender marker change: complete the self-certification section on the form. Both changes can be done on a single petition.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Illinois law (410 ILCS 535/17) allows gender marker amendment based on self-attestation — no physician letter or surgery is required."
+          },
+          {
+            "step": 3,
+            "description": "Have your signature notarized on the completed form.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "Notary services are available at many banks, UPS Stores, and some libraries."
+          },
+          {
+            "step": 4,
+            "description": "Mail the completed notarized petition, supporting documents, and payment to the Illinois Department of Public Health, Division of Vital Records.",
+            "modes": [
+              "mail"
+            ],
+            "note": null
+          },
+          {
+            "step": 5,
+            "description": "Your amended birth certificate is mailed to you. Processing time is typically 4 to 8 weeks. Expedited options are available for an additional fee.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Completed and notarized form VS-134",
+          "Certified copy of court order (for name change)",
+          "Payment (check or money order)"
+        ],
+        "modes_available": [
+          "mail"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": false,
+          "copies": false,
+          "notary": true,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "$15 for the first certified copy; $2 for each additional copy ordered at the same time. Expedited processing is available for an additional fee.",
+        "estimated_time_days": "28 to 56 days standard processing; faster with expedite option.",
+        "url_official": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/amendment.html",
+        "url_info": null,
+        "notes": "Order at least two certified copies — one for your own records and one if a passport application or other agency requires an original."
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "current",
+        "status_note": "Illinois allows self-certification for gender marker amendment on birth certificates as of 2023. Available markers are M, F, and X. No medical documentation or surgery is required.",
+        "status_date": "2023-01-01",
+        "markers_historically_available": [
+          "M",
+          "F"
+        ],
+        "markers_currently_available": [
+          "M",
+          "F",
+          "X"
+        ],
+        "advocacy_links": [
+          {
+            "label": "Illinois Department of Public Health — Birth Records",
+            "url": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records"
+          },
+          {
+            "label": "Heartland Alliance — Trans Legal Resources",
+            "url": "https://www.heartlandalliance.org"
+          }
+        ]
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "An updated birth certificate is often required for a first-time passport and is widely accepted as primary identification. If you were born in Illinois, amending it early can simplify several later steps.",
+        "walk_with_me": "The notarization step can feel like a lot for a form that is simply correcting a record to reflect who you are. Some people find it helpful to frame it that way — this is a correction, not a petition."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/amendment.html",
+          "label": "IDPH: Amendment of Birth Records",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "il-dl": {
+      "slug": "il-dl",
+      "label": "Illinois Driver's License / State ID",
+      "category": "state-id",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name and, if applicable, gender marker on your Illinois driver's license or state ID card. An updated Illinois ID is commonly required by banks, employers, and other institutions.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": "IL"
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Visit an Illinois Secretary of State Driver Services facility in person with your updated SSA card (or proof of SSA name change), your court order, and your current license or ID. Pay the replacement fee.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Gather required documents: your legal name change documentation (court order or updated SSA card), proof of Illinois residency (two documents such as a utility bill and a bank statement), and your current driver's license or state ID.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Illinois follows REAL ID requirements. You will need documents that together prove your full legal name, date of birth, SSN, Illinois residency, and lawful status."
+          },
+          {
+            "step": 2,
+            "description": "Locate your nearest Illinois Secretary of State Driver Services facility. Facilities are available across the state; appointments are recommended.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Visit the facility in person. Present your documents to the clerk and request a name change and, if applicable, a gender marker update. You will have your photo taken and receive a temporary paper license.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "For a gender marker change, Illinois requires a written certification from a licensed physician, surgeon, or psychologist that you have undergone appropriate treatment for gender transition, or a court order. Illinois markers available: M, F, and X."
+          },
+          {
+            "step": 4,
+            "description": "Pay the replacement fee. Your updated license or ID arrives by mail within 15 business days.",
+            "modes": [
+              "in_person"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Court order for legal name change or updated SSA card",
+          "Proof of Illinois residency (two documents)",
+          "Current driver's license or state ID"
+        ],
+        "modes_available": [
+          "in_person"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person visit to a Driver Services facility is required. Appointments are recommended and available online."
+        },
+        "cost": "$30 for a replacement driver's license; $20 for a replacement state ID (fees may vary).",
+        "estimated_time_days": "15 business days for the updated card to arrive by mail after the in-person visit.",
+        "url_official": "https://www.ilsos.gov/facilities/facilitylist.html",
+        "url_info": "https://www.ilsos.gov/departments/drivers/REALID/home.html",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "current",
+        "status_note": "Illinois offers M, F, and X gender markers on driver's licenses and state IDs. A written certification from a licensed physician, surgeon, or psychologist is required, or a court order. No surgery requirement.",
+        "status_date": "2023-01-01",
+        "markers_historically_available": [
+          "M",
+          "F"
+        ],
+        "markers_currently_available": [
+          "M",
+          "F",
+          "X"
+        ],
+        "advocacy_links": [
+          {
+            "label": "Illinois Secretary of State: Gender Marker Change",
+            "url": "https://www.ilsos.gov"
+          },
+          {
+            "label": "Transformative Justice Law Project of Illinois",
+            "url": "https://www.tjlp.org"
+          }
+        ]
+      },
+      "discrimination_notes": "Illinois Human Rights Act prohibits discrimination based on sexual orientation and gender identity. Staff at Driver Services facilities are required to treat you with respect throughout the process.",
+      "presence_level_content": {
+        "some_guidance": "An updated driver's license or state ID is often the most-requested document when updating other records — banks, employers, and utilities frequently use it as proof of identity. Doing this soon after SSA makes the rest of the list move faster.",
+        "walk_with_me": "The in-person aspect means you will be presenting yourself and your documents to someone you have not met. Most people find the process straightforward, but it makes sense to plan for a moment of decompression afterward."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.ilsos.gov/departments/drivers/REALID/home.html",
+          "label": "Illinois Secretary of State: REAL ID",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "us-passport": {
+      "slug": "us-passport",
+      "label": "U.S. Passport",
+      "category": "federal-id",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name and, if applicable, gender marker on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Submit a passport application (DS-11 for a new passport or first-time applicants; DS-82 if your current passport is less than 15 years old and issued after age 16) with your legal name change documentation and current photos. Applications are submitted at a passport acceptance facility or, for DS-82, by mail.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Determine which form applies to you. Use DS-82 if your current passport was issued when you were 16 or older and is less than 15 years old. Use DS-11 for all other situations, including if your name differs significantly from the name on your current passport.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Gather required documents: your legal name change documentation (court order), your current or most recent passport, proof of U.S. citizenship if applying with DS-11, and two recent passport photos.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Photos must be 2x2 inches, taken within the last 6 months, against a plain white or off-white background."
+          },
+          {
+            "step": 3,
+            "description": "Complete your application form. Forms are available at travel.state.gov and at many post offices and passport acceptance facilities.",
+            "modes": [
+              "preparation",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "For DS-11 applications: submit in person at a passport acceptance facility. For DS-82 applications: mail your completed application with original documents and payment. Facilities include many post offices and county clerks.",
+            "modes": [
+              "in_person",
+              "mail"
+            ],
+            "note": "Original documents are returned to you along with your new passport."
+          },
+          {
+            "step": 5,
+            "description": "Pay the application fee. Routine processing takes 6 to 8 weeks; expedited processing (additional fee) takes 2 to 3 weeks. Track your application status at travel.state.gov.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Completed application form (DS-11 or DS-82)",
+          "Legal name change documentation (court order)",
+          "Current or most recent passport",
+          "Proof of U.S. citizenship (for DS-11: original or certified birth certificate)",
+          "Two passport photos (2x2 inches)"
+        ],
+        "modes_available": [
+          "in_person",
+          "mail"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "DS-11 applications require an in-person visit to a passport acceptance facility. DS-82 applications can be submitted by mail."
+        },
+        "cost": "$130 application fee plus $35 execution fee for DS-11 (in-person); $130 by mail for DS-82. Expedited processing adds $60. Photo fee ($15–$20) if obtaining photos at the facility.",
+        "estimated_time_days": "42 to 56 days routine; 14 to 21 days expedited.",
+        "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
+        "url_info": "https://travel.state.gov/content/travel/en/passports.html",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "danger",
+        "status_note": "As of early 2025, federal executive orders suspended the X gender marker option for U.S. passports. Only M and F are currently available. Changes between M and F now require a physician's statement or medical documentation, reversing the previous self-certification policy. This is being challenged in court. Consult an LGBTQ+ legal organization for current guidance before applying for a gender marker change.",
+        "status_date": "2025-01-20",
+        "markers_historically_available": [
+          "M",
+          "F",
+          "X"
+        ],
+        "markers_currently_available": [
+          "M",
+          "F"
+        ],
+        "advocacy_links": [
+          {
+            "label": "Lambda Legal",
+            "url": "https://www.lambdalegal.org"
+          },
+          {
+            "label": "ACLU: Passport Gender Marker",
+            "url": "https://www.aclu.org"
+          },
+          {
+            "label": "National Center for Transgender Equality",
+            "url": "https://transequality.org"
+          }
+        ]
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "A passport is accepted everywhere a driver's license is, and by many places that do not accept a state ID. If you travel internationally or want a federal ID with no state residency requirement, it is worth doing alongside or shortly after your driver's license.",
+        "walk_with_me": "Some people feel relief holding a passport with their correct name — it is one of the most portable pieces of documentation you carry. Others find the fees and wait time discouraging. Both are valid responses to a process that should be simpler."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
+          "label": "U.S. Department of State: Update a Passport",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "us-passport-card": {
+      "slug": "us-passport-card",
+      "label": "U.S. Passport Card",
+      "category": "federal-id",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name and gender marker on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Apply simultaneously with or separately from a passport book. Use Form DS-11 if applying for the first time or if a significant name change is involved; use Form DS-82 for routine renewals. The process is identical to a passport book — you can request both on the same application.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Complete Form DS-11 or DS-82 (same as for a passport book) and check the box indicating you also want a passport card.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Applying for both the book and the card at the same time saves the execution fee — you only pay it once."
+          },
+          {
+            "step": 2,
+            "description": "Gather the same documents required for a passport book: legal name change documentation, current passport or proof of citizenship, and two passport photos.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Submit in person at a passport acceptance facility (DS-11) or by mail (DS-82). Processing timelines are the same as for a passport book.",
+            "modes": [
+              "in_person",
+              "mail"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Completed application form (DS-11 or DS-82)",
+          "Legal name change documentation (court order)",
+          "Current or most recent passport or passport card",
+          "Proof of U.S. citizenship (for DS-11)",
+          "Two passport photos (2x2 inches)"
+        ],
+        "modes_available": [
+          "in_person",
+          "mail"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "DS-11 requires in-person submission. DS-82 can be mailed."
+        },
+        "cost": "$65 for the card alone, plus the $35 execution fee for DS-11. If applying alongside a passport book, the card adds only $30 to the total.",
+        "estimated_time_days": "42 to 56 days routine; 14 to 21 days expedited.",
+        "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/passport-card.html",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "danger",
+        "status_note": "Same restrictions apply as for the passport book. As of January 2025, only M and F are available. The X marker was suspended by executive order. Consult an LGBTQ+ legal organization before applying for a gender marker change.",
+        "status_date": "2025-01-20",
+        "markers_historically_available": [
+          "M",
+          "F",
+          "X"
+        ],
+        "markers_currently_available": [
+          "M",
+          "F"
+        ],
+        "advocacy_links": [
+          {
+            "label": "Lambda Legal",
+            "url": "https://www.lambdalegal.org"
+          },
+          {
+            "label": "National Center for Transgender Equality",
+            "url": "https://transequality.org"
+          }
+        ]
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "If you are already applying for a passport book, adding a passport card at the same time costs only $30 extra and saves a second in-person trip. The card is wallet-sized and useful for domestic ID purposes.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://travel.state.gov/content/travel/en/passports/need-passport/passport-card.html",
+          "label": "U.S. Department of State: Passport Card",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "il-voter-reg": {
+      "slug": "il-voter-reg",
+      "label": "Illinois Voter Registration",
+      "category": "state-id",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name and address on your Illinois voter registration. Keeping your registration current ensures your ballot is counted and your registration stays active.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": "US",
+        "region": "IL"
+      },
+      "requires": [
+        "il-dl"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Update your voter registration online at vote.org or through the Illinois State Board of Elections, or visit your county clerk's office in person. You can also register or update at a Driver Services facility when updating your license.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Go to the Illinois online voter registration portal at ova.elections.il.gov. You will need your Illinois driver's license or state ID number (updated with your new name) and the last four digits of your SSN.",
+            "modes": [
+              "online"
+            ],
+            "note": "Online updates require a current Illinois license or state ID. If yours is not yet updated, update that first."
+          },
+          {
+            "step": 2,
+            "description": "Alternatively, complete a paper voter registration application (available at the State Board of Elections website or your county clerk's office) and submit it by mail or in person.",
+            "modes": [
+              "mail",
+              "in_person"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "You will receive a confirmation by mail once your registration is updated. Verify your registration status at ova.elections.il.gov before the next election.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Illinois driver's license or state ID (updated with new name)",
+          "Last four digits of SSN"
+        ],
+        "modes_available": [
+          "online",
+          "mail",
+          "in_person"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "2 to 5 days for online processing; up to 14 days for mail or in-person.",
+        "url_official": "https://ova.elections.il.gov",
+        "url_info": "https://www.elections.il.gov/voter-registration/register-to-vote",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Updating your registration online takes about five minutes once your license is updated. Mismatched names between your ID and voter roll can cause delays at the polls.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.elections.il.gov/voter-registration/register-to-vote",
+          "label": "Illinois State Board of Elections: Register to Vote",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "usps-informed-delivery": {
+      "slug": "usps-informed-delivery",
+      "label": "USPS Informed Delivery",
+      "category": "mail-delivery",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the name on your USPS Informed Delivery account, which provides daily email previews of incoming mail and packages.",
+      "importance": "low",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to your USPS.com account and update your name in account settings. If you do not have an Informed Delivery account, you can skip this step — it is not a required document.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Log in to your account at usps.com. Navigate to Account Settings and update your name fields.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "If your address has also changed, submit a Change of Address form (PS Form 3575) online at usps.com or in person at your local post office.",
+            "modes": [
+              "online",
+              "in_person"
+            ],
+            "note": "Name changes at the same address do not require a Change of Address form."
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://informeddelivery.usps.com",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "This is a quick online update. It does not affect mail delivery or require any documentation.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://informeddelivery.usps.com",
+          "label": "USPS Informed Delivery",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "fsa-id": {
+      "slug": "fsa-id",
+      "label": "Federal Student Aid (FSA ID)",
+      "category": "financial-gov",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Update your name on your FSA ID account, used to sign and submit federal student aid applications (FAFSA) and to access Federal Student Aid accounts. Your FSA ID is linked to your SSA records.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to studentaid.gov and update your name in your profile. Your FSA ID name must match your SSA records exactly. Complete SSA first.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Log in to your account at studentaid.gov. Go to your profile and update your legal name to match your SSA records.",
+            "modes": [
+              "online"
+            ],
+            "note": "Your FSA ID is validated against Social Security Administration records. Allow at least two weeks after your SSA update before updating FSA — the systems sync on a delay."
+          },
+          {
+            "step": 2,
+            "description": "If your email address, username, or other account details have also changed, update those at the same time.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Verify you can still log in and that your name displays correctly. If you have any active loans or aid applications, confirm they reflect the updated name.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate once SSA has processed your name change (allow 10 to 14 business days after SSA).",
+        "url_official": "https://studentaid.gov/fsa-id/sign-in",
+        "url_info": "https://studentaid.gov/help-center/answers/article/how-to-update-my-name",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "If you have active student loans or are planning to submit a FAFSA, keeping your FSA ID name current is important — name mismatches can delay processing.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://studentaid.gov",
+          "label": "Federal Student Aid",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "irs-name": {
+      "slug": "irs-name",
+      "label": "IRS Name Update",
+      "category": "financial-gov",
+      "track": "legal",
+      "subcategory": null,
+      "description": "Your name with the IRS updates automatically after the SSA processes your name change. No separate IRS form is required for the name change itself. This item is here so you know what to expect and can verify it on your next tax return.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "No action is needed beyond completing your SSA name change. The IRS receives name updates directly from the SSA. Allow approximately two weeks after your SSA change is processed before filing taxes.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Complete your SSA name change first. The IRS receives updated name information from the SSA during regular data exchanges, typically within two to four weeks.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "When you file your next tax return, use your new legal name exactly as it appears in your updated SSA records. Your SSN does not change.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "If you file before the SSA-IRS sync has completed, your name may not match IRS records, which can delay processing. Filing electronically reduces this risk — tax software can flag mismatches."
+          },
+          {
+            "step": 3,
+            "description": "If your address has also changed, file Form 8822 (Change of Address) with the IRS. This is separate from the name update and must be done manually.",
+            "modes": [
+              "mail"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "preparation"
+        ],
+        "access_requirements": {
+          "internet": false,
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "2 to 4 weeks after SSA processes your name change.",
+        "url_official": "https://www.irs.gov/individuals/how-do-i-notify-irs-my-address-has-changed",
+        "url_info": "https://www.irs.gov/faqs/irs-procedures/name-changes",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "This one takes care of itself. Once SSA processes your change, the IRS update happens automatically. Mark this complete after your first tax filing with the new name goes through without issues.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.irs.gov/faqs/irs-procedures/name-changes",
+          "label": "IRS: Name Changes",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "bank-boa": {
+      "slug": "bank-boa",
+      "label": "Bank of America",
+      "category": "banking",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name on your Bank of America accounts, cards, and records.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "il-dl"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Visit a Bank of America financial center in person with your updated government-issued ID and your legal name change documentation. Name changes cannot be completed online or by phone.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Gather your updated government-issued photo ID (driver's license or passport with your new name) and your legal name change documentation (court order).",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Visit a Bank of America financial center. Inform the associate that you need to update your legal name on your accounts.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "You can locate the nearest financial center using the branch locator at bankofamerica.com."
+          },
+          {
+            "step": 3,
+            "description": "The associate will update your name across all accounts. New debit and credit cards with your updated name will be ordered and mailed to you.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "Your existing card numbers and account numbers do not change. Your old cards remain functional until the new ones arrive."
+          },
+          {
+            "step": 4,
+            "description": "Review your online banking profile to confirm the name is updated there as well. Update any automatic payments or linked accounts that use your name.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Updated government-issued photo ID (driver's license or passport)",
+          "Legal name change documentation (court order)"
+        ],
+        "modes_available": [
+          "in_person"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person visit to a financial center is required."
+        },
+        "cost": "Free",
+        "estimated_time_days": "Same-day name update in branch; 5 to 7 business days for new cards to arrive.",
+        "url_official": "https://www.bankofamerica.com/customer-service/contact-us/",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "Bank of America has non-discrimination policies that include gender identity and expression. If you experience discriminatory treatment, you can file a complaint with the Consumer Financial Protection Bureau (CFPB).",
+      "presence_level_content": {
+        "some_guidance": "Bank name changes require an in-person visit. Calling ahead to confirm what documents they want can save a second trip.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.bankofamerica.com",
+          "label": "Bank of America",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "bank-chase": {
+      "slug": "bank-chase",
+      "label": "Chase",
+      "category": "banking",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name on your Chase accounts, cards, and records.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "il-dl"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Visit a Chase branch in person with your updated government-issued ID and legal name change documentation. Chase does not process legal name changes online or by phone.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Gather your updated government-issued photo ID (driver's license or passport) and your legal name change documentation (court order).",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Visit any Chase branch. Let the associate know you need to update your legal name on your accounts.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "Branch locations are available at chase.com/branch-atm."
+          },
+          {
+            "step": 3,
+            "description": "The associate updates your name on all accounts. New debit and credit cards will be ordered and mailed. Your account and card numbers remain the same.",
+            "modes": [
+              "in_person"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "Log in to chase.com or the Chase app to confirm the name is updated in your online profile. Update any saved payment methods elsewhere that reference your old name.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Updated government-issued photo ID",
+          "Legal name change documentation (court order)"
+        ],
+        "modes_available": [
+          "in_person"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person branch visit is required."
+        },
+        "cost": "Free",
+        "estimated_time_days": "Same-day update in branch; 5 to 7 business days for new cards.",
+        "url_official": "https://www.chase.com/personal/banking/customer-service",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "Chase's non-discrimination policy covers gender identity and expression. The CFPB accepts complaints about discriminatory treatment by financial institutions.",
+      "presence_level_content": {
+        "some_guidance": "Same process as most major banks — updated ID plus court order, in person.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.chase.com",
+          "label": "Chase",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "bank-wells-fargo": {
+      "slug": "bank-wells-fargo",
+      "label": "Wells Fargo",
+      "category": "banking",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name on your Wells Fargo accounts, cards, and records.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "il-dl"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Visit a Wells Fargo branch in person with your updated government-issued ID and legal name change documentation.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Gather your updated government-issued photo ID and your legal name change documentation (court order).",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Visit any Wells Fargo branch. Request a legal name change on your accounts.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "Branch locations at wellsfargo.com/locator."
+          },
+          {
+            "step": 3,
+            "description": "The associate processes the update and orders new cards with your updated name. Your account and card numbers do not change.",
+            "modes": [
+              "in_person"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "Verify the name is updated in your online banking profile and update any automatic payment methods that reference your old name.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Updated government-issued photo ID",
+          "Legal name change documentation (court order)"
+        ],
+        "modes_available": [
+          "in_person"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person branch visit is required."
+        },
+        "cost": "Free",
+        "estimated_time_days": "Same-day update in branch; 5 to 7 business days for new cards.",
+        "url_official": "https://www.wellsfargo.com/help/",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "The CFPB accepts complaints about discriminatory treatment by financial institutions.",
+      "presence_level_content": {
+        "some_guidance": "Same process as other major banks. Updated ID plus court order, in person.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.wellsfargo.com",
+          "label": "Wells Fargo",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "bank-generic": {
+      "slug": "bank-generic",
+      "label": "Other Bank or Credit Union",
+      "category": "banking",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name at other financial institutions — banks, credit unions, or investment accounts. The general process is similar across most institutions: in-person visit, updated ID, and name change documentation.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "il-dl"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Contact your financial institution to confirm their specific name change process, then visit in person with your updated ID and legal name change documentation. Most institutions follow a similar process.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Call or check your institution's website to confirm what documents they require for a legal name change. Requirements vary slightly by institution.",
+            "modes": [
+              "phone",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Gather your updated government-issued photo ID (driver's license or passport) and your legal name change documentation (court order).",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Visit the institution in person. Request a legal name update on all accounts. Ask about debit and credit card replacements at the same time.",
+            "modes": [
+              "in_person"
+            ],
+            "note": "Some credit unions and smaller banks may also accept mailed documentation — ask when you call ahead."
+          },
+          {
+            "step": 4,
+            "description": "Confirm the update in your online banking profile and review any automatic payments or linked accounts.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [
+          "Updated government-issued photo ID",
+          "Legal name change documentation (court order)"
+        ],
+        "modes_available": [
+          "in_person",
+          "phone"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": true,
+          "copies": false,
+          "notary": false,
+          "travel_required": true,
+          "travel_note": "An in-person visit is typically required. Call ahead to confirm."
+        },
+        "cost": "Free",
+        "estimated_time_days": "Varies by institution. Typically same-day update with new cards in 5 to 10 business days.",
+        "url_official": null,
+        "url_info": null,
+        "notes": "If you have investment accounts (brokerage, IRA, 401k), those may have their own name change process — often handled through the institution's customer service line or a separate form."
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "The Equal Credit Opportunity Act and other federal laws protect against discrimination in financial services. The CFPB (consumerfinance.gov) handles complaints about financial institution discrimination.",
+      "presence_level_content": {
+        "some_guidance": "If you have accounts at multiple smaller institutions, it can help to call each one first — some will accept mailed documents, which saves in-person trips.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": []
+    },
+    "employer-hr": {
+      "slug": "employer-hr",
+      "label": "Employer / HR Records",
+      "category": "employer",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name and, if applicable, other records with your employer's HR or payroll department. Payroll records must match your SSA name for accurate tax reporting.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [
+        "ssa-name"
+      ],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Contact your HR or payroll department to request a legal name update. Most employers require your updated Social Security card (or written SSA confirmation) and a government-issued ID with your new name.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Contact your HR or payroll department — by email, phone, or in person — and ask about their process for a legal name change.",
+            "modes": [
+              "preparation",
+              "phone"
+            ],
+            "note": "Every employer's process is slightly different. Some have a form to complete; others just need your documents."
+          },
+          {
+            "step": 2,
+            "description": "Gather the documents your employer requires. This typically includes your updated Social Security card (or a letter from SSA confirming your new name) and an updated government-issued photo ID.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Some employers only need one of these; ask what they specifically require."
+          },
+          {
+            "step": 3,
+            "description": "Submit the documents as directed — in person, by email, or through your employer's HR portal.",
+            "modes": [
+              "in_person",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "Confirm that payroll, benefits, email address (if applicable), directory listing, and badge or access credentials are all updated. Ask HR to confirm your W-2 will reflect the new name.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Name mismatches on W-2s cause issues at tax time. Verify before the end of the year."
+          }
+        ],
+        "documents_required": [
+          "Updated Social Security card or written SSA confirmation of name change",
+          "Updated government-issued photo ID (driver's license or passport)"
+        ],
+        "modes_available": [
+          "in_person",
+          "online",
+          "phone"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": true,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Varies by employer. Payroll updates are typically processed in the next pay cycle.",
+        "url_official": null,
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "Title VII of the Civil Rights Act, as interpreted by the Supreme Court in Bostock v. Clayton County (2020), prohibits employment discrimination based on gender identity and sexual orientation. Illinois law provides additional protections under the Illinois Human Rights Act. If you experience discrimination in this process, the EEOC and Illinois Department of Human Rights both accept complaints.",
+      "presence_level_content": {
+        "some_guidance": "Updating payroll records is important for accurate W-2s. HR departments handle name changes routinely — you do not need to explain more than you want to.",
+        "walk_with_me": "Navigating this at work involves people who know you, which can feel different from dealing with an anonymous government agency. You get to decide what you share and how. HR is legally required to keep your records confidential."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.eeoc.gov/discrimination-type/sex-discrimination",
+          "label": "EEOC: Sex Discrimination",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "health-insurance-generic": {
+      "slug": "health-insurance-generic",
+      "label": "Health Insurance",
+      "category": "health-insurance",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update your legal name with your health insurance provider. The name on your insurance card should match the name you use at medical appointments to avoid billing and coverage issues.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Contact your health insurance provider's member services line or log in to your member portal to request a legal name change. Most insurers require a copy of your legal name change documentation.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Call the member services number on the back of your insurance card, or log in to your insurer's member portal. Ask about the process for a legal name change.",
+            "modes": [
+              "phone",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Submit your legal name change documentation as directed — by mail, fax, or through the insurer's secure portal. You may also be asked for a copy of your updated ID.",
+            "modes": [
+              "mail",
+              "online"
+            ],
+            "note": "Some insurers accept scanned copies; others require originals. Ask when you call."
+          },
+          {
+            "step": 3,
+            "description": "A new insurance card with your updated name will be mailed to you. Processing typically takes 5 to 15 business days.",
+            "modes": [
+              "preparation"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "Once updated, inform your primary care provider, pharmacy, and any specialists you see regularly, so your records at each location can be updated to match.",
+            "modes": [
+              "preparation"
+            ],
+            "note": "Mismatches between your insurance name and your provider's records can cause claim processing delays."
+          }
+        ],
+        "documents_required": [
+          "Legal name change documentation (court order or updated birth certificate)",
+          "Copy of updated government-issued ID (may be requested)"
+        ],
+        "modes_available": [
+          "phone",
+          "online",
+          "mail"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": "optional",
+          "phone": true,
+          "copies": true,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "5 to 15 business days for updated card.",
+        "url_official": null,
+        "url_info": null,
+        "notes": "If your insurance is through your employer, the update may go through HR rather than directly through the insurer. Check with HR first."
+      },
+      "gender_marker_change": {
+        "applies": true,
+        "status": "varies",
+        "status_note": "Policies on gender marker changes vary significantly by insurer. Some update on request with a physician's letter; others follow the gender marker on your government ID. Coverage for gender-affirming care also varies by plan. Contact your insurer's member services to understand your specific plan's policies.",
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": [
+          {
+            "label": "National Center for Transgender Equality: Insurance",
+            "url": "https://transequality.org/know-your-rights/health-care"
+          },
+          {
+            "label": "Transgender Law Center",
+            "url": "https://transgenderlawcenter.org"
+          }
+        ]
+      },
+      "discrimination_notes": "The Affordable Care Act's Section 1557 prohibits discrimination based on sex (including gender identity) by health insurers receiving federal funding. If you are denied coverage or treated differently because of your gender identity, the Office for Civil Rights at the Department of Health and Human Services accepts complaints.",
+      "presence_level_content": {
+        "some_guidance": "Updating your insurance name does not require an in-person visit. A phone call or online request with documentation is typically sufficient.",
+        "walk_with_me": "If your insurance currently has the wrong name, it is worth updating before any scheduled procedures or appointments — it avoids billing issues that can take months to resolve."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://transequality.org/know-your-rights/health-care",
+          "label": "NCTE: Health Care Rights",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "google-account": {
+      "slug": "google-account",
+      "label": "Google Account",
+      "category": "digital-accounts",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the name on your Google Account. This name appears in Gmail, Google Docs, Google Meet, and other Google services.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": null,
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to your Google Account and update your name in the personal info settings. No documentation is required. Your email address does not change.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Go to myaccount.google.com and sign in. Navigate to Personal Info.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Click on your name and update your first and last name. Click Save.",
+            "modes": [
+              "online"
+            ],
+            "note": "You can change your name up to three times every 90 days. There is no requirement to use a legal name."
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://myaccount.google.com/personal-info",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "This takes about two minutes. Your Gmail address does not change — only the display name that appears in emails you send and in Google products.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://myaccount.google.com/personal-info",
+          "label": "Google Account: Personal Info",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "apple-id": {
+      "slug": "apple-id",
+      "label": "Apple ID",
+      "category": "digital-accounts",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the name on your Apple ID, which appears in iCloud, the App Store, FaceTime, and other Apple services.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": null,
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Sign in to appleid.apple.com and update your name in account settings. Alternatively, update on your iPhone or iPad through Settings > your name > Name, Phone Numbers, Email.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Go to appleid.apple.com and sign in with your Apple ID. Under Personal Information, click on your name and update it. Click Done.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "On iPhone or iPad: go to Settings, tap your name at the top, then tap Name, Phone Numbers, Email. Tap your name to edit it.",
+            "modes": [
+              "online"
+            ],
+            "note": "Your Apple ID email address does not change unless you explicitly update it."
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://appleid.apple.com",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Quick online update, no documentation needed. Your Apple ID email and any purchases remain unchanged.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://appleid.apple.com",
+          "label": "Apple ID Account",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "amazon-account": {
+      "slug": "amazon-account",
+      "label": "Amazon",
+      "category": "digital-accounts",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the name on your Amazon account, which appears on orders, Prime membership, and communications from Amazon.",
+      "importance": "low",
+      "jurisdiction": {
+        "country": null,
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to amazon.com, go to Account and Lists > Account, then select Login and Security to update your name.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Log in to amazon.com. Hover over Account and Lists in the top right, then click Account.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Under Login and Security, click Edit next to your name. Enter your new name and save.",
+            "modes": [
+              "online"
+            ],
+            "note": "You may be asked to re-enter your password to confirm the change."
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://www.amazon.com/gp/css/account/info/view.html",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Quick online update. Your order history, Prime membership, and saved addresses are not affected.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.amazon.com/gp/css/account/info/view.html",
+          "label": "Amazon: Your Account",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "netflix-account": {
+      "slug": "netflix-account",
+      "label": "Netflix",
+      "category": "digital-accounts",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the display name on your Netflix account. Netflix accounts use a display name that you can set to any name you choose — no legal documentation is required.",
+      "importance": "low",
+      "jurisdiction": {
+        "country": null,
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to netflix.com, go to Account settings, and update your account name. This is a display name only.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Log in to netflix.com. Click on your profile icon in the top right, then select Account.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Under Membership and Billing, click Change next to your name (or email). Update the account name and save.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://www.netflix.com/YourAccount",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Netflix uses a display name only — no legal name is required and no documentation is needed.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.netflix.com/YourAccount",
+          "label": "Netflix: Your Account",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "hulu-account": {
+      "slug": "hulu-account",
+      "label": "Hulu",
+      "category": "digital-accounts",
+      "track": "social",
+      "subcategory": null,
+      "description": "Update the display name on your Hulu account. Hulu uses a display name that you can set without legal documentation.",
+      "importance": "low",
+      "jurisdiction": {
+        "country": null,
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Log in to hulu.com, go to Account settings, and update your account name.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Log in to hulu.com. Click on your profile name in the top right and select Account.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Under Your Account, click on your name or profile details to edit. Update your name and save.",
+            "modes": [
+              "online"
+            ],
+            "note": "Individual profiles within a Hulu account can also be renamed independently under the Manage Profiles section."
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "online"
+        ],
+        "access_requirements": {
+          "internet": "required",
+          "printer": false,
+          "phone": false,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": null
+        },
+        "cost": "Free",
+        "estimated_time_days": "Immediate.",
+        "url_official": "https://secure.hulu.com/account",
+        "url_info": null,
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Display name only — no documentation needed.",
+        "walk_with_me": null
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://secure.hulu.com/account",
+          "label": "Hulu: Account Settings",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "us-marriage-cert": {
+      "slug": "us-marriage-cert",
+      "label": "U.S. Marriage Certificate",
+      "category": "vital-records",
+      "track": "legal",
+      "subcategory": null,
+      "description": "A marriage certificate records the names of both parties as they were at the time of the ceremony. In most U.S. states, this record cannot be amended to reflect a later legal name change — it is a historical record of what was true on that date.",
+      "importance": "medium",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": true,
+      "immutable_note": "A marriage certificate is a contemporaneous record of a legal event. In most U.S. states, it cannot be amended to reflect names that were not in effect at the time of the marriage.",
+      "immutable_compassion_note": "This is one of the documents where the law simply has not caught up. Your marriage happened, it was real, and the certificate remains valid — it just reflects your name as it was at that moment. Many agencies have ways to work with this, and you are not without options.",
+      "workarounds": [
+        "Present your marriage certificate alongside your court order for legal name change. Most agencies and institutions accept this combination as proof that both names belong to the same person.",
+        "Some states allow a name amendment to be attached to a marriage certificate as a separate order — this does not alter the original certificate, but creates an official link between the two names. Check your state's vital records office.",
+        "For passport applications and similar documents, a combination of your marriage certificate plus a court order (or updated ID) is the standard approach when the names differ."
+      ],
+      "process": null,
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "Agencies that ask for a marriage certificate alongside a name-changed ID are familiar with this situation. Presenting both documents together is the accepted practice.",
+        "walk_with_me": "It can feel strange that a document about your marriage does not reflect your name. Some people find it helps to think of it as a record of a day — not a definition of who you are now."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": []
+    },
+    "informed-consent": {
+      "slug": "informed-consent",
+      "label": "Informed Consent for HRT",
+      "category": "healthcare-access",
+      "track": "medical",
+      "subcategory": null,
+      "description": "Informed consent is a model of care for hormone replacement therapy (HRT) that does not require a mental health referral or diagnosis before prescribing. Providers who use this model explain the effects, risks, and process of HRT, and then prescribe based on your decision as a capable adult.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Find a provider who practices informed consent, schedule a new patient appointment, review the consent materials together, and begin the prescription process. Many Planned Parenthood locations and LGBTQ+ health centers use this model.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Find an informed consent provider near you. Resources include the FOLX Health directory, Planned Parenthood's gender affirming care locator, GLMA (the LGBTQ+ medical association), and local LGBTQ+ community centers.",
+            "modes": [
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 2,
+            "description": "Schedule a new patient appointment and confirm the provider uses an informed consent model. Some providers have waitlists; telehealth providers can often see you sooner.",
+            "modes": [
+              "phone",
+              "online"
+            ],
+            "note": "Telehealth providers like Plume, Folx, and QueerDoc offer nationwide services and typically have shorter wait times."
+          },
+          {
+            "step": 3,
+            "description": "At your appointment, the provider will review the effects and risks of HRT with you, answer your questions, and have you sign an informed consent form. A prescription is typically issued at this or a follow-up visit.",
+            "modes": [
+              "in_person",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 4,
+            "description": "After starting HRT, follow-up labs and appointments monitor your levels and overall health. Frequency varies by provider and how long you have been on HRT.",
+            "modes": [
+              "in_person"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "in_person",
+          "online",
+          "phone"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": true,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": "Telehealth options are widely available and do not require travel."
+        },
+        "cost": "Varies. Many providers accept insurance. Lab work is typically billed separately. Telehealth services range from $30 to $150 per month depending on whether insurance is used.",
+        "estimated_time_days": "Varies widely by provider availability. Telehealth often within 1 to 2 weeks; in-person providers may have longer waits.",
+        "url_official": null,
+        "url_info": "https://www.folxhealth.com",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": "Section 1557 of the Affordable Care Act prohibits discrimination based on sex (including gender identity) in health care programs receiving federal funds. Some states have additional protections; others have enacted restrictions on gender-affirming care for adults. Illinois has affirmed the right to gender-affirming care.",
+      "presence_level_content": {
+        "some_guidance": "Informed consent providers exist in most metropolitan areas and across telehealth. If a provider tells you they require a mental health referral or a specific diagnosis to prescribe HRT, they are using a gatekeeping model — you can look for a provider who does not.",
+        "walk_with_me": "Starting HRT is a significant step for many people — one that can take time to think through, and also one that people sometimes wait longer than they need to because the process seems harder than it is. If you have questions about what the process looks like, your first appointment with an informed consent provider is the right place to ask them."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://www.glma.org",
+          "label": "GLMA: Health Professionals Advancing LGBTQ Equality",
+          "retrieved": "2025-05-01"
+        },
+        {
+          "url": "https://www.plannedparenthood.org/learn/gender-identity/transgender",
+          "label": "Planned Parenthood: Gender Affirming Care",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    },
+    "lgbtq-health-centers": {
+      "slug": "lgbtq-health-centers",
+      "label": "LGBTQ+ Health Centers",
+      "category": "healthcare-access",
+      "track": "medical",
+      "subcategory": null,
+      "description": "LGBTQ+ health centers are community health organizations that provide affirming primary care, mental health services, and often gender-affirming care on a sliding-scale fee. Many also offer legal clinics and social services.",
+      "importance": "high",
+      "jurisdiction": {
+        "country": "US",
+        "region": null
+      },
+      "requires": [],
+      "required_by": [],
+      "immutable": false,
+      "immutable_note": null,
+      "immutable_compassion_note": null,
+      "workarounds": [],
+      "process": {
+        "summary": "Find an LGBTQ+ health center near you through the national directory at lgbtqiahealthdepartment.org or your local LGBTQ+ community center, then contact them to establish care.",
+        "steps": [
+          {
+            "step": 1,
+            "description": "Search for LGBTQ+ health centers in your area using the GLMA provider directory, the National LGBTQIA+ Health Education Center's resources, or your local LGBTQ+ community center's referral list.",
+            "modes": [
+              "online"
+            ],
+            "note": "In the Chicago area: Howard Brown Health (howardbrown.org) provides comprehensive affirming care at multiple locations."
+          },
+          {
+            "step": 2,
+            "description": "Contact the center to learn about new patient availability, accepted insurance, and sliding-scale options if you are uninsured or underinsured.",
+            "modes": [
+              "phone",
+              "online"
+            ],
+            "note": null
+          },
+          {
+            "step": 3,
+            "description": "Schedule a new patient appointment. Bring any relevant medical records if you are transferring care.",
+            "modes": [
+              "phone",
+              "online"
+            ],
+            "note": null
+          }
+        ],
+        "documents_required": [],
+        "modes_available": [
+          "in_person",
+          "online",
+          "phone"
+        ],
+        "access_requirements": {
+          "internet": "optional",
+          "printer": false,
+          "phone": true,
+          "copies": false,
+          "notary": false,
+          "travel_required": false,
+          "travel_note": "Many LGBTQ+ health centers offer telehealth appointments."
+        },
+        "cost": "Sliding scale based on income at most community health centers. Insurance accepted at most locations.",
+        "estimated_time_days": "Varies by location and availability.",
+        "url_official": "https://howardbrown.org",
+        "url_info": "https://www.glma.org/find-a-provider",
+        "notes": null
+      },
+      "gender_marker_change": {
+        "applies": false,
+        "status": "unknown",
+        "status_note": null,
+        "status_date": null,
+        "markers_historically_available": [],
+        "markers_currently_available": [],
+        "advocacy_links": []
+      },
+      "discrimination_notes": null,
+      "presence_level_content": {
+        "some_guidance": "LGBTQ+ health centers often provide care where you do not have to explain yourself or justify your needs. For many people, having a primary care provider who is already familiar with trans health makes all the difference.",
+        "walk_with_me": "Finding affirming healthcare is not always easy, and the search itself can be discouraging. If you have had bad experiences with providers, it makes sense to take your time. These organizations exist specifically to lower those barriers."
+      },
+      "last_verified": "2025-05-01",
+      "verified_by": "transition-kb-seed",
+      "sources": [
+        {
+          "url": "https://howardbrown.org",
+          "label": "Howard Brown Health",
+          "retrieved": "2025-05-01"
+        },
+        {
+          "url": "https://www.glma.org/find-a-provider",
+          "label": "GLMA Provider Directory",
+          "retrieved": "2025-05-01"
+        }
+      ]
+    }
+  },
+  "categories": {
+    "federal-id": {
+      "slug": "federal-id",
+      "label": "Federal Identity Documents",
+      "description": "Identity documents issued by the federal government, including SSA records and passports.",
+      "track": "legal",
+      "icon_key": "id-card",
+      "sort_order": 1,
+      "tags": [
+        "identity",
+        "federal",
+        "government",
+        "ssa",
+        "passport"
+      ]
+    },
+    "state-id": {
+      "slug": "state-id",
+      "label": "State Identity and Voting",
+      "description": "State-issued identity documents and voter registration.",
+      "track": "legal",
+      "icon_key": "id-card",
+      "sort_order": 2,
+      "tags": [
+        "identity",
+        "state",
+        "driver-license",
+        "voter-registration"
+      ]
+    },
+    "vital-records": {
+      "slug": "vital-records",
+      "label": "Vital Records",
+      "description": "Official records documenting life events, including birth and marriage certificates.",
+      "track": "legal",
+      "icon_key": "document",
+      "sort_order": 3,
+      "tags": [
+        "vital",
+        "birth",
+        "marriage",
+        "certificate",
+        "records"
+      ]
+    },
+    "financial-gov": {
+      "slug": "financial-gov",
+      "label": "Tax and Financial Records",
+      "description": "Government financial records, tax filings, and federal student aid.",
+      "track": "legal",
+      "icon_key": "document",
+      "sort_order": 4,
+      "tags": [
+        "tax",
+        "financial",
+        "government",
+        "irs",
+        "fsa",
+        "student-aid"
+      ]
+    },
+    "banking": {
+      "slug": "banking",
+      "label": "Banking and Finance",
+      "description": "Bank accounts and financial institution records.",
+      "track": "social",
+      "icon_key": "bank",
+      "sort_order": 1,
+      "tags": [
+        "banking",
+        "finance",
+        "accounts",
+        "credit"
+      ]
+    },
+    "employer": {
+      "slug": "employer",
+      "label": "Employer Records",
+      "description": "Payroll, HR, and employment records.",
+      "track": "social",
+      "icon_key": "briefcase",
+      "sort_order": 2,
+      "tags": [
+        "employer",
+        "hr",
+        "payroll",
+        "work",
+        "employment"
+      ]
+    },
+    "health-insurance": {
+      "slug": "health-insurance",
+      "label": "Health Insurance",
+      "description": "Health insurance policy records and coverage documentation.",
+      "track": "social",
+      "icon_key": "shield",
+      "sort_order": 3,
+      "tags": [
+        "insurance",
+        "health",
+        "coverage",
+        "benefits"
+      ]
+    },
+    "mail-delivery": {
+      "slug": "mail-delivery",
+      "label": "Mail and Delivery",
+      "description": "Postal services and mail delivery accounts.",
+      "track": "social",
+      "icon_key": "mail",
+      "sort_order": 4,
+      "tags": [
+        "mail",
+        "usps",
+        "postal",
+        "delivery"
+      ]
+    },
+    "digital-accounts": {
+      "slug": "digital-accounts",
+      "label": "Digital and Online Accounts",
+      "description": "Online accounts, apps, and digital services.",
+      "track": "social",
+      "icon_key": "globe",
+      "sort_order": 5,
+      "tags": [
+        "digital",
+        "online",
+        "accounts",
+        "apps",
+        "streaming"
+      ]
+    },
+    "healthcare-access": {
+      "slug": "healthcare-access",
+      "label": "Healthcare Access",
+      "description": "Resources and pathways for gender-affirming and trans-competent healthcare.",
+      "track": "medical",
+      "icon_key": "heart",
+      "sort_order": 1,
+      "tags": [
+        "healthcare",
+        "medical",
+        "affirming",
+        "resources",
+        "informed-consent"
+      ]
+    }
+  },
+  "tracks": {
+    "legal": {
+      "slug": "legal",
+      "label": "Legal and Government",
+      "description": "Government-issued identity documents, vital records, and official agency records.",
+      "sort_order": 1
+    },
+    "medical": {
+      "slug": "medical",
+      "label": "Medical and Health",
+      "description": "Healthcare access, affirming care pathways, and medical records.",
+      "sort_order": 2
+    },
+    "social": {
+      "slug": "social",
+      "label": "Social and Personal Records",
+      "description": "Financial accounts, employer records, digital accounts, and other personal records.",
+      "sort_order": 3
+    },
+    "personal": {
+      "slug": "personal",
+      "label": "Personal",
+      "description": "Personal relationships, private notes, and individual priorities.",
+      "sort_order": 4
+    },
+    "supporter": {
+      "slug": "supporter",
+      "label": "For Supporters",
+      "description": "Resources and guidance for people supporting someone through transition.",
+      "sort_order": 5
+    }
+  },
+  "sequences": {
+    "il-legal-name": {
+      "slug": "il-legal-name",
+      "label": "Legal Name Change — Illinois",
+      "description": "A recommended order for updating name and gender marker records across government agencies and institutions in Illinois. Each phase builds on the previous one.",
+      "track": "legal",
+      "jurisdiction": "US-IL",
+      "phases": [
+        {
+          "phase": 1,
+          "label": "Foundation",
+          "description": "These two steps unlock most of what comes after. SSA is the anchor for employment and tax records. An updated birth certificate is required for first-time passport applications and is one of the strongest identity documents.",
+          "items": [
+            "ssa-name",
+            "il-birth-cert"
+          ],
+          "note": "SSA and birth certificate can be done in either order or simultaneously. SSA is typically faster."
+        },
+        {
+          "phase": 2,
+          "label": "Identity Documents",
+          "description": "Government-issued photo ID and travel documents. An updated driver's license or state ID is required by banks, employers, and many other institutions.",
+          "items": [
+            "il-dl",
+            "us-passport",
+            "us-passport-card"
+          ],
+          "note": "The driver's license is required before most phase 3 and 4 updates. Passport and passport card can be done simultaneously."
+        },
+        {
+          "phase": 3,
+          "label": "Government Records",
+          "description": "Voter registration, federal student aid, and tax records.",
+          "items": [
+            "il-voter-reg",
+            "fsa-id",
+            "irs-name"
+          ],
+          "note": "The IRS name update happens automatically after SSA — no separate action needed. Verify it on your next tax return."
+        },
+        {
+          "phase": 4,
+          "label": "Financial and Employment",
+          "description": "Banking, payroll, and insurance records.",
+          "items": [
+            "employer-hr",
+            "bank-boa",
+            "bank-chase",
+            "bank-wells-fargo",
+            "bank-generic",
+            "health-insurance-generic"
+          ],
+          "note": null
+        },
+        {
+          "phase": 5,
+          "label": "Digital and Mail",
+          "description": "Online accounts and postal services.",
+          "items": [
+            "usps-informed-delivery",
+            "google-account",
+            "apple-id",
+            "amazon-account",
+            "netflix-account",
+            "hulu-account"
+          ],
+          "note": "These can be done at any point — no dependencies. Many take only a few minutes."
+        }
+      ]
+    }
+  },
+  "jurisdictions": {
+    "US-IL": {
+      "jurisdiction": {
+        "country": "US",
+        "region": "IL"
+      },
+      "label": "Illinois",
+      "item_overrides": {},
+      "region_specific_items": [
+        "il-dl",
+        "il-birth-cert",
+        "il-voter-reg"
+      ]
+    }
+  }
 }

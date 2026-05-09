@@ -40,29 +40,19 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 8 — KB Seed Data**
+**PHASE: 9 — Contribution Flow and Settings**
 **Status: COMPLETE**
-**Last session: Created `transition-kb/` directory with the full KB repo structure (items/, categories/, tracks/, sequences/, jurisdictions/). Wrote 23 items, 10 categories, 5 tracks, 1 sequence (il-legal-name), 1 jurisdiction (US-IL). Aggregated everything into `public/kb-snapshot/index.json` (the bundled offline fallback). Build clean, 52 tests pass.**
-
-**KB structure summary:**
-- Tracks: legal, medical, social, personal, supporter
-- Categories: federal-id, state-id, vital-records, financial-gov, banking, employer, health-insurance, mail-delivery, digital-accounts, healthcare-access
-- Items (23): ssa-name (critical; gender marker → danger), il-birth-cert (IL; gender marker → current, X available), il-dl (IL; gender marker → current, X available), us-passport (gender marker → danger), us-passport-card (gender marker → danger), il-voter-reg, usps-informed-delivery, fsa-id, irs-name (no user action; auto-updates from SSA), bank-boa/chase/wells-fargo/generic, employer-hr, health-insurance-generic, google-account, apple-id, amazon-account, netflix-account, hulu-account, us-marriage-cert (immutable + compassionate copy + workarounds), informed-consent, lgbtq-health-centers
-- Sequence il-legal-name: 5-phase recommended order for Illinois
-- `transition-kb/` is the source for the separate `metaphorever/transition-kb` GitHub repo — push its contents there separately when ready
+**Last session: Built full Settings screen (all onboarding answers editable: profile, location, documents, safety/access, presence, contributor dials, People Map link, KB refresh, export/import/clear data management). Built Contribute screen (pre-filled GitHub issue URL generator + JSON clipboard copy, per-item or standalone). Updated landing copy to distinguish private data from process contributions. Build clean, 52 tests pass.**
 
 **Notes for future phases:**
 
-- **Phase 8 carryover — KB not yet wired into app runtime**: `loadKB()` in `src/utils/kb.ts` is implemented but not called from the store or any component. Phase 9 should wire `initKB`/`refreshKB` into the store init so the KB populates the views that depend on it.
-- **Phase 8 carryover — `transition-kb/` needs its own GitHub repo**: The app fetches from `https://raw.githubusercontent.com/metaphorever/transition-kb/main/`. Until that repo exists the app uses the bundled snapshot — fine for development.
-- **Copy pass (Phase 9 or standalone) — landing screen privacy message**: Current copy ("Nothing leaves your device") will be inaccurate once contribution is live. Needs to distinguish private data (stays on device always) from process knowledge (can be shared, only with explicit permission). Tone: short, clear, accurate — not alarming. Something like: "Your personal information stays on your device. Anything you share to help others is your choice, every time." Exact wording is open; the private/public distinction is the requirement.
-- **Phase 7 carryover — People Map not yet surfaced from Settings**: Settings is a Phase 9 placeholder. When Settings is built, add a link there.
-- **Phase 7 carryover — `items_they_need_to_update` are free-text strings**: Stored as `string[]` on the `Person` record. If Phase 9 wants to link them to actual KB item slugs, that's a data migration + schema change.
+- **Phase 9 carryover — `transition-kb/` needs its own GitHub repo**: The app fetches from `https://raw.githubusercontent.com/metaphorever/transition-kb/main/`. Until that repo exists the app uses the bundled snapshot — fine for development.
+- **Phase 9 carryover — vite.config.ts updated**: Added `server.port` to respect `process.env.PORT` for the Claude preview system. This is a dev-only change; does not affect build.
+- **Phase 7 carryover — `items_they_need_to_update` are free-text strings**: Stored as `string[]` on the `Person` record. If Phase 10 wants to link them to actual KB item slugs, that's a data migration + schema change.
 - **Phase 6 carryover — `document` type not user-addable in UI**: Stored document blockers are ignored by `isActiveStoredBlocker` (graph is source of truth). The UI correctly exposes only the 7 user-defined types. No change needed unless the design evolves.
-- **Phase 5 carryover — custom items have no detail page**: Phase 9 pass should add this.
-- **Phase 5 carryover — legal advice note per-view**: Phase 9 can add session tracking.
+- **Phase 5 carryover — custom items have no detail page**: Phase 10 pass should add this.
+- **Phase 5 carryover — legal advice note per-view**: Phase 10 can add session tracking.
 - **Phase 2 carryover — status semantics**: `complete` and `at_risk` satisfy a document dependency; `revoked` does not. See `SATISFYING_STATUSES` in [src/utils/ordering.ts](src/utils/ordering.ts).
-- **Phase 3 carryover — `documents_response` field**: Phase 9 should expose it for editing alongside `documents_obtained`.
 
 ---
 

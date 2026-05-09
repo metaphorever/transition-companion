@@ -14,7 +14,7 @@
     "continue": "Continue your checklist",
     "import": "I already have a checklist",
     "github": "View on GitHub",
-    "description": "A personal tool for navigating gender transition — legal, medical, social, and personal. Everything stays on your device."
+    "description": "A personal tool for navigating gender transition — legal, medical, social, and personal. Your personal information stays on your device. Anything you share to help others is always your choice."
   },
   "onboarding": {
     "skip": "Skip for now",
@@ -306,14 +306,31 @@
   },
   "settings": {
     "title": "Settings",
+    "back": "Back to dashboard",
+    "section_profile": "Your profile",
+    "section_location": "Location",
+    "section_documents": "Documents you have",
+    "section_safety": "Safety and access",
+    "section_presence": "Presence level",
+    "section_contributor": "Contributing",
+    "section_people": "People",
+    "section_kb": "Knowledge base",
+    "section_data": "Your data",
     "export": "Export your data",
     "import": "Import data",
+    "import_file_label": "Choose a file",
     "import_confirm": "This will replace your current checklist with the imported data. Your existing data will be lost unless you export it first.",
+    "import_success": "Data imported.",
+    "import_cancel": "Cancel",
     "clear": "Clear all data",
     "clear_warning": "This will permanently delete your checklist and all your notes. Export your data first if you want to keep it.",
     "clear_confirm": "Delete everything",
+    "clear_cancel": "Cancel",
     "kb_refresh": "Refresh knowledge base",
-    "kb_last_updated": "Last updated {{date}}"
+    "kb_refreshing": "Refreshing...",
+    "kb_last_updated": "Last updated {{date}}",
+    "kb_never_loaded": "Not yet loaded",
+    "people_map_link": "Manage the people in your life"
   },
   "item_detail": {
     "loading": "Loading...",
@@ -447,10 +464,35 @@
   },
   "contribute": {
     "title": "Contribute",
+    "back": "Back to item",
+    "back_default": "Back to dashboard",
     "intro": "Found something outdated or wrong? You can flag it here. Your personal notes are never included — only the process information.",
-    "issue_label": "Open a GitHub issue (no account required)",
-    "pr_label": "Submit a correction (GitHub account required)",
-    "privacy_note": "Only information about the process is shared, not your personal notes or checklist."
+    "no_item": "Not tied to a specific item",
+    "field_which": "What needs updating?",
+    "which_options": {
+      "process_steps": "Process steps",
+      "cost": "Cost or fees",
+      "links": "Official links",
+      "time": "Time estimate",
+      "gender_marker": "Gender marker information",
+      "access": "Access requirements",
+      "other": "Something else"
+    },
+    "field_wrong": "What is wrong or outdated?",
+    "field_wrong_placeholder": "Describe what needs to change",
+    "field_correct": "What should it say? (optional)",
+    "field_correct_placeholder": "If you know the right answer",
+    "field_source": "Source or link (optional)",
+    "field_source_placeholder": "Where you found this",
+    "field_wrong_required": "Describe what needs to change before submitting.",
+    "privacy_note": "Only information about the process is shared, not your personal notes or checklist.",
+    "issue_label": "Open a GitHub issue",
+    "issue_sublabel": "No GitHub account required",
+    "pr_label": "Copy JSON for a pull request",
+    "pr_sublabel": "GitHub account required",
+    "json_copy": "Copy JSON",
+    "json_copied": "Copied to clipboard",
+    "issue_open": "Open issue"
   },
   "blockers": {
     "heading": "What is in the way",

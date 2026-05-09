@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry } from '../types'
+import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -8,6 +8,8 @@ import {
   clearUserData,
 } from '../utils/storage'
 import { loadKB, refreshKB } from '../utils/kb'
+
+type ProfilePatch = Partial<UserProfile> | ((profile: UserProfile) => Partial<UserProfile>)
 
 interface AppState {
   userData: UserData
@@ -22,10 +24,21 @@ interface AppState {
   importData: (json: string) => { ok: boolean; error?: string }
   clearData: () => void
 
+  // Profile / wizard actions
+  patchProfile: (patch: ProfilePatch) => void
+  setOnboardingStep: (step: number | null) => void
+  completeOnboarding: () => void
+
   // Checklist actions
   setItemStatus: (slug: string, status: ItemStatus) => void
   setItemNotes: (slug: string, notes: string) => void
   getOrCreateEntry: (slug: string) => ChecklistEntry
+  addItemToChecklist: (slug: string) => void
+  removeItemFromChecklist: (slug: string) => void
+
+  // Custom item actions
+  addCustomItem: (item: Omit<CustomItem, 'id' | 'status'>) => void
+  removeCustomItem: (id: string) => void
 
   // KB actions
   initKB: () => Promise<void>
@@ -66,6 +79,29 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ userData: readUserData() })
   },
 
+  patchProfile: (patch) => {
+    get().patchUserData((data) => {
+      const next = typeof patch === 'function' ? patch(data.profile) : patch
+      data.profile = { ...data.profile, ...next }
+    })
+  },
+
+  setOnboardingStep: (step) => {
+    get().patchUserData((data) => {
+      data.profile = { ...data.profile, onboarding_step: step }
+    })
+  },
+
+  completeOnboarding: () => {
+    get().patchUserData((data) => {
+      data.profile = {
+        ...data.profile,
+        onboarding_step: null,
+        started_at: data.profile.started_at ?? new Date().toISOString(),
+      }
+    })
+  },
+
   setItemStatus: (slug, status) => {
     get().patchUserData((data) => {
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
@@ -87,6 +123,35 @@ export const useAppStore = create<AppState>((set, get) => ({
   getOrCreateEntry: (slug) => {
     const { userData } = get()
     return userData.checklist[slug] ?? { ...DEFAULT_ENTRY }
+  },
+
+  addItemToChecklist: (slug) => {
+    get().patchUserData((data) => {
+      if (data.checklist[slug]) return
+      data.checklist[slug] = { ...DEFAULT_ENTRY }
+    })
+  },
+
+  removeItemFromChecklist: (slug) => {
+    get().patchUserData((data) => {
+      delete data.checklist[slug]
+    })
+  },
+
+  addCustomItem: (item) => {
+    get().patchUserData((data) => {
+      const id = `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      data.custom_items = [
+        ...data.custom_items,
+        { id, status: 'not_started', ...item },
+      ]
+    })
+  },
+
+  removeCustomItem: (id) => {
+    get().patchUserData((data) => {
+      data.custom_items = data.custom_items.filter((c) => c.id !== id)
+    })
   },
 
   initKB: async () => {

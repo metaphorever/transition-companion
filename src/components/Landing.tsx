@@ -1,12 +1,28 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { hasUserData } from '../utils/storage'
+import { useAppStore } from '../store'
 
 export default function Landing() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const profile = useAppStore((s) => s.userData.profile)
 
-  const handleStart = () => navigate('/onboarding')
+  const onboardingStep = profile.onboarding_step
+  const startedAt = profile.started_at
+
+  // Three landing states:
+  //   1. Onboarding in progress → "Pick up where you left off" → that step
+  //   2. Onboarding complete (started_at set) → "Continue your checklist" → /dashboard
+  //   3. Fresh user → "Start your checklist" → /onboarding
+  const hasInProgressOnboarding = onboardingStep !== null && onboardingStep > 0
+  const hasCompletedOnboarding = startedAt !== null && !hasInProgressOnboarding
+
+  const primary = hasInProgressOnboarding
+    ? { label: t('landing.resume'), onClick: () => navigate(`/onboarding/${onboardingStep}`) }
+    : hasCompletedOnboarding
+      ? { label: t('landing.continue'), onClick: () => navigate('/dashboard') }
+      : { label: t('landing.start'), onClick: () => navigate('/onboarding') }
+
   const handleImport = () => navigate('/settings?import=1')
 
   return (
@@ -15,23 +31,13 @@ export default function Landing() {
       <p className="text-base text-neutral-600 mb-10 text-center">{t('landing.description')}</p>
 
       <div className="flex flex-col gap-3 w-full max-w-xs">
-        {hasUserData() ? (
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard')}
-            className="w-full py-3 px-6 bg-neutral-900 text-white rounded-lg text-sm font-medium"
-          >
-            Continue your checklist
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={handleStart}
-            className="w-full py-3 px-6 bg-neutral-900 text-white rounded-lg text-sm font-medium"
-          >
-            {t('landing.start')}
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={primary.onClick}
+          className="w-full py-3 px-6 bg-neutral-900 text-white rounded-lg text-sm font-medium"
+        >
+          {primary.label}
+        </button>
 
         <button
           type="button"

@@ -40,15 +40,19 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 2 — Dependency Graph and Ordering Logic**
+**PHASE: 3 — Onboarding Wizard**
 **Status: COMPLETE**
-**Last session: ordering.ts implemented as a pure read-only utility (no store/UI wiring — that's Phase 4). Public API: `buildDependencyGraph`, `detectCycles`, `topologicalSort`, `transitiveDependents`/`transitiveRequirements`, `SATISFYING_STATUSES`/`isSatisfying`, `getSatisfiedSlugs`, `isActiveStoredBlocker`, `computeItemAvailability`/`computeAllAvailability`, `filterAvailableNow`/`filterBlocked`/`filterCompleted`, `recommendStartHere`, `itemsUnlockedBy`. 52-test vitest suite covers DAG construction, cycle detection, topological order, status semantics, availability rules, the no-cascade rule (completing SSA makes the license available, not complete), and "start here" scoring. Vitest installed as devDependency; `npm test` / `npm run test:watch` scripts added. `npm run build` clean.**
+**Last session: Full 9-step onboarding wizard implemented. URL-driven navigation (`/onboarding/:step`), per-step persistence to localStorage via `profile.onboarding_step`, resume-from-where-you-left-off on Landing, completion sets `started_at` and clears `onboarding_step` then routes to /dashboard. New utilities: `src/utils/locations.ts` (full ISO-3166 country list + regions for US/CA/GB/AU), `src/utils/onboarding.ts` (step constants, `groupItemsByTrackAndCategory`, `findDangerFlags`). Store gained `patchProfile`, `setOnboardingStep`, `completeOnboarding`, `addItemToChecklist`, `removeItemFromChecklist`, `addCustomItem`, `removeCustomItem`. Two new `UserProfile` fields: `documents_response` (`'none' | 'not_sure' | null` — distinguishes explicit "I don't have any" from "I skipped Step 4") and `onboarding_step` (`number | null`). Step 4 documents map directly into `documents_obtained` which Phase 2's `getSatisfiedSlugs` already consumes — no glue code needed. Step 9 calls `computeAllAvailability` + `filterAvailableNow` for "Available now" and `findDangerFlags` for the danger-flag list. Build clean, lint clean, all 52 Phase-2 tests still pass, no forbidden phrases (`easy wins`, `unfortunately`, etc.) and no emoji in the generated UI.**
 
 **Notes for future phases:**
 
-- **Status semantics decided** (in code): `complete` and `at_risk` satisfy a document dependency (the user still has the document); `revoked` does not (it was actively reversed); all other statuses do not. Codified as `SATISFYING_STATUSES` in [src/utils/ordering.ts](src/utils/ordering.ts).
-- **Type drift to address before Phase 6 (Blocker UI)**: [src/types/index.ts](src/types/index.ts) `BlockerType` lists `financial` but the design doc lists `legal | access` instead. `Blocker` is also missing the `severity` field (`minor | moderate | significant | absolute`) and uses `BlockerResolvable = boolean | 'maybe'` where the design doc specifies `yes | no | maybe | eventually | unknown`. The dependency-graph logic does not depend on these mismatches (it only branches on `type === 'document'` and `user_defined`), so Phase 2 left the types untouched. Reconcile when the Blocker UI is built.
-- **"Start here" scoring** is `importance_weight + 50 * downstream_count + 200 * first_active_track_match`. Tweak in `recommendStartHere` if Phase 4 testing shows the wrong items getting surfaced for real users.
+- **Phase 2 carryover — status semantics**: `complete` and `at_risk` satisfy a document dependency; `revoked` does not. See `SATISFYING_STATUSES` in [src/utils/ordering.ts](src/utils/ordering.ts).
+- **Phase 2 carryover — type drift to address before Phase 6 (Blocker UI)**: [src/types/index.ts](src/types/index.ts) `BlockerType` lists `financial` but the design doc lists `legal | access` instead. `Blocker` is also missing the `severity` field (`minor | moderate | significant | absolute`) and uses `BlockerResolvable = boolean | 'maybe'` where the design doc specifies `yes | no | maybe | eventually | unknown`. Dependency-graph logic and the wizard don't depend on these mismatches.
+- **Phase 2 carryover — "Start here" scoring** is `importance_weight + 50 * downstream_count + 200 * first_active_track_match`. Tweak in `recommendStartHere` if Phase 4 testing shows the wrong items getting surfaced.
+- **Phase 3 carryover — `documents_response` field added to `UserProfile`**: `'none' | 'not_sure' | null`. Set only by Step 4 of the wizard. Used purely to decide whether to show the "That is completely fine..." reassurance copy. Phase 9 (Settings) should expose it for editing alongside `documents_obtained`.
+- **Phase 3 carryover — `onboarding_step`**: cleared by `completeOnboarding`. Phase 9 should call `setOnboardingStep(2)` (or wherever) when the user re-enters the wizard from Settings, and `completeOnboarding` again on save.
+- **Phase 3 carryover — Step 7 needs KB seed data (Phase 8) to be useful**: the wizard handles an empty KB gracefully (shows "no suggestions loaded" + lets the user add custom items into a generic personal bucket). Once Phase 8 lands, Step 7 will populate automatically.
+- **Phase 3 carryover — Step 5 derives several radio choices from multiple booleans** (privacy → `shared_accounts`+`shared_devices`; printer → `printer_home`+`printer_access`). The reverse-derivation can't always distinguish "never answered" from "explicit prefer-not-to-say"; both render as no selection. If the dashboard later needs that distinction, add a parallel `*_response` field on the same pattern as `documents_response`.
 
 ---
 
@@ -219,3 +223,29 @@ Workflow for Opus phases:
 5. Commit the output before switching back to Sonnet
 
 Sonnet is the correct default. Only switch to Opus for the phases marked above.
+
+---
+
+## Session hygiene (cross-session continuity)
+
+Phases run in separate worktrees. Without discipline, the next worktree starts on stale code and you waste a turn fast-forwarding (or worse, you build on the wrong base and have to merge).
+
+**At the end of every phase session — before saying the session is done:**
+
+1. Commit all phase work, including the CLAUDE.md update that marks the phase complete and records carryover notes. CLAUDE.md updates go in the same commit as the phase work, not a separate one — that way `git log` tells the full story.
+2. Merge (or fast-forward) the worktree branch to `main` and push to `origin/main`. Do not leave phase work sitting only on a feature branch — the next phase will branch from main and miss it.
+3. **Standing permission**: the user has authorized end-of-phase commits and fast-forward pushes to `origin/main` without re-asking each time. Use `git push origin <branch>:main` from the worktree to fast-forward main directly. Still surface the proposed commit message and the push target before running so the user can object — just don't block waiting for an explicit yes. Force-push to main is never permitted; if a fast-forward isn't possible, stop and ask.
+
+**At the start of every phase session — before writing any code:**
+
+1. Confirm model + effort match the current phase (rule #1 above).
+2. `git fetch origin && git status` — if the worktree branch is behind main, run `git merge --ff-only origin/main`. If fast-forward fails, stop and reconcile with the user; do not write code on top of a divergent base.
+3. Read the "Current Phase" block. The "Last session" line and carryover notes are the bridge from the previous session — trust them, but verify any specific file/symbol they reference still exists before relying on it.
+
+**Carryover notes — what belongs in CLAUDE.md vs. in code:**
+
+- In CLAUDE.md: decisions, type drift, deferred refactors, architectural caveats the next phase needs to know but couldn't infer from reading the code.
+- In code comments: the *why* for non-obvious local choices (already a project default).
+- Not in CLAUDE.md: anything `git log` already tells you, or anything the next session can find by reading the file in question.
+
+Keep the carryover list short. If it grows past ~6 bullets per phase, prune the ones that no longer apply.

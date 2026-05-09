@@ -234,7 +234,14 @@ export interface UserProfile {
   }
   jurisdiction: { country: string | null; region: string | null }
   documents_obtained: string[]
+  // Explicit "I don't have any of these" response from Step 4. Distinct from
+  // documents_obtained being empty because the user skipped the step entirely.
+  // Mutually exclusive with documents_obtained being non-empty.
+  documents_response: 'none' | 'not_sure' | null
   started_at: string | null
+  // Wizard position when onboarding is in progress; null when never started
+  // or when onboarding is complete. Used for resume-from-where-you-left-off.
+  onboarding_step: number | null
   access: UserAccess
   presence: UserPresence
   contributor_settings: ContributorSettings

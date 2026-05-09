@@ -35,7 +35,9 @@ const DEFAULT_USER_DATA: UserData = {
     },
     jurisdiction: { country: null, region: null },
     documents_obtained: [],
+    documents_response: null,
     started_at: null,
+    onboarding_step: null,
     access: {
       internet_home: true,
       internet_public_only: false,
@@ -69,9 +71,32 @@ export function readUserData(): UserData {
   try {
     const raw = localStorage.getItem(USER_DATA_KEY)
     if (!raw) return structuredClone(DEFAULT_USER_DATA)
-    return JSON.parse(raw) as UserData
+    const parsed = JSON.parse(raw) as UserData
+    return mergeWithDefaults(parsed)
   } catch {
     return structuredClone(DEFAULT_USER_DATA)
+  }
+}
+
+// Fill in any fields a stored UserData blob is missing — e.g. an export from
+// an older app version. Only top-level profile keys are merged; nested objects
+// (safety, access, etc.) get the stored value or the default wholesale.
+function mergeWithDefaults(stored: UserData): UserData {
+  const defaults = structuredClone(DEFAULT_USER_DATA)
+  const profile = { ...defaults.profile, ...(stored.profile ?? {}) }
+  for (const key of ['safety', 'out_contexts', 'jurisdiction', 'access', 'presence', 'contributor_settings'] as const) {
+    profile[key] = {
+      ...(defaults.profile[key] as object),
+      ...((stored.profile?.[key] as object) ?? {}),
+    } as never
+  }
+  return {
+    ...defaults,
+    ...stored,
+    profile,
+    checklist: stored.checklist ?? {},
+    custom_items: stored.custom_items ?? [],
+    people: stored.people ?? {},
   }
 }
 

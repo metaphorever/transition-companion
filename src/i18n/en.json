@@ -10,6 +10,8 @@
   },
   "landing": {
     "start": "Start your checklist",
+    "resume": "Pick up where you left off",
+    "continue": "Continue your checklist",
     "import": "I already have a checklist",
     "github": "View on GitHub",
     "description": "A personal tool for navigating gender transition — legal, medical, social, and personal. Everything stays on your device."
@@ -20,6 +22,8 @@
     "next": "Next",
     "finish": "Let's go",
     "step_of": "Step {{current}} of {{total}}",
+    "save_and_close": "Save and close",
+    "your_progress_is_saved": "Your progress is saved as you go. You can close this and come back anytime.",
     "steps": {
       "welcome": {
         "title": "This is your tool.",
@@ -155,8 +159,16 @@
         "title": "Build your list",
         "subtitle": "For each section, check what applies to you. No item is pre-selected. There is no pressure to include anything.",
         "skip_category": "Skip this whole section",
-        "add_custom": "Add something else",
-        "relationship_note": "Whether, when, and how to come out to anyone is entirely your choice. Nothing in this section is a suggestion."
+        "add_custom": "Add something else here",
+        "custom_placeholder": "What do you want to call it?",
+        "custom_add_button": "Add",
+        "custom_cancel": "Cancel",
+        "relationship_note": "Whether, when, and how to come out to anyone is entirely your choice. Nothing in this section is a suggestion.",
+        "no_kb_yet": "We do not have suggested items loaded for these tracks yet. You can still add your own here, or add things later from the dashboard.",
+        "track_skipped": "Skipped for now. You can always come back.",
+        "remove_custom": "Remove",
+        "selected_count_one": "1 item on your list",
+        "selected_count_other": "{{count}} items on your list"
       },
       "contributor": {
         "title": "One more thing",
@@ -182,10 +194,19 @@
       },
       "summary": {
         "title": "You are set.",
-        "subtitle": "Here is what you have added so far.",
+        "subtitle": "Here is what you have added so far. You can change anything from the dashboard.",
         "your_list": "Your starting list",
+        "your_list_count_one": "1 item",
+        "your_list_count_other": "{{count}} items",
+        "your_list_empty": "Nothing on your list yet. That is fine — you can add things from the dashboard at any time.",
         "available_now": "Available now",
+        "available_now_subtitle": "Items you can act on right away based on what you have told us.",
+        "available_now_empty": "Nothing is showing as available right away. That does not mean nothing is — it means we do not have enough information yet to be sure. Anything on your list will still be there.",
         "danger_flags": "Things to be aware of",
+        "danger_flags_subtitle": "Based on where you are and what you are working on, these need extra care right now.",
+        "danger_flags_status_danger": "At risk in your area",
+        "danger_flags_status_unavailable": "Currently not available in your area",
+        "see_full_list": "See your full checklist on the dashboard.",
         "start": "Let's go"
       }
     }

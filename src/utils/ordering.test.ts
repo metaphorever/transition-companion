@@ -117,7 +117,9 @@ function mockUserData(overrides?: {
       },
       jurisdiction: { country: null, region: null },
       documents_obtained: overrides?.documents_obtained ?? [],
+      documents_response: null,
       started_at: null,
+      onboarding_step: null,
       access: {
         internet_home: true,
         internet_public_only: false,

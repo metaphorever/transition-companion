@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker } from '../types'
+import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -40,6 +40,11 @@ interface AppState {
   addBlocker: (slug: string, blocker: Omit<Blocker, 'id'>) => void
   updateBlocker: (slug: string, blockerId: string, patch: Partial<Omit<Blocker, 'id'>>) => void
   removeBlocker: (slug: string, blockerId: string) => void
+
+  // People actions
+  addPerson: (person: Omit<Person, 'id'>) => void
+  updatePerson: (id: string, patch: Partial<Omit<Person, 'id'>>) => void
+  removePerson: (id: string) => void
 
   // Custom item actions
   addCustomItem: (item: Omit<CustomItem, 'id' | 'status'>) => void
@@ -180,6 +185,28 @@ export const useAppStore = create<AppState>((set, get) => ({
         ...entry,
         blockers: entry.blockers.filter((b) => b.id !== blockerId),
       }
+    })
+  },
+
+  addPerson: (person) => {
+    get().patchUserData((data) => {
+      const id = `person-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      data.people = { ...data.people, [id]: { id, ...person } }
+    })
+  },
+
+  updatePerson: (id, patch) => {
+    get().patchUserData((data) => {
+      if (!data.people[id]) return
+      data.people = { ...data.people, [id]: { ...data.people[id], ...patch } }
+    })
+  },
+
+  removePerson: (id) => {
+    get().patchUserData((data) => {
+      const next = { ...data.people }
+      delete next[id]
+      data.people = next
     })
   },
 

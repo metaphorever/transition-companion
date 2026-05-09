@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
 import type {
@@ -287,7 +288,12 @@ function BlockerForm({
             {t('blockers.field_person')}
           </label>
           {peopleList.length === 0 ? (
-            <p className="text-xs text-neutral-500">{t('blockers.no_people_yet')}</p>
+            <p className="text-xs text-neutral-500">
+              <Link to="/people" className="underline underline-offset-2 hover:text-neutral-700">
+                {t('blockers.no_people_yet_link')}
+              </Link>
+              {' '}{t('blockers.no_people_yet_suffix')}
+            </p>
           ) : (
             <select
               id="blocker-person"

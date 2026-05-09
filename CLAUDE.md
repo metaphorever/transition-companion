@@ -40,20 +40,20 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 6 — Blocker System UI**
+**PHASE: 7 — People Map**
 **Status: COMPLETE**
-**Last session: `BlockerType` corrected to the 8-type design-doc spec (`document | legal | access | safety | relationship | readiness | waiting | custom`) — `financial` removed. Added `BlockerSeverity` type and `severity`, `resolvable_note` fields to `Blocker`. Changed `BlockerResolvable` from `boolean | 'maybe'` to `'yes' | 'no' | 'maybe' | 'eventually' | 'unknown'`. Added `addBlocker`, `updateBlocker`, `removeBlocker` to the store. Built `src/components/item-detail/BlockersSection.tsx` — list view with type chip, severity, person-ref resolution, resolvable status; add/edit form with per-type conditional fields (relationship type shows people-map dropdown; readiness type suppresses workaround prompt); workaround shown inline at `some_guidance`/`walk_with_me`, behind disclosure at `just_the_path`, suppressed when `suppress_workaround = true`. Wired into `ItemDetail.tsx` between status selector and notes. All i18n in `en.json`. Build clean, 52 tests pass.**
+**Last session: Added `addPerson`, `updatePerson`, `removePerson` to the store. Built `src/components/people/PeopleMap.tsx` — person card list with label, out status badge, safety level, update count; add/edit form with all fields (label, relationship, out_to, out_status, safety_level, safety_note, support_level, support_note, contact_frequency, items_they_need_to_update as a tag-style mini-list, user_notes); "Things Others Need to Update" section at the bottom. Wired `/people` route in `App.tsx`. Added "People" nav link in Dashboard header alongside "Settings". Updated `BlockersSection` no-people note to be a live `<Link>` to `/people`. All i18n under `people_map` key in `en.json`. Build clean, 52 tests pass.**
 
 **Notes for future phases:**
 
+- **Phase 7 carryover — People Map not yet surfaced from Settings**: Settings is a Phase 9 placeholder. When Settings is built, add a link there.
+- **Phase 7 carryover — `items_they_need_to_update` are free-text strings**: Stored as `string[]` on the `Person` record. If Phase 9 wants to link them to actual KB item slugs, that's a data migration + schema change.
 - **Phase 6 carryover — `document` type not user-addable in UI**: Stored document blockers are ignored by `isActiveStoredBlocker` (graph is source of truth). The UI correctly exposes only the 7 user-defined types. No change needed unless the design evolves.
-- **Phase 6 carryover — relationship blocker person dropdown is people-map-aware but people-map UI is Phase 7**: If `userData.people` is empty, form shows a note pointing to the People Map. Works correctly now; Phase 7 adds the UI for managing people.
 - **Phase 5 carryover — KB-triggered at_risk not yet wired**: Wire in `initKB`/`refreshKB` during Phase 8 or 9.
 - **Phase 5 carryover — custom items have no detail page**: Phase 9 pass should add this.
 - **Phase 5 carryover — legal advice note per-view**: Phase 9 can add session tracking.
 - **Phase 2 carryover — status semantics**: `complete` and `at_risk` satisfy a document dependency; `revoked` does not. See `SATISFYING_STATUSES` in [src/utils/ordering.ts](src/utils/ordering.ts).
 - **Phase 3 carryover — `documents_response` field**: Phase 9 should expose it for editing alongside `documents_obtained`.
-- **Phase 4 carryover — access filter is intentionally simple**: only checks `internet`, `printer`, `phone`. Extend in Phase 6 or 9 if needed.
 
 ---
 

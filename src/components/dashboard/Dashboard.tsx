@@ -184,9 +184,14 @@ export default function Dashboard() {
           <Link to="/" className="text-sm font-medium text-neutral-900">
             {t('app.name')}
           </Link>
-          <Link to="/settings" className="text-sm text-neutral-600 hover:text-neutral-900">
-            {t('dashboard.settings')}
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/people" className="text-sm text-neutral-600 hover:text-neutral-900">
+              {t('people_map.dashboard_link')}
+            </Link>
+            <Link to="/settings" className="text-sm text-neutral-600 hover:text-neutral-900">
+              {t('dashboard.settings')}
+            </Link>
+          </div>
         </div>
       </header>
 

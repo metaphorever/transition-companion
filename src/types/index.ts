@@ -149,12 +149,19 @@ export interface Jurisdiction {
 export type ItemStatus =
   | 'not_started'
   | 'in_progress'
+  | 'researching'
   | 'complete'
   | 'at_risk'
   | 'revoked'
+  | 'policy_blocked'
   | 'skipped'
   | 'not_applicable'
   | 'cant_right_now'
+
+// Why the intent holds: was chosen by the user (update vs not_applicable/not_wanted/unknown).
+// Items the user has never interacted with get no ChecklistEntry — silence isn't a choice.
+// Default for existing entries without an intent field is 'update' (see storage migration).
+export type ItemIntent = 'update' | 'not_applicable' | 'not_wanted' | 'unknown'
 
 export type HousingStatus =
   | 'independent'
@@ -311,12 +318,15 @@ export interface SubTask {
 
 export interface ChecklistEntry {
   status: ItemStatus
+  intent?: ItemIntent      // defaults to 'update' when absent (migration path)
   completed_at: string | null
   at_risk_since?: string | null
   at_risk_reason?: string | null
   at_risk_kb_ref?: string | null
   revoked_at?: string | null
   revoked_reason?: string | null
+  due_date?: string | null   // YYYY-MM-DD deadline (user-set)
+  event_date?: string | null // YYYY-MM-DD scheduled appointment
   blockers: Blocker[]
   notes: string
   custom_fields: Record<string, unknown>
@@ -329,10 +339,11 @@ export interface ChecklistEntry {
 export interface CustomItem {
   id: string
   label: string
+  description?: string
   category: string
   track: string
-  status: ItemStatus
-  notes: string
+  status: ItemStatus  // legacy — source of truth is checklist[id].status
+  notes: string       // legacy — source of truth is checklist[id].notes
 }
 
 // ── Person ────────────────────────────────────────────────────────────────────
@@ -392,6 +403,7 @@ export interface RecurringItem {
   interval_days: number | null  // used by fixed; optional nudge for manual
   next_date: string | null      // YYYY-MM-DD; stored for manual mode, null for fixed/open
   last_logged_at: string | null // YYYY-MM-DD; set when user logs completion
+  start_date?: string | null    // YYYY-MM-DD; fixed-mode anchor when never logged (e.g. alternating injection days)
   track: string
   notes: string
 }

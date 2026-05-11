@@ -1,17 +1,30 @@
 import type { RecurringItem } from '../types'
 
+// Returns a local YYYY-MM-DD string for the given Date (or now).
+// Using local date arithmetic throughout (not UTC) avoids the timezone
+// boundary bug where "due tomorrow" appears as "due today" for UTC-offset users.
+export function localDateString(d = new Date()): string {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 // Returns YYYY-MM-DD effective due date, or null when no date applies.
-// fixed: last_logged_at + interval_days (never stored; always derived)
+// fixed: anchor (start_date when never logged, else last_logged_at) + interval_days
 // manual: the stored next_date
 // open: null (standing intention, never overdue)
 export function getEffectiveDueDate(item: RecurringItem): string | null {
   if (item.mode === 'open') return null
   if (item.mode === 'manual') return item.next_date
-  // fixed — use UTC methods to avoid timezone off-by-one
-  if (!item.last_logged_at || !item.interval_days) return null
-  const d = new Date(item.last_logged_at + 'T00:00:00Z')
-  d.setUTCDate(d.getUTCDate() + item.interval_days)
-  return d.toISOString().split('T')[0]
+  // fixed — use start_date as anchor when never logged (enables staggered schedules)
+  if (!item.interval_days) return null
+  const anchor = item.last_logged_at ?? item.start_date ?? null
+  if (!anchor) return null
+  // noon local time avoids DST boundary edge cases in setDate arithmetic
+  const d = new Date(anchor + 'T12:00:00')
+  d.setDate(d.getDate() + item.interval_days)
+  return localDateString(d)
 }
 
 export interface RecurringGroups {
@@ -44,11 +57,12 @@ export function groupRecurringItems(items: RecurringItem[], today: string): Recu
 }
 
 // Returns a human-readable relative label for a due date relative to today.
-// Used on item cards in the dashboard.
+// Both `due` and `today` must be local YYYY-MM-DD strings for correct results.
 export function dueDateLabel(due: string, today: string): string {
   if (due === today) return 'today'
-  const dueMs = new Date(due).getTime()
-  const todayMs = new Date(today).getTime()
+  // noon-based parsing avoids DST edge cases in day-difference arithmetic
+  const dueMs = new Date(due + 'T12:00:00').getTime()
+  const todayMs = new Date(today + 'T12:00:00').getTime()
   const days = Math.round((dueMs - todayMs) / 86_400_000)
   if (days < 0) return `${Math.abs(days)}d overdue`
   if (days === 1) return 'tomorrow'

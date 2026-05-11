@@ -91,12 +91,38 @@ function mergeWithDefaults(stored: UserData): UserData {
       ...((stored.profile?.[key] as object) ?? {}),
     } as never
   }
+
+  // Migrate checklist entries: back-fill intent for entries that predate the field
+  const checklist = { ...(stored.checklist ?? {}) }
+  for (const key of Object.keys(checklist)) {
+    const entry = checklist[key]
+    if (entry && !entry.intent) {
+      checklist[key] = { ...entry, intent: 'update' as const }
+    }
+  }
+
+  // Migrate custom items: ensure every custom item has a ChecklistEntry
+  const custom_items = stored.custom_items ?? []
+  for (const c of custom_items) {
+    if (!checklist[c.id]) {
+      checklist[c.id] = {
+        status: c.status ?? 'not_started',
+        intent: 'update' as const,
+        completed_at: null,
+        blockers: [],
+        notes: c.notes ?? '',
+        custom_fields: {},
+        sub_tasks: [],
+      }
+    }
+  }
+
   return {
     ...defaults,
     ...stored,
     profile,
-    checklist: stored.checklist ?? {},
-    custom_items: stored.custom_items ?? [],
+    checklist,
+    custom_items,
     recurring_items: stored.recurring_items ?? [],
     people: stored.people ?? {},
   }

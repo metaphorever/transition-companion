@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person, RecurringItem, SubTask } from '../types'
+import type { UserData, KBCache, ItemStatus, ItemIntent, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person, RecurringItem, SubTask } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -8,6 +8,7 @@ import {
   clearUserData,
 } from '../utils/storage'
 import { loadKB, refreshKB } from '../utils/kb'
+import { localDateString } from '../utils/recurring'
 
 type ProfilePatch = Partial<UserProfile> | ((profile: UserProfile) => Partial<UserProfile>)
 
@@ -31,7 +32,10 @@ interface AppState {
 
   // Checklist actions
   setItemStatus: (slug: string, status: ItemStatus) => void
+  setItemIntent: (slug: string, intent: ItemIntent) => void
   setItemNotes: (slug: string, notes: string) => void
+  setItemDueDate: (slug: string, due_date: string | null) => void
+  setItemEventDate: (slug: string, event_date: string | null) => void
   getOrCreateEntry: (slug: string) => ChecklistEntry
   addItemToChecklist: (slug: string) => void
   removeItemFromChecklist: (slug: string) => void
@@ -48,6 +52,7 @@ interface AppState {
 
   // Custom item actions
   addCustomItem: (item: Omit<CustomItem, 'id' | 'status'>) => void
+  updateCustomItem: (id: string, patch: Partial<Omit<CustomItem, 'id'>>) => void
   removeCustomItem: (id: string) => void
 
   // Recurring item actions
@@ -70,6 +75,7 @@ interface AppState {
 
 const DEFAULT_ENTRY: ChecklistEntry = {
   status: 'not_started',
+  intent: 'update',
   completed_at: null,
   blockers: [],
   notes: '',
@@ -131,7 +137,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
       const logEntry: StatusLogEntry = {
         status,
-        at: new Date().toISOString().split('T')[0],
+        at: localDateString(),
       }
       data.checklist[slug] = {
         ...entry,
@@ -142,10 +148,31 @@ export const useAppStore = create<AppState>((set, get) => ({
     })
   },
 
+  setItemIntent: (slug, intent) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, intent }
+    })
+  },
+
   setItemNotes: (slug, notes) => {
     get().patchUserData((data) => {
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
       data.checklist[slug] = { ...entry, notes }
+    })
+  },
+
+  setItemDueDate: (slug, due_date) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, due_date }
+    })
+  },
+
+  setItemEventDate: (slug, event_date) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, event_date }
     })
   },
 
@@ -231,12 +258,25 @@ export const useAppStore = create<AppState>((set, get) => ({
         ...data.custom_items,
         { id, status: 'not_started', ...item },
       ]
+      // Create a ChecklistEntry so the custom item gets sub-tasks, blockers, intent, dates
+      if (!data.checklist[id]) {
+        data.checklist[id] = { ...DEFAULT_ENTRY }
+      }
+    })
+  },
+
+  updateCustomItem: (id, patch) => {
+    get().patchUserData((data) => {
+      data.custom_items = data.custom_items.map((c) =>
+        c.id === id ? { ...c, ...patch } : c
+      )
     })
   },
 
   removeCustomItem: (id) => {
     get().patchUserData((data) => {
       data.custom_items = data.custom_items.filter((c) => c.id !== id)
+      delete data.checklist[id]
     })
   },
 
@@ -263,7 +303,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   logRecurringItem: (id) => {
     get().patchUserData((data) => {
-      const today = new Date().toISOString().split('T')[0]
+      const today = localDateString()
       data.recurring_items = (data.recurring_items ?? []).map((r) => {
         if (r.id !== id) return r
         if (r.mode === 'fixed') {

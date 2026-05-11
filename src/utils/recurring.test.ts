@@ -41,6 +41,27 @@ describe('getEffectiveDueDate', () => {
   it('returns null for fixed mode with no interval_days', () => {
     expect(getEffectiveDueDate(makeItem({ mode: 'fixed', interval_days: null, last_logged_at: '2026-01-01' }))).toBeNull()
   })
+
+  // C4: start_date as anchor when never logged
+  it('uses start_date as anchor when last_logged_at is null', () => {
+    const item = makeItem({ mode: 'fixed', last_logged_at: null, start_date: '2026-01-15', interval_days: 14 })
+    expect(getEffectiveDueDate(item)).toBe('2026-01-29')
+  })
+
+  it('prefers last_logged_at over start_date when both present', () => {
+    const item = makeItem({
+      mode: 'fixed',
+      last_logged_at: '2026-02-01',
+      start_date: '2026-01-01',
+      interval_days: 90,
+    })
+    // Should use last_logged_at (2026-02-01 + 90d), not start_date
+    expect(getEffectiveDueDate(item)).toBe('2026-05-02')
+  })
+
+  it('returns null when fixed has no last_logged_at and no start_date', () => {
+    expect(getEffectiveDueDate(makeItem({ mode: 'fixed', interval_days: 30, last_logged_at: null }))).toBeNull()
+  })
 })
 
 describe('groupRecurringItems', () => {
@@ -96,5 +117,13 @@ describe('dueDateLabel', () => {
 
   it('labels upcoming in days', () => {
     expect(dueDateLabel('2026-05-14', today)).toBe('in 5d')
+  })
+
+  it('labels upcoming in weeks', () => {
+    expect(dueDateLabel('2026-05-30', today)).toBe('in 3w')
+  })
+
+  it('labels far future in months', () => {
+    expect(dueDateLabel('2026-08-09', today)).toBe('in 3mo')
   })
 })

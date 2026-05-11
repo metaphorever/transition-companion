@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
-import { getEffectiveDueDate, dueDateLabel } from '../../utils/recurring'
+import { getEffectiveDueDate, dueDateLabel, localDateString } from '../../utils/recurring'
 import type { RecurringItem, RecurringItemMode } from '../../types'
 
 const TRACKS = ['legal', 'medical', 'social', 'personal', 'supporter'] as const
@@ -13,6 +13,7 @@ const EMPTY_FORM = {
   mode: 'fixed' as RecurringItemMode,
   interval_days: '' as string | number,
   next_date: '',
+  start_date: '',
   track: 'personal',
   notes: '',
 }
@@ -143,17 +144,29 @@ function RecurringItemForm({
       </div>
 
       {values.mode === 'fixed' && (
-        <div>
-          <label className="text-xs text-neutral-500 block mb-1">{t('recurring.form_interval')}</label>
-          <input
-            type="number"
-            min={1}
-            value={values.interval_days}
-            onChange={(e) => set('interval_days', e.target.value)}
-            placeholder={t('recurring.form_interval_placeholder')}
-            className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
-          />
-        </div>
+        <>
+          <div>
+            <label className="text-xs text-neutral-500 block mb-1">{t('recurring.form_interval')}</label>
+            <input
+              type="number"
+              min={1}
+              value={values.interval_days}
+              onChange={(e) => set('interval_days', e.target.value)}
+              placeholder={t('recurring.form_interval_placeholder')}
+              className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-neutral-500 block mb-1">{t('recurring.form_start_date')}</label>
+            <input
+              type="date"
+              value={values.start_date}
+              onChange={(e) => set('start_date', e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+            />
+            <p className="text-xs text-neutral-400 mt-1">{t('recurring.form_start_date_hint')}</p>
+          </div>
+        </>
       )}
 
       {values.mode === 'manual' && (
@@ -225,7 +238,7 @@ export default function RecurringItems() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM)
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = localDateString()
 
   const handleAdd = (values: typeof EMPTY_FORM) => {
     if (!values.label.trim()) return
@@ -236,6 +249,7 @@ export default function RecurringItems() {
         ? Number(values.interval_days)
         : null,
       next_date: values.mode === 'manual' && values.next_date ? values.next_date : null,
+      start_date: values.mode === 'fixed' && values.start_date ? values.start_date : null,
       last_logged_at: null,
       track: values.track,
       notes: values.notes.trim(),
@@ -250,6 +264,7 @@ export default function RecurringItems() {
       mode: item.mode,
       interval_days: item.interval_days ?? '',
       next_date: item.next_date ?? '',
+      start_date: item.start_date ?? '',
       track: item.track,
       notes: item.notes,
     })
@@ -264,6 +279,7 @@ export default function RecurringItems() {
         ? Number(values.interval_days)
         : null,
       next_date: values.mode === 'manual' && values.next_date ? values.next_date : null,
+      start_date: values.mode === 'fixed' && values.start_date ? values.start_date : null,
       track: values.track,
       notes: values.notes.trim(),
     })

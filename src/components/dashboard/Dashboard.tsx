@@ -9,8 +9,8 @@ import {
 } from '../../utils/ordering'
 import type { ItemAvailability } from '../../utils/ordering'
 import { findDangerFlags } from '../../utils/onboarding'
-import { groupRecurringItems, getEffectiveDueDate, dueDateLabel } from '../../utils/recurring'
-import type { CustomItem, ItemImportance, KBItem, UserAccess } from '../../types'
+import { groupRecurringItems, getEffectiveDueDate, dueDateLabel, localDateString } from '../../utils/recurring'
+import type { ChecklistEntry, CustomItem, ItemImportance, KBItem, UserAccess } from '../../types'
 
 const IMPORTANCE_ORDER: Record<ItemImportance, number> = {
   critical: 0,
@@ -42,6 +42,11 @@ function getProgressKey(completed: number, total: number): string {
   if (ratio < 0.75) return 'well_along'
   if (ratio < 1) return 'nearly_done'
   return 'all_done'
+}
+
+// Effective intent for a checklist entry — absent field means 'update' (migration default)
+function effectiveIntent(entry: ChecklistEntry | undefined): string {
+  return entry?.intent ?? 'update'
 }
 
 function TrackButton({
@@ -81,6 +86,7 @@ export default function Dashboard() {
   const [quickAddOpen, setQuickAddOpen] = useState(false)
   const [quickAddName, setQuickAddName] = useState('')
   const [showCompleted, setShowCompleted] = useState(false)
+  const [showPolicyBlocked, setShowPolicyBlocked] = useState(false)
 
   const profile = userData.profile
   const access = profile.access
@@ -106,16 +112,17 @@ export default function Dashboard() {
       max: 2,
       tracks: activeTrack ? [activeTrack] : undefined,
     })
-    // When the user has explicit checklist items, only surface those as "start here"
     return checklistSlugs.size > 0
       ? recs.filter((r) => checklistSlugs.has(r.slug))
       : recs
   }, [kb, userData, activeTrack, checklistSlugs])
 
-  // KB items split into available / blocked / completed, filtered by track + access
-  const { availableNow, blockedItems, completedItems } = useMemo(() => {
+  // KB items split into available / blocked / policy_blocked / completed
+  // A4: only items with intent === 'update' (or no intent) appear in the active list
+  const { availableNow, blockedItems, policyBlockedItems, completedItems } = useMemo(() => {
     const avail: ItemAvailability[] = []
     const blocked: ItemAvailability[] = []
+    const policyBlocked: ItemAvailability[] = []
     const done: ItemAvailability[] = []
 
     for (const [slug, a] of availability.entries()) {
@@ -124,15 +131,36 @@ export default function Dashboard() {
       if (activeTrack && kbItem?.track !== activeTrack) continue
       if (accessFilter && kbItem && !canDoWithCurrentAccess(kbItem, access)) continue
 
-      if (a.isSatisfying) done.push(a)
-      else if (a.available) avail.push(a)
-      else blocked.push(a)
+      const entry = userData.checklist[slug]
+      const intent = effectiveIntent(entry)
+
+      // Items with intent !== 'update' are suppressed from the active list entirely
+      if (intent !== 'update') continue
+
+      const status = entry?.status ?? 'not_started'
+
+      // C2: policy_blocked items and immutable items get their own quiet section
+      if (status === 'policy_blocked' || kbItem?.immutable) {
+        policyBlocked.push(a)
+      } else if (a.isSatisfying) {
+        done.push(a)
+      } else if (a.available) {
+        avail.push(a)
+      } else {
+        blocked.push(a)
+      }
     }
 
-    return { availableNow: avail, blockedItems: blocked, completedItems: done }
-  }, [availability, checklistSlugs, kb, activeTrack, accessFilter, access])
+    return {
+      availableNow: avail,
+      blockedItems: blocked,
+      policyBlockedItems: policyBlocked,
+      completedItems: done,
+    }
+  }, [availability, checklistSlugs, kb, activeTrack, accessFilter, access, userData.checklist])
 
   // Custom items split by effective status, filtered by track
+  // Source of truth is checklist[c.id]; fall back to c.status for un-migrated data
   const { customAvailable, customBlocked, customCompleted } = useMemo(() => {
     const avail: CustomItem[] = []
     const blocked: CustomItem[] = []
@@ -140,18 +168,24 @@ export default function Dashboard() {
 
     for (const c of userData.custom_items) {
       if (activeTrack && c.track !== activeTrack) continue
-      if (c.status === 'complete' || c.status === 'at_risk') done.push(c)
+      const entry = userData.checklist[c.id]
+      const intent = effectiveIntent(entry)
+      if (intent !== 'update') continue
+
+      const status = entry?.status ?? c.status
+      if (status === 'complete' || status === 'at_risk') done.push(c)
       else if (
-        c.status === 'cant_right_now' ||
-        c.status === 'skipped' ||
-        c.status === 'not_applicable'
+        status === 'cant_right_now' ||
+        status === 'policy_blocked' ||
+        status === 'skipped' ||
+        status === 'not_applicable'
       )
         blocked.push(c)
       else avail.push(c)
     }
 
     return { customAvailable: avail, customBlocked: blocked, customCompleted: done }
-  }, [userData.custom_items, activeTrack])
+  }, [userData.custom_items, userData.checklist, activeTrack])
 
   // KB items not on the user's checklist — surfaced when open_doors is on or walk_with_me is active
   const openDoorsItems = useMemo(() => {
@@ -167,20 +201,62 @@ export default function Dashboard() {
       .slice(0, 5)
   }, [kb, profile.presence, checklistSlugs, activeTrack])
 
-  // Unfiltered progress counts for the warm label (all tracks)
+  // Unfiltered progress counts for the warm label (all tracks, intent='update' only)
   const { totalOnList, totalCompleted } = useMemo(() => {
-    const total = checklistSlugs.size + userData.custom_items.length
+    let total = 0
     let done = 0
-    for (const a of availability.values()) {
-      if (checklistSlugs.has(a.slug) && a.isSatisfying) done++
+    for (const slug of checklistSlugs) {
+      const entry = userData.checklist[slug]
+      if (effectiveIntent(entry) !== 'update') continue
+      // Skip custom items here (counted separately below)
+      if (slug.startsWith('custom-')) continue
+      total++
+      const a = availability.get(slug)
+      if (a?.isSatisfying) done++
     }
-    done += userData.custom_items.filter(
-      (c) => c.status === 'complete' || c.status === 'at_risk'
-    ).length
+    for (const c of userData.custom_items) {
+      const entry = userData.checklist[c.id]
+      if (effectiveIntent(entry) !== 'update') continue
+      total++
+      const status = entry?.status ?? c.status
+      if (status === 'complete' || status === 'at_risk') done++
+    }
     return { totalOnList: total, totalCompleted: done }
-  }, [availability, checklistSlugs, userData.custom_items])
+  }, [availability, checklistSlugs, userData.checklist, userData.custom_items])
 
-  const today = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const today = useMemo(() => localDateString(), [])
+
+  // C5: Checklist items with upcoming/overdue due_date or event_date, sorted by proximity
+  const datedItems = useMemo(() => {
+    const items: { slug: string; label: string; date: string; kind: 'due' | 'event' }[] = []
+
+    for (const [slug, entry] of Object.entries(userData.checklist)) {
+      if (effectiveIntent(entry) !== 'update') continue
+      if (entry.status === 'complete' || entry.status === 'policy_blocked') continue
+
+      const kbItem = kb?.items[slug]
+      const customItem = userData.custom_items.find((c) => c.id === slug)
+      const label = kbItem?.label ?? customItem?.label ?? slug
+
+      if (entry.due_date) {
+        items.push({ slug, label, date: entry.due_date, kind: 'due' })
+      }
+      if (entry.event_date) {
+        items.push({ slug, label, date: entry.event_date, kind: 'event' })
+      }
+    }
+
+    // Filter to overdue + next 30 days, sorted by date
+    return items
+      .filter(({ date }) => {
+        const days = Math.round(
+          (new Date(date + 'T12:00:00').getTime() - new Date(today + 'T12:00:00').getTime()) /
+            86_400_000
+        )
+        return days <= 30
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))
+  }, [userData.checklist, userData.custom_items, kb, today])
 
   // Recurring items grouped by urgency, filtered by active track
   const recurringGroups = useMemo(() => {
@@ -211,6 +287,7 @@ export default function Dashboard() {
     if (!name) return
     addCustomItem({
       label: name,
+      description: '',
       category: activeTrack ?? 'personal',
       track: activeTrack ?? 'personal',
       notes: '',
@@ -268,7 +345,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Danger flags banner — links to item detail, copy is not inline */}
+        {/* Danger flags banner */}
         {dangerFlags.length > 0 && (
           <div className="mb-6 px-4 py-3 border border-neutral-400 rounded-lg">
             <p className="text-sm font-medium text-neutral-900 mb-2">
@@ -351,6 +428,35 @@ export default function Dashboard() {
           </section>
         )}
 
+        {/* C5: Dated checklist items (deadline/event within 30 days or overdue) */}
+        {datedItems.length > 0 && (
+          <section className="mb-8" aria-labelledby="dated-heading">
+            <h2
+              id="dated-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.dated_heading')}
+            </h2>
+            <div className="space-y-2">
+              {datedItems.map(({ slug, label, date, kind }) => (
+                <Link
+                  key={`${slug}-${kind}`}
+                  to={`/item/${slug}`}
+                  className="flex items-center justify-between px-4 py-3 border border-neutral-300 rounded-lg hover:border-neutral-500 transition-colors"
+                >
+                  <span className="text-sm text-neutral-900">{label}</span>
+                  <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                    <span className="text-xs text-neutral-400">
+                      {kind === 'event' ? t('item_detail.event_date_label') : t('item_detail.due_date_label')}
+                    </span>
+                    <span className="text-xs text-neutral-500">{dueDateLabel(date, today)}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Start here */}
         {startHere.length > 0 && (
           <section className="mb-8" aria-labelledby="start-here-heading">
@@ -425,9 +531,10 @@ export default function Dashboard() {
                 )
               })}
               {customAvailable.map((c) => (
-                <div
+                <Link
                   key={c.id}
-                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg"
+                  to={`/item/${c.id}`}
+                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
                 >
                   <span className="text-sm text-neutral-900">{c.label}</span>
                   {activeTrack === null && (
@@ -435,7 +542,7 @@ export default function Dashboard() {
                       {t(`dashboard.tracks.${c.track}`, { defaultValue: c.track })}
                     </span>
                   )}
-                </div>
+                </Link>
               ))}
             </div>
           )}
@@ -468,18 +575,65 @@ export default function Dashboard() {
                   </Link>
                 )
               })}
-              {customBlocked.map((c) => (
-                <div
-                  key={c.id}
-                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg"
-                >
-                  <span className="text-sm text-neutral-700">{c.label}</span>
-                  <span className="text-xs text-neutral-500 ml-3 flex-shrink-0">
-                    {t(`item.status.${c.status}`)}
-                  </span>
-                </div>
-              ))}
+              {customBlocked.map((c) => {
+                const entry = userData.checklist[c.id]
+                const status = entry?.status ?? c.status
+                return (
+                  <Link
+                    key={c.id}
+                    to={`/item/${c.id}`}
+                    className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
+                  >
+                    <span className="text-sm text-neutral-700">{c.label}</span>
+                    <span className="text-xs text-neutral-500 ml-3 flex-shrink-0">
+                      {t(`item.status.${status}`)}
+                    </span>
+                  </Link>
+                )
+              })}
             </div>
+          </section>
+        )}
+
+        {/* C2: Policy blocked / currently not possible (collapsible, quiet) */}
+        {policyBlockedItems.length > 0 && (
+          <section className="mb-8">
+            <button
+              type="button"
+              onClick={() => setShowPolicyBlocked((v) => !v)}
+              className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-neutral-400 hover:text-neutral-600 mb-3"
+            >
+              <span>{t('dashboard.policy_blocked_heading')}</span>
+              <span className="font-normal text-neutral-300">({policyBlockedItems.length})</span>
+              <span aria-hidden>{showPolicyBlocked ? '▲' : '▼'}</span>
+            </button>
+
+            {showPolicyBlocked && (
+              <>
+                <p className="text-xs text-neutral-400 mb-3">
+                  {t('dashboard.policy_blocked_intro')}
+                </p>
+                <div className="space-y-2">
+                  {policyBlockedItems.map((a) => {
+                    const item = kb!.items[a.slug]
+                    return (
+                      <Link
+                        key={a.slug}
+                        to={`/item/${a.slug}`}
+                        className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-60 hover:opacity-100 transition-opacity"
+                      >
+                        <span className="text-sm text-neutral-700">{item?.label ?? a.slug}</span>
+                        <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                          {item?.immutable
+                            ? t('item_detail.immutable_heading')
+                            : t('item.status.policy_blocked')}
+                        </span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </>
+            )}
           </section>
         )}
 
@@ -574,17 +728,22 @@ export default function Dashboard() {
                     </Link>
                   )
                 })}
-                {customCompleted.map((c) => (
-                  <div
-                    key={c.id}
-                    className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-50"
-                  >
-                    <span className="text-sm text-neutral-700">{c.label}</span>
-                    <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
-                      {t(`item.status.${c.status}`)}
-                    </span>
-                  </div>
-                ))}
+                {customCompleted.map((c) => {
+                  const entry = userData.checklist[c.id]
+                  const status = entry?.status ?? c.status
+                  return (
+                    <Link
+                      key={c.id}
+                      to={`/item/${c.id}`}
+                      className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-50 hover:opacity-100 transition-opacity"
+                    >
+                      <span className="text-sm text-neutral-700">{c.label}</span>
+                      <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                        {t(`item.status.${status}`)}
+                      </span>
+                    </Link>
+                  )
+                })}
               </div>
             )}
           </section>

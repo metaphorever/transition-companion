@@ -1,11 +1,13 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
 import BlockersSection from './BlockersSection'
 import type {
   ChecklistEntry,
+  CustomItem,
   GenderMarkerChange,
+  ItemIntent,
   ItemStatus,
   KBItem,
   PresenceLevel,
@@ -16,10 +18,12 @@ import type {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const ALL_STATUSES: ItemStatus[] = [
+const KB_STATUSES: ItemStatus[] = [
   'not_started',
+  'researching',
   'in_progress',
   'complete',
+  'policy_blocked',
   'cant_right_now',
   'at_risk',
   'revoked',
@@ -27,14 +31,19 @@ const ALL_STATUSES: ItemStatus[] = [
   'not_applicable',
 ]
 
+const INTENT_OPTIONS: ItemIntent[] = ['update', 'not_applicable', 'not_wanted', 'unknown']
+
 const DEFAULT_ENTRY: ChecklistEntry = {
   status: 'not_started',
+  intent: 'update',
   completed_at: null,
   blockers: [],
   notes: '',
   custom_fields: {},
   sub_tasks: [],
 }
+
+const TRACKS = ['legal', 'medical', 'social', 'personal', 'supporter'] as const
 
 function getEffectiveLevel(profile: UserProfile, track: string): PresenceLevel {
   return (profile.presence.per_track[track] as PresenceLevel | undefined) ?? profile.presence.overall_level
@@ -140,9 +149,6 @@ function AtRiskAlert({ entry, item }: { entry: ChecklistEntry; item: KBItem }) {
   )
 }
 
-// Alert for user's item status = revoked
-// Copy follows design doc Alert Messaging Guidelines.
-// CARRYOVER NOTE: copy in this block needs Opus review (see CLAUDE.md Phase 5 notes).
 function RevokedAlert({ entry }: { entry: ChecklistEntry }) {
   const { t } = useTranslation()
   const revokedDate = entry.revoked_at ? fmtDate(entry.revoked_at) : null
@@ -175,7 +181,6 @@ function RevokedAlert({ entry }: { entry: ChecklistEntry }) {
   )
 }
 
-// KB-level danger / caution / unknown / varies / unavailable banner
 function GmcBanner({ gmc }: { gmc: GenderMarkerChange }) {
   const { t } = useTranslation()
 
@@ -234,7 +239,6 @@ function GmcBanner({ gmc }: { gmc: GenderMarkerChange }) {
   )
 }
 
-// Shown at some_guidance and walk_with_me when this item unlocks others on completion
 function UnlocksHint({
   item,
   kb,
@@ -271,7 +275,6 @@ function UnlocksHint({
   )
 }
 
-// Immutable item notice
 function ImmutableNotice({ item }: { item: KBItem }) {
   const { t } = useTranslation()
   return (
@@ -303,7 +306,6 @@ function ImmutableNotice({ item }: { item: KBItem }) {
   )
 }
 
-// Process steps and access requirements
 function ProcessSection({ item }: { item: KBItem }) {
   const { t } = useTranslation()
   const p = item.process!
@@ -319,7 +321,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         <p className="text-sm text-neutral-700 mb-4 leading-relaxed">{p.summary}</p>
       )}
 
-      {/* Documents required */}
       {p.documents_required.length > 0 && (
         <div className="mb-4">
           <p className="text-xs font-medium text-neutral-500 mb-1">
@@ -335,7 +336,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         </div>
       )}
 
-      {/* Steps */}
       {p.steps.length > 0 && (
         <ol className="space-y-4 mb-4">
           {p.steps.map((step) => (
@@ -360,7 +360,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         </ol>
       )}
 
-      {/* Access requirements */}
       <div className="mb-4 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
         <p className="text-xs font-medium text-neutral-500 mb-2">
           {t('item_detail.access_heading')}
@@ -398,7 +397,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         </ul>
       </div>
 
-      {/* Time and cost */}
       {(p.estimated_time_days || p.cost) && (
         <div className="mb-4">
           <p className="text-xs font-medium text-neutral-500 mb-1">
@@ -415,7 +413,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         </div>
       )}
 
-      {/* Official links */}
       {(p.url_official || p.url_info) && (
         <div className="mb-4">
           <p className="text-xs font-medium text-neutral-500 mb-1">
@@ -450,7 +447,6 @@ function ProcessSection({ item }: { item: KBItem }) {
         </div>
       )}
 
-      {/* KB process notes */}
       {p.notes && (
         <div className="mb-4 px-4 py-3 border-l-2 border-neutral-300">
           <p className="text-xs font-medium text-neutral-500 mb-1">{t('item_detail.kb_notes')}</p>
@@ -461,7 +457,6 @@ function ProcessSection({ item }: { item: KBItem }) {
   )
 }
 
-// Sub-tasks for a checklist entry — user-created steps, not KB process steps
 function SubTasksSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) {
   const { t } = useTranslation()
   const addSubTask = useAppStore((s) => s.addSubTask)
@@ -674,8 +669,6 @@ function SubTasksSection({ slug, entry }: { slug: string; entry: ChecklistEntry 
   )
 }
 
-// Surface recovery-path KB items when item is at_risk or revoked.
-// User decides whether to add any of them to their checklist.
 function RecoveryItemsSection({
   item,
   kb,
@@ -733,6 +726,333 @@ function RecoveryItemsSection({
   )
 }
 
+// C5: Dates section — deadline and/or event date on a checklist entry
+function DatesSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) {
+  const { t } = useTranslation()
+  const setItemDueDate = useAppStore((s) => s.setItemDueDate)
+  const setItemEventDate = useAppStore((s) => s.setItemEventDate)
+
+  return (
+    <section className="mb-8" aria-labelledby="dates-heading">
+      <h2
+        id="dates-heading"
+        className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+      >
+        {t('item_detail.dates_heading')}
+      </h2>
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs text-neutral-500 block mb-1">{t('item_detail.due_date_label')}</label>
+          <input
+            type="date"
+            value={entry.due_date ?? ''}
+            onChange={(e) => setItemDueDate(slug, e.target.value || null)}
+            className="px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-neutral-500 block mb-1">{t('item_detail.event_date_label')}</label>
+          <input
+            type="date"
+            value={entry.event_date ?? ''}
+            onChange={(e) => setItemEventDate(slug, e.target.value || null)}
+            className="px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Custom Item Detail ────────────────────────────────────────────────────────
+
+function CustomItemDetail({ item }: { item: CustomItem }) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const updateCustomItem = useAppStore((s) => s.updateCustomItem)
+  const removeCustomItem = useAppStore((s) => s.removeCustomItem)
+  const setItemStatus = useAppStore((s) => s.setItemStatus)
+  const setItemIntent = useAppStore((s) => s.setItemIntent)
+  const userData = useAppStore((s) => s.userData)
+
+  const entry = userData.checklist[item.id] ?? { ...DEFAULT_ENTRY }
+  const currentStatus = entry.status
+  const currentIntent = entry.intent ?? 'update'
+
+  const [editing, setEditing] = useState(false)
+  const [editLabel, setEditLabel] = useState(item.label)
+  const [editDescription, setEditDescription] = useState(item.description ?? '')
+  const [editTrack, setEditTrack] = useState(item.track)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
+  const [localNotes, setLocalNotes] = useState(entry.notes)
+  const lastSaved = useRef(entry.notes)
+  const setItemNotes = useAppStore((s) => s.setItemNotes)
+
+  useEffect(() => {
+    if (entry.notes !== lastSaved.current) {
+      setLocalNotes(entry.notes)
+      lastSaved.current = entry.notes
+    }
+  }, [entry.notes])
+
+  const handleNotesBlur = useCallback(() => {
+    if (localNotes !== lastSaved.current) {
+      setItemNotes(item.id, localNotes)
+      lastSaved.current = localNotes
+    }
+  }, [item.id, localNotes, setItemNotes])
+
+  const handleSaveEdit = () => {
+    if (!editLabel.trim()) return
+    updateCustomItem(item.id, {
+      label: editLabel.trim(),
+      description: editDescription.trim(),
+      track: editTrack,
+    })
+    setEditing(false)
+  }
+
+  const handleDelete = () => {
+    removeCustomItem(item.id)
+    navigate('/dashboard')
+  }
+
+  const statusLog = entry.status_log ?? []
+
+  return (
+    <PageShell>
+      {/* Header */}
+      <div className="mb-6">
+        <p className="text-xs text-neutral-400 mb-1 capitalize">
+          {t(`dashboard.tracks.${item.track}`, { defaultValue: item.track })}
+        </p>
+
+        {editing ? (
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs text-neutral-500 block mb-1">
+                {t('item_detail.custom_item_label')}
+              </label>
+              <input
+                type="text"
+                value={editLabel}
+                onChange={(e) => setEditLabel(e.target.value)}
+                placeholder={t('item_detail.custom_item_label_placeholder')}
+                className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="text-xs text-neutral-500 block mb-1">
+                {t('item_detail.custom_item_description')}
+              </label>
+              <textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder={t('item_detail.custom_item_description_placeholder')}
+                rows={3}
+                className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600 resize-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-neutral-500 block mb-1">
+                {t('item_detail.custom_item_track')}
+              </label>
+              <select
+                value={editTrack}
+                onChange={(e) => setEditTrack(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600 bg-white"
+              >
+                {TRACKS.map((tr) => (
+                  <option key={tr} value={tr}>{t(`dashboard.tracks.${tr}`)}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                disabled={!editLabel.trim()}
+                className="px-4 py-2 bg-neutral-900 text-white text-sm rounded-lg disabled:opacity-40"
+              >
+                {t('item_detail.custom_item_save')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(false)
+                  setEditLabel(item.label)
+                  setEditDescription(item.description ?? '')
+                  setEditTrack(item.track)
+                }}
+                className="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900"
+              >
+                {t('item_detail.custom_item_cancel')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-xl font-semibold text-neutral-900">{item.label}</h1>
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="text-sm text-neutral-400 hover:text-neutral-700 flex-shrink-0 mt-1"
+              >
+                {t('item_detail.custom_item_edit')}
+              </button>
+            </div>
+            {item.description && (
+              <p className="mt-2 text-sm text-neutral-700 leading-relaxed">{item.description}</p>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Status selector */}
+      <section className="mb-8" aria-labelledby="status-heading">
+        <h2
+          id="status-heading"
+          className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+        >
+          {t('item_detail.status_heading')}
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {KB_STATUSES.map((status) => (
+            <button
+              key={status}
+              type="button"
+              onClick={() => setItemStatus(item.id, status)}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                status === currentStatus
+                  ? 'bg-neutral-900 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+              aria-pressed={status === currentStatus}
+            >
+              {t(`item.status.${status}`)}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Intent selector */}
+      <section className="mb-8" aria-labelledby="intent-heading">
+        <h2
+          id="intent-heading"
+          className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-1"
+        >
+          {t('item_detail.intent_heading')}
+        </h2>
+        <p className="text-xs text-neutral-400 mb-3">{t('item_detail.intent_hint')}</p>
+        <div className="flex flex-wrap gap-2">
+          {INTENT_OPTIONS.map((intent) => (
+            <button
+              key={intent}
+              type="button"
+              onClick={() => setItemIntent(item.id, intent)}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                intent === currentIntent
+                  ? 'bg-neutral-900 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+              aria-pressed={intent === currentIntent}
+            >
+              {t(`item.intent.${intent}`)}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Sub-tasks */}
+      <SubTasksSection slug={item.id} entry={entry} />
+
+      {/* Blockers */}
+      <BlockersSection slug={item.id} entry={entry} presenceLevel="some_guidance" />
+
+      {/* Dates */}
+      <DatesSection slug={item.id} entry={entry} />
+
+      {/* Notes */}
+      <section className="mb-8" aria-labelledby="notes-heading">
+        <h2
+          id="notes-heading"
+          className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+        >
+          {t('item_detail.notes_heading')}
+        </h2>
+        <textarea
+          value={localNotes}
+          onChange={(e) => setLocalNotes(e.target.value)}
+          onBlur={handleNotesBlur}
+          placeholder={t('item.notes_placeholder')}
+          rows={4}
+          className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600 resize-none"
+          aria-label={t('item_detail.notes_heading')}
+        />
+        <p className="text-xs text-neutral-400 mt-1">{t('item_detail.notes_private_note')}</p>
+      </section>
+
+      {/* Status history */}
+      {statusLog.length > 1 && (
+        <section className="mb-8" aria-labelledby="history-heading">
+          <h2
+            id="history-heading"
+            className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+          >
+            {t('item_detail.history_heading')}
+          </h2>
+          <ol className="space-y-1">
+            {statusLog.map((log, i) => (
+              <li key={i} className="text-sm text-neutral-600">
+                <span className="text-neutral-900">{t(`item.status.${log.status}`)}</span>
+                {' '}
+                {t('item_detail.history_on', { date: fmtDate(log.at) })}
+                {log.note && <span className="text-neutral-500"> — {log.note}</span>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* Delete */}
+      <div className="pt-4 border-t border-neutral-200">
+        {confirmDelete ? (
+          <div className="space-y-2">
+            <p className="text-sm text-neutral-700">{t('item_detail.custom_item_delete_warning')}</p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 bg-neutral-900 text-white text-sm rounded-lg"
+              >
+                {t('item_detail.custom_item_delete_confirm')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                className="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900"
+              >
+                {t('item_detail.custom_item_delete_cancel')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirmDelete(true)}
+            className="text-sm text-neutral-400 hover:text-neutral-700 underline-offset-2 hover:underline"
+          >
+            {t('item_detail.custom_item_delete')}
+          </button>
+        )}
+      </div>
+    </PageShell>
+  )
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ItemDetail() {
@@ -743,19 +1063,37 @@ export default function ItemDetail() {
   const kbError = useAppStore((s) => s.kbError)
   const userData = useAppStore((s) => s.userData)
   const setItemStatus = useAppStore((s) => s.setItemStatus)
+  const setItemIntent = useAppStore((s) => s.setItemIntent)
   const setItemNotes = useAppStore((s) => s.setItemNotes)
   const addItemToChecklist = useAppStore((s) => s.addItemToChecklist)
+
+  // C1: Check if slug matches a custom item
+  const customItem = slug
+    ? userData.custom_items.find((c) => c.id === slug) ?? null
+    : null
+
+  if (customItem) {
+    return <CustomItemDetail item={customItem} />
+  }
 
   const item = slug && kb ? (kb.items[slug] ?? null) : null
   const entry = (slug ? userData.checklist[slug] : null) ?? DEFAULT_ENTRY
   const currentStatus = entry.status
+  const currentIntent = entry.intent ?? 'update'
+
+  // C2: Auto-set policy_blocked for immutable items when first opened
+  useEffect(() => {
+    if (slug && item?.immutable && !userData.checklist[slug]) {
+      addItemToChecklist(slug)
+      setItemStatus(slug, 'policy_blocked')
+    }
+  }, [slug, item, userData.checklist, addItemToChecklist, setItemStatus])
 
   // Notes: local state for the textarea, save on blur
   const [localNotes, setLocalNotes] = useState(entry.notes)
   const lastSaved = useRef(entry.notes)
 
   useEffect(() => {
-    // Sync if notes changed from outside (e.g. data import)
     if (entry.notes !== lastSaved.current) {
       setLocalNotes(entry.notes)
       lastSaved.current = entry.notes
@@ -803,7 +1141,13 @@ export default function ItemDetail() {
   const profile = userData.profile
   const presenceLevel = getEffectiveLevel(profile, item.track)
   const gmc = item.gender_marker_change
-  const showGmcBanner = gmc?.applies && gmc.status !== 'current'
+
+  // A3: Federal marker warnings only apply on legal/medical tracks; suppress on social/personal
+  const showGmcBanner =
+    gmc?.applies &&
+    gmc.status !== 'current' &&
+    item.track !== 'social' &&
+    item.track !== 'personal'
 
   const presenceContent =
     presenceLevel === 'walk_with_me'
@@ -822,7 +1166,7 @@ export default function ItemDetail() {
       {currentStatus === 'at_risk' && <AtRiskAlert entry={entry} item={item} />}
       {currentStatus === 'revoked' && <RevokedAlert entry={entry} />}
 
-      {/* Recovery path items — shown when at_risk or revoked */}
+      {/* Recovery path items */}
       {(currentStatus === 'at_risk' || currentStatus === 'revoked') && kb && (
         <RecoveryItemsSection
           item={item}
@@ -885,7 +1229,7 @@ export default function ItemDetail() {
           {t('item_detail.status_heading')}
         </h2>
         <div className="flex flex-wrap gap-2">
-          {ALL_STATUSES.map((status) => (
+          {KB_STATUSES.map((status) => (
             <button
               key={status}
               type="button"
@@ -903,14 +1247,45 @@ export default function ItemDetail() {
         </div>
       </section>
 
-      {/* Unlocks hint — shown at some_guidance and walk_with_me */}
+      {/* Intent selector */}
+      <section className="mb-8" aria-labelledby="intent-heading">
+        <h2
+          id="intent-heading"
+          className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-1"
+        >
+          {t('item_detail.intent_heading')}
+        </h2>
+        <p className="text-xs text-neutral-400 mb-3">{t('item_detail.intent_hint')}</p>
+        <div className="flex flex-wrap gap-2">
+          {INTENT_OPTIONS.map((intent) => (
+            <button
+              key={intent}
+              type="button"
+              onClick={() => slug && setItemIntent(slug, intent)}
+              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                intent === currentIntent
+                  ? 'bg-neutral-900 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+              aria-pressed={intent === currentIntent}
+            >
+              {t(`item.intent.${intent}`)}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Unlocks hint */}
       {kb && <UnlocksHint item={item} kb={kb} presenceLevel={presenceLevel} />}
 
-      {/* Sub-tasks (user-created steps, not KB process steps) */}
+      {/* Sub-tasks */}
       {slug && <SubTasksSection slug={slug} entry={entry} />}
 
       {/* Blockers */}
       {slug && <BlockersSection slug={slug} entry={entry} presenceLevel={presenceLevel} />}
+
+      {/* Dates (C5) */}
+      {slug && <DatesSection slug={slug} entry={entry} />}
 
       {/* Notes */}
       <section className="mb-8" aria-labelledby="notes-heading">
@@ -932,7 +1307,7 @@ export default function ItemDetail() {
         <p className="text-xs text-neutral-400 mt-1">{t('item_detail.notes_private_note')}</p>
       </section>
 
-      {/* Status history (only visible once multiple transitions have occurred) */}
+      {/* Status history */}
       {statusLog.length > 1 && (
         <section className="mb-8" aria-labelledby="history-heading">
           <h2

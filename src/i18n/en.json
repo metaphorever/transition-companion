@@ -257,18 +257,29 @@
     "recurring_due_heading": "Due",
     "recurring_intentions_heading": "Things to keep in mind",
     "subtask_overdue_flag": "step overdue",
-    "subtask_overdue_hint": "One or more sub-tasks on this item are past their due date"
+    "subtask_overdue_hint": "One or more sub-tasks on this item are past their due date",
+    "dated_heading": "Coming up",
+    "policy_blocked_heading": "Currently not possible",
+    "policy_blocked_intro": "These items are blocked by policy right now. They will still be here if the situation changes."
   },
   "item": {
     "status": {
       "not_started": "Not started",
       "in_progress": "In progress",
+      "researching": "Researching",
       "complete": "Complete",
       "at_risk": "At risk",
       "revoked": "Revoked",
+      "policy_blocked": "Policy blocked",
       "skipped": "Skipped",
       "not_applicable": "Not applicable",
       "cant_right_now": "Blocked"
+    },
+    "intent": {
+      "update": "Want to do this",
+      "not_applicable": "Does not apply to me",
+      "not_wanted": "Choosing not to do this",
+      "unknown": "Not sure yet"
     },
     "importance": {
       "critical": "Critical",
@@ -413,7 +424,30 @@
     "recovery_intro": "These items sometimes become relevant when this status changes.",
     "recovery_add": "Add to my list",
     "recovery_on_list": "On your list",
-    "report": "Something looks wrong with this information"
+    "report": "Something looks wrong with this information",
+    "intent_heading": "Your intention",
+    "intent_hint": "This only affects whether the item appears on your active list.",
+    "due_date_label": "Deadline",
+    "event_date_label": "Appointment or event date",
+    "dates_heading": "Dates",
+    "policy_blocked_heading": "Currently not possible",
+    "policy_blocked_note": "This item is blocked by policy. It stays here so you can revisit it if things change.",
+    "custom_item_not_found": "This item was not found.",
+    "custom_item_edit": "Edit",
+    "custom_item_save": "Save",
+    "custom_item_cancel": "Cancel",
+    "custom_item_delete": "Delete this item",
+    "custom_item_delete_confirm": "Delete it",
+    "custom_item_delete_cancel": "Keep it",
+    "custom_item_delete_warning": "This will permanently remove the item and all its notes and sub-tasks.",
+    "custom_item_label": "Name",
+    "custom_item_label_placeholder": "What do you want to call it",
+    "custom_item_description": "Description",
+    "custom_item_description_placeholder": "What is this item about (optional)",
+    "custom_item_track": "Track",
+    "convert_to_recurring_prompt": "Want to set a recurring reminder for this?",
+    "convert_to_recurring_yes": "Yes, set one up",
+    "convert_to_recurring_dismiss": "No thanks"
   },
   "people_map": {
     "title": "People",
@@ -553,7 +587,9 @@
     "form_next_date": "Next date",
     "form_track": "Track",
     "form_notes": "Notes (optional)",
-    "form_notes_placeholder": "Anything you want to remember"
+    "form_notes_placeholder": "Anything you want to remember",
+    "form_start_date": "Start date (optional)",
+    "form_start_date_hint": "For fixed-interval items, sets the first due date before you have logged any completions."
   },
   "blockers": {
     "heading": "What is in the way",

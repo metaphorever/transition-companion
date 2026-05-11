@@ -40,20 +40,25 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 11 — Recurring Items, Sub-tasks, and Recovery Paths**
+**PHASE: 13 — First Impressions Review**
 **Status: COMPLETE**
-**Last session: Added RecurringItem type (fixed/manual/open modes) to UserData; SubTask type added to ChecklistEntry; recovery_items (optional string[]) added to KBItem. New store actions: addRecurringItem, updateRecurringItem, removeRecurringItem, logRecurringItem; addSubTask, updateSubTask, removeSubTask, toggleSubTask. New `src/utils/recurring.ts` with UTC-safe due-date computation and groupRecurringItems/dueDateLabel helpers. Dashboard surfaces overdue/due-today recurring items at top, open/intention items in a soft section, flags checklist items with past-due sub-tasks; filtered by active track. ItemDetail adds a sub-tasks section below the status selector (user-created steps, not KB process steps), and surfaces recovery_items when status is at_risk or revoked. New /recurring route with RecurringItems component (add/edit/remove/log). Build clean, 67 tests pass.**
+**Last session: Reviewed dogfooding notes from session 2 (33 distinct items). Categorized into bugs (A1–A6), copy/UX (B1–B6), missing features (C1–C12), and defer-to-v2 (D1–D6). Identified 9 cross-cutting design decisions (D-1 through D-9 — see "Decisions from Phase 13" section below). Two structural insights drove the bulk of the new work: (1) blockers become first-class structured objects forming a recursive resolution-task graph, with `out_of_control` blockers split into `policy` (KB-tracked, app polls and auto-resurfaces on KB-condition change) and `personal_circumstance` (user re-evaluates manually); (2) `intent` is a separate field from `status` — captures *why* an item is or isn't on the list (`update` / `not_applicable` / `not_wanted` / `unknown`), enabling bulk intent capture in onboarding via grouped/searchable/per-category mark-as flows. Phase map rewritten: existing Phases 12–17 renumbered to 18–23; new Phases 12–17 inserted as the pre-beta fix waves. Blocking-beta list committed below. No code written in this session — Phase 13 is analysis-only by charter.**
 
 **Notes for future phases:**
+
+- **Phase 12 — verify before fixing**: Three items the analysis can't settle without code. Investigate first.
+  - C12 — Contribute-help-level surfacing: confirm whether Phase 9 shipped surfacing logic at all, or shipped broken. Root-cause before patching.
+  - A4 — "Not applicable" item still on active list: confirm the missing filter case in dashboard. Likely the same component will need to filter by `intent !== 'update'` once D-9 lands; check if there's an existing precursor bug independent of the new field.
+  - A5 — Recurring item set for tomorrow displays as "due today": timezone boundary in `src/utils/recurring.ts`. Trace the UTC vs. local conversion in `groupRecurringItems` and `dueDateLabel`.
 
 - **Phase 10 carryover — `required_by` field unpopulated in KB snapshot**: All dependency edges are declared only in the requiring item's `requires` array (e.g., `il-dl.requires = ['ssa-name']`). The `required_by` field on KB items is always `[]` in the current snapshot. `UnlocksHint` correctly derives dependents by scanning all items for `requires.includes(slug)` — this is correct and doesn't need the field. If the KB eventually populates `required_by`, the ordering graph's merge logic handles both directions.
 - **Phase 10 carryover — open_doors description text**: The KB `description` field is used in the open_doors section cards. All current items have descriptions, but if a future item has a null or empty description the card still renders cleanly (description only shows when truthy).
 
-- **Phase 11 carryover — recovery_items not yet populated in KB seed data**: `recovery_items` is an optional field on KBItem — the type is `string[] | undefined`. The bundled snapshot has no `recovery_items` on any item (field didn't exist when seed data was written). The UI handles this correctly (shows nothing when undefined or empty). When Phase 8 seed data is revisited, add `recovery_items` to items like `il-dl` (revocation surfaces residency steps) and `ssa-name` (revocation surfaces court-order item).
-- **Phase 11 carryover — ICS calendar export not built**: Recurring items have due dates but no calendar export. The design note says ICS export (user downloads and imports to their own calendar app) is a later addition — no API needed. Build when prioritized; the data model already supports it.
-- **Phase 11 carryover — "First Sunday of month" recurrence not built**: Current arithmetic is strictly `last_logged_at + interval_days`. Calendar-based patterns ("every first Monday") were noted as future work requiring a small date utility function. Not needed for any current item type.
+- **Phase 11 carryover — recovery_items not yet populated in KB seed data**: `recovery_items` is an optional field on KBItem — the type is `string[] | undefined`. The bundled snapshot has no `recovery_items` on any item. UI handles undefined/empty correctly. Pick up during Phase 13 (Wave 2 — KB content refresh) — add `recovery_items` to items like `il-dl` (revocation surfaces residency steps) and `ssa-name` (revocation surfaces court-order item).
+- **Phase 11 carryover — ICS calendar export not built**: Deferred to v2 (Phase 23). Data model already supports it when prioritized.
+- **Phase 11 carryover — "First Sunday of month" recurrence + multi-time-per-day patterns not built**: Calendar-based recurrence and multi-event-per-day (morning/evening doses) deferred to v2.
 
-- **Phase 9 carryover — `transition-kb/` needs its own GitHub repo**: The app fetches from `https://raw.githubusercontent.com/metaphorever/transition-kb/main/`. Until that repo exists the app uses the bundled snapshot — fine for development.
+- **Phase 9 carryover — `transition-kb/` needs its own GitHub repo**: The app fetches from `https://raw.githubusercontent.com/metaphorever/transition-kb/main/`. Until that repo exists the app uses the bundled snapshot — fine for development. Phase 18 (deploy) sets up the repo.
 - **Phase 9 carryover — vite.config.ts updated**: Added `server.port` to respect `process.env.PORT` for the Claude preview system. This is a dev-only change; does not affect build.
 - **Scoping decision — transition timeline / photo management is out of scope for v1**: The Companion is not a photo journal or timeline app. The in-scope version is: a recurring item (fixed or manual mode) reminding the user to take progress photos on their own schedule, plus a reference note pointing to where they store them (local folder, private cloud, etc.). The app never stores, displays, or manages photos. A full timeline feature — with image storage, comparison views, date-stamped gallery — is explicitly deferred and belongs in a separate product or a future major version, not as a feature of this app.
 - **Future design — health/transition logging as a separate companion system (v2)**: Logging weight, body measurements, hormone levels, mood, and similar data is genuinely useful and connects naturally to the Companion's context — but it is not a bolt-on feature of this app. The right architecture is a separate system with its own privacy model (the data is more sensitive than a checklist; it should have independent access controls, never be bundled with the checklist export by default, and ideally run in a separate storage namespace). That system should work *with* the Companion rather than inside it — meaning: the Companion can surface prompts or links to the logging system when relevant (e.g. "you may want to log your levels before this appointment"), but the logging system's data and UI live separately. Before building: decide whether this is a second browser app sharing localStorage keys under a common namespace, a separate URL with a shared data bridge, or something else entirely. The privacy model has to be designed first, not retrofitted.
@@ -209,10 +214,182 @@ Each file must validate against `item.schema.json` and include a `last_verified`
 - Past-due sub-tasks surface as a quiet flag on item cards in the dashboard
 - `/recurring` route with full add/edit/remove/log management UI
 
-### Phase 12 — Deploy and Dogfood
+### Phase 12 — Wave 1: Bugs + Intent Field + Custom Items First-Class + Immutable Handling
+**Model: Sonnet · Effort: high**
+
+Foundational schema and bug-fix wave. Lands the data-model changes downstream waves depend on.
+
+Schema changes:
+- Add `intent` field to `ChecklistEntry`: `'update' | 'not_applicable' | 'not_wanted' | 'unknown'`. Default `'update'` for existing entries. Dashboard active list filters by `intent === 'update'`. Items the user has never interacted with don't get a ChecklistEntry — silence isn't a choice.
+- Add `policy_blocked` to status enum.
+- Add `researching` to status enum.
+- Custom items: extend ChecklistEntry shape so custom items support description, user-authored process steps, sub-tasks (already present), notes, full edit/delete.
+
+Custom items first-class (C1):
+- Detail page for custom items, shared component with KB items (KB-specific fields hidden when absent).
+- Edit, delete with confirmation, full status + intent controls.
+- Sub-tasks and blockers attachable to custom items.
+
+Immutable handling (C2):
+- KB items with `immutable: true` auto-set status to `policy_blocked` on first interaction (final naming during implementation).
+- Immutable items don't appear in active list. Live in a "currently not possible / informational" section grouped with other `policy_blocked` items.
+
+Recurring start-on date (C4):
+- `RecurringItem` gains optional `start_date?: string`. Due-date arithmetic uses `start_date` as the anchor when present, else `last_logged_at`. Enables alternating-Thursday injection schedules and similar staggering.
+
+Dated one-shot tasks (C5):
+- `ChecklistEntry` gains optional `due_date?: string` (deadline) and `event_date?: string` (scheduled appointment) — distinct fields.
+- Dashboard surfaces dated items by proximity using the same display logic as recurring.
+- On completion of a dated event, prompt to convert to recurring if appropriate (initial HRT visit → every 3 months).
+
+Bugs:
+- A1 — scroll-to-top on route change (mobile especially)
+- A2 — text inputs ≥16px font-size to suppress iOS auto-zoom
+- A3 — track-scope warnings (federal marker warning must not show on social/personal tracks)
+- A4 — dashboard active list filters by `intent === 'update'`
+- A5 — timezone-safe due-date computation in `src/utils/recurring.ts`
+- A6 — real page title (replace "tc-scaffold") and favicon
+
+Migration: existing user data with no `intent` field defaults to `update`. No data loss. Test suite must pass before phase is considered complete.
+
+### Phase 13 — Wave 2: Multi-Aspect Item Split + KB Content Refresh
+**Model: Sonnet · Effort: high — Opus subsession for alert copy**
+
+Splits federal items where name and gender marker have policy-divergent statuses. Refreshes KB content to match current legal reality.
+
+Item splits (D-1):
+- `ssa-name` and `ssa-marker` — independent items, independent statuses, independent blockers.
+- `passport-name` and `passport-marker`.
+- `passport-card-name` and `passport-card-marker`.
+- `fsa-id-name` and `fsa-id-marker` (if marker is independently changeable).
+- `irs-marker` (IRS name auto-derives from SSA name — no separate `irs-name`).
+- Any other federal item where the two aspects have meaningfully different policy status.
+
+Migration: existing user data with `ssa` checklist entry maps to `ssa-name` (status preserved). `ssa-marker` starts fresh with `intent: 'update'` if user had any progress on the SSA item, else `intent: 'unknown'`. Same pattern for passport, etc.
+
+Dependency graph updates: items that depend on "SSA name change" point to `ssa-name`. Items that depend on a federal marker change point to the relevant `-marker` item.
+
+KB content refresh (B6):
+- Federal marker alert copy: rewrite to reflect current near-total ban. No "may be possible with documentation" hedging. Plain about what's happening. Pair with `policy_blocked` defaults on affected items.
+- Verify `last_verified` dates and policy claims on every federal item.
+- Add `recovery_items` to items that have them (carryover from Phase 11): `il-dl`, `ssa-name` (and possibly `ssa-marker`), others as relevant.
+
+Alert copy work is an Opus subsession. Same tone constraints as Phase 5 alert copy.
+
+### Phase 14 — Wave 3: Onboarding Overhaul (Document State + Jurisdiction + Bulk Intent UI)
+**Model: Opus · Effort: high**
+
+Onboarding becomes the place where users capture three layers of context: who they are, what jurisdictions matter, and what their current document state is. The grouped/searchable/bulk-mark item picker pattern replaces any flat "do you want to track X?" steps.
+
+Onboarding additions (D-3, D-4, D-9):
+- **Birth jurisdiction step**: separate from current residence. Asked early in jurisdiction sequence.
+- **Other relevant jurisdictions step**: "do you have important documents from anywhere else?" — supports prior residences, immigration history. Always optional.
+- **Document state capture**: for major federal/state ID, capture current state — `{ name_status, marker_status, issued, expiration_date? }`. Asked per-item with skip-and-decide-later option.
+- **Bulk intent picker**: grouped (category headers), searchable (filter as you type), per-category mark-all-as (`not_applicable` / `not_wanted` / `update` / `unknown`), per-item quick-mark buttons. Default: items not touched aren't added to the checklist.
+
+Schema additions:
+- `Profile` gains `birth_jurisdiction?: Jurisdiction` and `other_jurisdictions?: Jurisdiction[]`.
+- `ChecklistEntry` gains optional `jurisdiction_override?: Jurisdiction`.
+- `ChecklistEntry` gains optional `document_state?: { name_status, marker_status, issued, expiration_date? }` for items where applicable.
+
+Item rendering branches based on `document_state` when present — pre/post-transition flow shows the right process for the user's actual starting state.
+
+Settings inherits the same bulk-mark UI for post-onboarding intent changes.
+
+Opus required because the onboarding copy must handle skip paths gracefully, never imply that capturing any of this is mandatory, and never make the user feel surveilled.
+
+### Phase 15 — Wave 4: Blocker Model Rework
+**Model: Opus · Effort: high**
+
+The structural one. Blockers become first-class structured objects forming a graph; dashboard reshapes around the new model.
+
+Schema (D-7a/b/c):
+```
+type Blocker = {
+  id: string;
+  type: BlockerType;
+  resolution_mode: 'resolvable' | 'out_of_control';
+  out_of_control_kind?: 'policy' | 'personal_circumstance';
+  resolution_task_ids?: string[];      // when resolvable
+  kb_condition_ref?: string;            // when out_of_control_kind === 'policy'
+  description?: string;
+  status: 'active' | 'resolved' | 'manually_dismissed';
+  status_date: string;
+  suppress_workaround?: boolean;
+};
+```
+
+KB additions:
+- New `conditions` namespace in KB (e.g., `federal-marker-policy`, `us-passport-issuance-policy`). Each tracks current state with `status_date`. When the KB updates a condition (someone watching the news submits a PR), affected users see a "policy on this has changed since you marked it blocked — want to revisit?" prompt.
+- Items reference conditions in their alerts via `kb_condition_ref`.
+
+Dashboard reshape:
+- **Active** — tasks with no active blockers, ready to work on.
+- **Working on blockers** — tasks with only `resolvable` active blockers. Resolution tasks expand inline.
+- **Waiting** — tasks with any `out_of_control` blocker, plus immutable items, plus `policy_blocked` items. Collapsible. Quiet — doesn't pester.
+
+Item detail blocker section rewrite:
+- Each blocker shows: type, resolution mode, description, and (when resolvable) linked resolution tasks expandable inline.
+- "Drill into" a resolution task with breadcrumb navigation back to the parent — critical for chains 4+ deep.
+- One-click "convert this blocker into a task" creates a custom resolution task pre-linked to the blocker.
+- For `out_of_control` `policy` blockers: status line tied to the KB condition. When condition changes, non-anxious "want to revisit this?" prompt on the parent task.
+- For `out_of_control` `personal_circumstance` blockers: optional "remind me to re-check in N months" recurring item.
+
+Resolution does not cascade. Completing a resolution task surfaces a one-click "this blocker can now be resolved" prompt on the parent. User confirms. Preserves the "having the key doesn't mean the door is open" principle.
+
+Migration: existing user-defined blockers default to `resolution_mode: 'resolvable'` with no resolution tasks. User can reclassify in item detail or Settings.
+
+This phase touches schema, KB schema, dashboard, item detail, and every flow that displays blockers.
+
+### Phase 16 — Wave 5: Item Detail UX + People Map Expansion + Name-Finding Flow + Social Name Change
+**Model: Sonnet · Effort: high — Opus for new copy and the name-finding task content**
+
+UX cluster plus the people-map and name-related work that uses the new blocker model from Phase 15.
+
+Item detail UX (B1–B5, D-8):
+- Reorder hierarchy: title → status + intent → blockers (collapsed if empty, "no blockers found, expand to add" copy) → sub-tasks → walkthrough/details (collapsed by default, per-user preference for default-expand) → user notes.
+- Edit/remove on people and blocker cards: separated visually, confirmation copy that distinguishes "this is bad data" from "the situation changed" (steers toward status change for the latter).
+- Safety menu dedup: remove "unsure"/"not sure" redundancy (B4).
+- After-completion: quiet visual acknowledgment, suggested next step (back-to-dashboard quick-link), prompt for notes. No fireworks.
+
+People map (C11):
+- `out_to` expanded: `not_now_not_ever` | `not_yet` | `partially` | `completely`.
+- "How did it go?" surfaces only when user is out to the person.
+- "Things they need to update" hidden by default for not-out or unsupportive people.
+- When user adds a "needs update" item for a not-out or unsupportive person, the resulting task is auto-blocked with a "come out to X" blocker using the new blocker model. This is the canonical demonstration of D-7a/b.
+- Derived view: "who can know what" — filtered list for sharing with allies. Generated, not stored.
+
+Name-finding flow (C8, C9):
+- New KB item: `social-name-change` — distinct from legal name change. Lives in social track.
+- New KB item: `find-a-name` — aspirational starter task. Sub-tasks: "decide cultural feel (masculine/feminine/unisex/nonbinary)" / "ask parents about names they considered before" / "honor a family member?" / "try it on in private" / "try it on online" / "try it on with a trusted ally."
+- Onboarding name step: "I don't know yet / start from zero" path adds `find-a-name` to the user's checklist.
+- `find-a-name` can be a blocker resolution for `social-name-change`, which can be a blocker resolution for `ssa-name`. Demonstrates the recursive blocker chain end-to-end.
+
+Opus subsessions: completion-moment copy, name-finding task content, people-map empty/skip states.
+
+### Phase 17 — Wave 6: Contribution Surfacing + Completion-Moment Hooks
 **Model: Sonnet · Effort: medium**
 
-*This is a technical phase followed by a sustained personal use period before Phase 13 begins.*
+Closes the gap between "user set contributor dial to max" and "user actually gets prompted."
+
+Verify state first:
+- Confirm whether Phase 9 shipped contribute-level surfacing logic at all. Read code, don't assume. Root-cause before fixing.
+
+Surfacing logic (C12):
+- On task completion: prompt for personal notes (private). Separately, prompt for contribution back to KB (process knowledge only — personal notes never included). Frequency tied to contributor dial.
+- On encountering a KB item the user knows more about: surface "want to contribute to this item?" — frequency tied to dial.
+- New contributor walkthrough: if user set max involvement, walk them through how to actually submit a GitHub issue / PR. One-time, dismissible.
+- `unknown` intent items: surface gently under `walk_with_me` presence OR when contributor dials indicate openness to nudges (D-9). Never under `just_the_path` without that signal.
+
+Completion-moment hook (B5):
+- Quiet visual change when status flips to `complete`.
+- "Back to dashboard" quick-link, no scroll required.
+- Prompt for any new knowledge gained during the task.
+
+### Phase 18 — Deploy and Dogfood
+**Model: Sonnet · Effort: medium**
+
+*This is a technical phase followed by a sustained personal use period before Phase 19 begins.*
 
 Technical work:
 - Deploy the app to your website (static hosting, Vite build output)
@@ -223,47 +400,43 @@ Technical work:
 
 Dogfooding period (no Claude Code session needed):
 - Enter your own real data — checklist items, blockers, people, recurring items
-- Use the app daily for at least 2–3 weeks before moving to Phase 13
+- Use the app daily for at least 2–3 weeks before moving to Phase 19
 - Keep a running note (a simple text file, not in the app) of friction points, missing things, things that feel wrong, and things that work well
 - The goal is first-person evidence, not a feature wish list
 
-### Phase 13 — First Impressions Review
+### Phase 19 — Second Dogfood Review
 **Model: Opus · Effort: high**
 
-*This is a planning and analysis session, not primarily a code session. The output is a prioritized friction list and a set of proposed changes — not merged code.*
+*Same shape as Phase 13. Planning and analysis only — no code merged.*
 
-- Review the notes collected during dogfooding
-- Identify the difference between: (a) bugs, (b) copy/UX friction, (c) missing features that genuinely block real use, (d) nice-to-haves that can wait
-- For each item in (a) and (b): decide whether to fix immediately or batch
-- For items in (c): decide which belong before public beta and which belong after
-- For items in (d): add to the backlog notes in CLAUDE.md and move on
-- Output: an updated phase map with any new phases added between here and Phase 15, and a clear list of what is blocking beta
+- Review the notes collected during dogfooding after Phase 18
+- Categorize: (a) bugs, (b) copy/UX friction, (c) missing features that genuinely block beta, (d) defer
+- Update CLAUDE.md with any new fix phases needed before Phase 21
+- Update the blocking-beta list with anything new that surfaced from real use
 
-Opus is appropriate here because the judgment calls — what counts as blocking vs. acceptable for beta — are load-bearing and easy to get wrong under pressure.
-
-### Phase 14 — MVP to Public Beta Roadmap
+### Phase 20 — MVP to Public Beta Roadmap
 **Model: Opus · Effort: high**
 
-*This is a planning session only. No code is written.*
+*Planning session only. No code is written.*
 
-- Take the output of Phase 13 and write a specific, sequenced roadmap from current state to public beta
+- Take the output of Phase 19 and write a specific, sequenced roadmap from current state to public beta
 - Define what "public beta" means: what must be true, what can be rough, what is explicitly out of scope
 - Identify anything that changes the app's posture for public use vs. personal use: privacy copy, data handling notice, "this app stores nothing on our servers" statement, any legal/safety language that needs review
 - Decide on beta access model: open link, invite-only, soft launch
 - Update CLAUDE.md with the agreed scope and sequence
 
-### Phase 15 — Open Public Beta
+### Phase 21 — Open Public Beta
 **Model: Sonnet (for code fixes) · Effort: varies**
 
-*The phase begins with the beta launch and stays open until the beta closes. Sessions during this phase are fix-and-polish sprints driven by Phase 13/14 findings, not feature development.*
+*The phase begins with the beta launch and stays open until the beta closes. Sessions during this phase are fix-and-polish sprints driven by Phase 19/20 findings, not feature development.*
 
-- Execute the specific changes identified in Phase 14
+- Execute the specific changes identified in Phase 20
 - No new features during beta unless they directly unblock beta users
 - Each session should be scoped to a single, well-defined fix or improvement
 - Monitor for any data safety, privacy, or accessibility issues and treat those as blocking
 - Keep a running log of beta feedback (separate from CLAUDE.md — a living doc or issue tracker)
 
-### Phase 16 — Beta Feedback to v1.0 Roadmap
+### Phase 22 — Beta Feedback to v1.0 Roadmap
 **Model: Opus · Effort: high**
 
 *Planning session only. No code. Output is a committed roadmap for v1.0.*
@@ -274,19 +447,102 @@ Opus is appropriate here because the judgment calls — what counts as blocking 
 - Write the v1.0 definition: what is in, what is not, what "done" means
 - Update CLAUDE.md with the v1.0 scope
 
-### Phase 17 — v2 and Beyond (placeholder)
+### Phase 23 — v2 and Beyond (placeholder)
 **Model: TBD**
 
-*Not planned in detail yet. Decisions from Phase 16 will define what actually belongs here.*
+*Not planned in detail yet. Decisions from Phase 22 will define what actually belongs here.*
 
-Known candidates (from earlier design conversations):
+Known candidates (from earlier design conversations and the Phase 13 review):
 - Health and transition logging system (separate app, shared privacy model — see backlog note)
 - Plural system awareness (see names/pronouns design notes)
+- "How I like to be referred to" rider — honorifics, relational terms, conditional pronoun marking (D2)
 - Photo management / timeline (scoped version only — recurring reminder + storage reference, not a photo app)
 - ICS calendar export for recurring items
+- Multi-time-per-day recurring (morning/evening doses) and calendar-based recurrence (first-Sunday-of-month, etc.)
+- Dark mode + OS preference detection (D1)
+- Per-reminder surfacing window (day-of / day-before / week-before) (D4)
+- Onboarding priority/ranking capture (D3)
+- User-story-driven automated test suite (D6 — ongoing practice rather than feature)
 - Expanded KB coverage (more states, more item types)
 - Contribution pipeline maturation (structured submissions, community verification)
 - Quick-exit / privacy mode (flagged as must-not-preclude in v1 architecture)
+
+---
+
+## Decisions from Phase 13
+
+These are *decided*, not open. They came out of the Phase 13 review and apply across the Phase 12–17 implementing waves. The implementing phases reference these by ID rather than re-litigating.
+
+**D-1. Multi-aspect items split, not nested.** Federal items where name and gender marker have divergent policy status (SSA, passport, passport card, FSA ID, IRS marker) become separate KB items with independent statuses and blockers. Cleaner data model, cleaner dependency graph, cleaner UI. Implemented in Phase 13.
+
+**D-2. `policy_blocked` status added.** New ChecklistEntry status for items the user wants but can't currently get due to policy. Distinct from `not_applicable` intent (doesn't apply), `not_wanted` intent (chosen to skip), and `revoked` status (had it, lost it). Tucks the item into the "waiting" section, suppresses repeated warnings, resurfaces if the linked KB condition changes. Implemented in Phase 12 (status enum) and Phase 15 (KB condition tracking).
+
+**D-3. Document state vector.** Per-item, captures current document state separately from the to-do checklist: `{ name_status, marker_status, issued, expiration_date? }`. Drives flow branching — a passport with new-name-old-marker has a different displayed flow than no-passport-yet. Captured in onboarding (skippable) and editable in Settings. Implemented in Phase 14.
+
+**D-4. Jurisdiction-per-item override.** `ChecklistEntry` has optional `jurisdiction_override`. Onboarding captures `birth_jurisdiction` and `other_jurisdictions`; items default to the right one based on type (birth cert → birth jurisdiction; current ID → residence), always overridable. Implemented in Phase 14.
+
+**D-5. Custom items as first-class.** Full detail page, sub-tasks, blockers, intent + status, notes, edit, delete (with confirmation). Shared detail-page component with KB items; KB-specific fields hidden when absent. Implemented in Phase 12.
+
+**D-6. Dated one-shot tasks.** `ChecklistEntry` gains optional `due_date?` (deadline) and `event_date?` (scheduled appointment) — distinct fields. On completion, optional convert-to-recurring prompt for follow-up patterns (initial HRT visit → every 3 months). Implemented in Phase 12.
+
+**D-7a. Blockers are structured first-class objects.** Each has `resolution_mode: 'resolvable' | 'out_of_control'`. Resolvable blockers reference one or more `resolution_task_ids` (KB or custom checklist entries). Resolution doesn't cascade — completing a resolution task surfaces a one-click confirm-resolve prompt on the parent. Preserves the "having the key doesn't mean the door is open" principle. Implemented in Phase 15.
+
+**D-7b. Blocker chains form a graph and recursion is supported.** A resolution task is itself a task; it can have its own blockers, which can have their own resolution tasks, etc. Depth is arbitrary. A single resolution task can be referenced by blockers on multiple parent tasks (e.g. "come out to parents" is the resolution for blockers on several other tasks). UI uses breadcrumb navigation when drilling into nested blockers — critical for chains 4+ deep. Implemented in Phase 15.
+
+**D-7c. Out-of-control blockers split by kind.** `out_of_control_kind: 'policy' | 'personal_circumstance'`.
+- `policy` blockers reference a KB `condition` (e.g., `federal-marker-policy`) via `kb_condition_ref`. The app polls KB conditions; when a condition's `status_date` advances and status changes, affected users get a non-anxious "want to revisit this?" prompt. The KB is the source of truth — someone watching the news submits a PR; the app surfaces the change.
+- `personal_circumstance` blockers don't auto-poll — only the user knows when their parents come around. User can optionally attach a recurring "remind me to re-check in N months" reminder.
+Implemented in Phase 15.
+
+**D-8. Task detail UI hierarchy.** Order: title → status + intent → blockers (collapsed if none, with "no blockers found, expand to add" copy) → sub-tasks → walkthrough/details (collapsed by default, per-user preference for default-expand) → user notes. `researching` status added. Implemented in Phase 12 (status enum) and Phase 16 (UI reorder).
+
+**D-9. Intent is separate from status.** `ChecklistEntry` gains an `intent` field: `'update' | 'not_applicable' | 'not_wanted' | 'unknown'`. Dashboard active list filters by `intent === 'update'`. Items the user has never interacted with don't get a ChecklistEntry — silence isn't a choice. `unknown` items surface only under `walk_with_me` presence OR when the contributor/involvement dials indicate openness to nudges — never silently at `just_the_path`. Bulk intent capture in onboarding via grouped/searchable/per-category mark-as flows. Implemented in Phase 12 (schema, basic UI), Phase 14 (onboarding bulk picker), Phase 17 (nudge surfacing).
+
+---
+
+## Blocking-beta list
+
+Every item below must be addressed before public beta (Phase 21) opens. Pulled from the Phase 13 review. Phase 19 may add more after a second round of dogfooding.
+
+**Bugs** (Phase 12 unless noted):
+- A1 — Mobile scroll-to-top on route change
+- A2 — iOS text-box zoom suppression (≥16px inputs)
+- A3 — Track-scope warnings (no federal marker warning on social/personal tracks)
+- A4 — Dashboard filter excludes `intent !== 'update'`
+- A5 — Timezone-safe recurring due-date math
+- A6 — Page title and favicon (Phase 12 sets values; Phase 18 verifies in production)
+
+**Schema/model changes** — all of D-1 through D-9 are blocking.
+
+**Copy/UX:**
+- B1 — Empty-state blockers copy (Phase 16)
+- B2 — Item detail page hierarchy (Phase 16, per D-8)
+- B3 — Edit/remove proximity + remove confirmation copy (Phase 16)
+- B4 — Safety menu dedup (Phase 16)
+- B5 — Completion acknowledgment + contribution prompt (Phase 17)
+- B6 — Federal marker warning copy accuracy (Phase 13)
+
+**Missing features:**
+- C1 — Custom items first-class (Phase 12)
+- C2 — Immutable items off the active list (Phase 12)
+- C3 — Multi-aspect items split (Phase 13)
+- C4 — Recurring `start_date` (Phase 12)
+- C5 — Dated one-shot tasks (Phase 12)
+- C6 — Document state model (Phase 14)
+- C7 — Per-item jurisdiction + onboarding capture (Phase 14)
+- C8 — Social name change as distinct KB item (Phase 16)
+- C9 — Find-a-name task + onboarding "don't know yet" path (Phase 16)
+- C10 — Blocker model rework with resolution-task linkage (Phase 15)
+- C11 — People map expansion (Phase 16)
+- C12 — Contribute-level surfacing verified and working (Phase 17)
+
+**Explicitly deferred to v2 (Phase 23), not blocking beta:**
+- D1 — Dark mode + OS preference detection
+- D2 — "How I like to be referred to" rider (pronouns/names model expansion beyond what's already in the existing future-design notes)
+- D3 — Onboarding priority/ranking capture
+- D4 — Per-reminder surfacing window (day-of / day-before / week-before)
+- D5 — Multi-time-per-day recurring + calendar-based recurrence patterns
+- D6 — User-story-driven test suite (ongoing practice, not a feature)
 
 ---
 

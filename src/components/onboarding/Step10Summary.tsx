@@ -6,7 +6,7 @@ import { useAppStore } from '../../store'
 import { computeAllAvailability, filterAvailableNow } from '../../utils/ordering'
 import { findDangerFlags } from '../../utils/onboarding'
 
-export default function Step9Summary({ step, onBack, onFinish }: StepProps) {
+export default function Step10Summary({ step, onBack, onFinish }: StepProps) {
   const { t } = useTranslation()
   const userData = useAppStore((s) => s.userData)
   const kb = useAppStore((s) => s.kb)

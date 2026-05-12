@@ -34,6 +34,8 @@ const DEFAULT_USER_DATA: UserData = {
       publicly: null,
     },
     jurisdiction: { country: null, region: null },
+    birth_jurisdiction: null,
+    other_jurisdictions: [],
     documents_obtained: [],
     documents_response: null,
     started_at: null,
@@ -82,7 +84,8 @@ export function readUserData(): UserData {
 // Fill in any fields a stored UserData blob is missing — e.g. an export from
 // an older app version. Only top-level profile keys are merged; nested objects
 // (safety, access, etc.) get the stored value or the default wholesale.
-function mergeWithDefaults(stored: UserData): UserData {
+// Exported for unit tests; runtime callers use readUserData()/importUserData().
+export function mergeWithDefaults(stored: UserData): UserData {
   const defaults = structuredClone(DEFAULT_USER_DATA)
   const profile = { ...defaults.profile, ...(stored.profile ?? {}) }
   for (const key of ['safety', 'out_contexts', 'jurisdiction', 'access', 'presence', 'contributor_settings'] as const) {

@@ -8,13 +8,14 @@ import Step3Location from './Step3Location'
 import Step4Documents from './Step4Documents'
 import Step5Safety from './Step5Safety'
 import Step6Presence from './Step6Presence'
-import Step7Categories from './Step7Categories'
-import Step8Contributor from './Step8Contributor'
-import Step9Summary from './Step9Summary'
+import Step7Direction from './Step7Direction'
+import Step8BulkIntent from './Step8BulkIntent'
+import Step9Contributor from './Step9Contributor'
+import Step10Summary from './Step10Summary'
 
 // Public contract every step component receives. Each step decides what to do
-// with onSkip vs. onNext (e.g. Step 1 has no skip button; Step 9 has no skip
-// because it's the final summary).
+// with onSkip vs. onNext (e.g. Step 1 has no skip button; final step has no
+// skip because it's the summary).
 export interface StepProps {
   step: number
   onBack: () => void
@@ -77,11 +78,13 @@ export default function OnboardingWizard() {
     case 6:
       return <Step6Presence {...stepProps} />
     case 7:
-      return <Step7Categories {...stepProps} />
+      return <Step7Direction {...stepProps} />
     case 8:
-      return <Step8Contributor {...stepProps} />
+      return <Step8BulkIntent {...stepProps} />
     case 9:
-      return <Step9Summary {...stepProps} />
+      return <Step9Contributor {...stepProps} />
+    case 10:
+      return <Step10Summary {...stepProps} />
     default:
       // clampStep guarantees 1..TOTAL_STEPS, so this is unreachable. Render
       // step 1 as a defensive fallback rather than throwing — losing the

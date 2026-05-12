@@ -10,13 +10,44 @@ import {
 import type { ItemAvailability } from '../../utils/ordering'
 import { findDangerFlags } from '../../utils/onboarding'
 import { groupRecurringItems, getEffectiveDueDate, dueDateLabel, localDateString } from '../../utils/recurring'
-import type { ChecklistEntry, CustomItem, ItemImportance, KBItem, UserAccess } from '../../types'
+import type { ChecklistEntry, CustomItem, ItemImportance, ItemPriority, KBItem, UserAccess } from '../../types'
 
 const IMPORTANCE_ORDER: Record<ItemImportance, number> = {
   critical: 0,
   high: 1,
   medium: 2,
   low: 3,
+}
+
+// Sort order for the active list: 'now' first, then 'soon', then no opinion,
+// then 'someday'/'unsure' (these go to a soft section instead). Smaller = earlier.
+const PRIORITY_SORT: Record<string, number> = {
+  now: 0,
+  soon: 1,
+  // null/undefined treated as 2 in the comparator
+  someday: 3,
+  unsure: 4,
+}
+
+// Priorities that route an item to the soft "Someday" section instead of the
+// active list.
+const SOMEDAY_PRIORITIES = new Set<ItemPriority>(['someday', 'unsure'])
+
+// Days until expiration where we surface a small "expires {date}" indicator.
+// Used for document_state.expiration_date — designed for IDs that are close
+// to expiring and may shape the user's name-change timeline.
+const EXPIRY_WARNING_DAYS = 90
+
+function priorityRank(p: ItemPriority | null | undefined): number {
+  if (p == null) return 2
+  return PRIORITY_SORT[p] ?? 2
+}
+
+function entryExpirationDate(entry: ChecklistEntry | undefined): string | null {
+  const ds = entry?.document_state
+  if (!ds) return null
+  if (ds.kind === 'name' || ds.kind === 'full') return ds.expiration_date ?? null
+  return null
 }
 
 const TRACKS = ['legal', 'medical', 'social', 'personal', 'supporter'] as const
@@ -119,11 +150,14 @@ export default function Dashboard() {
 
   // KB items split into available / blocked / policy_blocked / completed
   // A4: only items with intent === 'update' (or no intent) appear in the active list
-  const { availableNow, blockedItems, policyBlockedItems, completedItems } = useMemo(() => {
+  // Phase 14: items with priority 'someday' or 'unsure' route to a soft section
+  // instead of the active list.
+  const { availableNow, blockedItems, policyBlockedItems, completedItems, somedayKB } = useMemo(() => {
     const avail: ItemAvailability[] = []
     const blocked: ItemAvailability[] = []
     const policyBlocked: ItemAvailability[] = []
     const done: ItemAvailability[] = []
+    const someday: ItemAvailability[] = []
 
     for (const [slug, a] of availability.entries()) {
       if (!checklistSlugs.has(slug)) continue
@@ -142,29 +176,50 @@ export default function Dashboard() {
       // C2: policy_blocked items and immutable items get their own quiet section
       if (status === 'policy_blocked' || kbItem?.immutable) {
         policyBlocked.push(a)
-      } else if (a.isSatisfying) {
+        continue
+      }
+      if (a.isSatisfying) {
         done.push(a)
-      } else if (a.available) {
+        continue
+      }
+      const priority = entry?.priority
+      if (priority && SOMEDAY_PRIORITIES.has(priority)) {
+        someday.push(a)
+        continue
+      }
+      if (a.available) {
         avail.push(a)
       } else {
         blocked.push(a)
       }
     }
 
+    // Sort available list by priority ('now' first), then by importance.
+    avail.sort((x, y) => {
+      const xp = priorityRank(userData.checklist[x.slug]?.priority)
+      const yp = priorityRank(userData.checklist[y.slug]?.priority)
+      if (xp !== yp) return xp - yp
+      const xi = IMPORTANCE_ORDER[kb?.items[x.slug]?.importance ?? 'medium'] ?? 4
+      const yi = IMPORTANCE_ORDER[kb?.items[y.slug]?.importance ?? 'medium'] ?? 4
+      return xi - yi
+    })
+
     return {
       availableNow: avail,
       blockedItems: blocked,
       policyBlockedItems: policyBlocked,
       completedItems: done,
+      somedayKB: someday,
     }
   }, [availability, checklistSlugs, kb, activeTrack, accessFilter, access, userData.checklist])
 
   // Custom items split by effective status, filtered by track
   // Source of truth is checklist[c.id]; fall back to c.status for un-migrated data
-  const { customAvailable, customBlocked, customCompleted } = useMemo(() => {
+  const { customAvailable, customBlocked, customCompleted, somedayCustom } = useMemo(() => {
     const avail: CustomItem[] = []
     const blocked: CustomItem[] = []
     const done: CustomItem[] = []
+    const someday: CustomItem[] = []
 
     for (const c of userData.custom_items) {
       if (activeTrack && c.track !== activeTrack) continue
@@ -172,6 +227,7 @@ export default function Dashboard() {
       const intent = effectiveIntent(entry)
       if (intent !== 'update') continue
 
+      const priority = entry?.priority
       const status = entry?.status ?? c.status
       if (status === 'complete' || status === 'at_risk') done.push(c)
       else if (
@@ -181,10 +237,18 @@ export default function Dashboard() {
         status === 'not_applicable'
       )
         blocked.push(c)
+      else if (priority && SOMEDAY_PRIORITIES.has(priority)) someday.push(c)
       else avail.push(c)
     }
 
-    return { customAvailable: avail, customBlocked: blocked, customCompleted: done }
+    // Sort active customs by priority too.
+    avail.sort((x, y) => {
+      const xp = priorityRank(userData.checklist[x.id]?.priority)
+      const yp = priorityRank(userData.checklist[y.id]?.priority)
+      return xp - yp
+    })
+
+    return { customAvailable: avail, customBlocked: blocked, customCompleted: done, somedayCustom: someday }
   }, [userData.custom_items, userData.checklist, activeTrack])
 
   // KB items not on the user's checklist — surfaced when open_doors is on or walk_with_me is active
@@ -277,6 +341,37 @@ export default function Dashboard() {
     return slugs
   }, [userData.checklist, today])
 
+  // Items with revisit_at on or before today, surfaced as a quiet nudge banner.
+  // Excludes items already completed or in the soft someday section so we don't
+  // double-surface what's already visible.
+  const revisitDue = useMemo(() => {
+    const items: { slug: string; label: string; revisit_at: string }[] = []
+    for (const [slug, entry] of Object.entries(userData.checklist)) {
+      if (!entry.revisit_at) continue
+      if (entry.revisit_at > today) continue
+      if (effectiveIntent(entry) !== 'update') continue
+      if (entry.status === 'complete') continue
+      const kbItem = kb?.items[slug]
+      const customItem = userData.custom_items.find((c) => c.id === slug)
+      if (activeTrack && (kbItem?.track ?? customItem?.track) !== activeTrack) continue
+      items.push({
+        slug,
+        label: kbItem?.label ?? customItem?.label ?? slug,
+        revisit_at: entry.revisit_at,
+      })
+    }
+    return items.sort((a, b) => a.revisit_at.localeCompare(b.revisit_at))
+  }, [userData.checklist, userData.custom_items, kb, today, activeTrack])
+
+  // Days-until helper for the expiry indicator. Returns null if no date.
+  const daysUntil = (date: string | null): number | null => {
+    if (!date) return null
+    return Math.round(
+      (new Date(date + 'T12:00:00').getTime() - new Date(today + 'T12:00:00').getTime()) /
+        86_400_000
+    )
+  }
+
   const progressKey = getProgressKey(totalCompleted, totalOnList)
   const allCompleted = completedItems.length + customCompleted.length
   const displayName = profile.display_name ?? profile.chosen_name
@@ -342,6 +437,30 @@ export default function Dashboard() {
         {kbError && (
           <div className="mb-6 px-4 py-3 bg-neutral-100 border border-neutral-300 rounded-lg text-sm text-neutral-700">
             {t('dashboard.kb_error')}
+          </div>
+        )}
+
+        {/* Revisit nudge — items with revisit_at on or before today */}
+        {revisitDue.length > 0 && (
+          <div className="mb-6 px-4 py-3 border border-neutral-200 rounded-lg bg-neutral-50">
+            <p className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-2">
+              {t('dashboard.revisit_section_heading')}
+            </p>
+            <p className="text-xs text-neutral-500 mb-2 leading-relaxed">
+              {t('dashboard.revisit_section_intro')}
+            </p>
+            <ul className="space-y-1">
+              {revisitDue.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    to={`/item/${r.slug}`}
+                    className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+                  >
+                    {r.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
@@ -507,7 +626,11 @@ export default function Dashboard() {
             <div className="space-y-2">
               {availableNow.map((a) => {
                 const item = kb!.items[a.slug]
+                const entry = userData.checklist[a.slug]
                 const hasPastDueSubTask = pastDueSubTaskSlugs.has(a.slug)
+                const priority = entry?.priority ?? null
+                const expDate = entryExpirationDate(entry)
+                const expDays = daysUntil(expDate)
                 return (
                   <Link
                     key={a.slug}
@@ -515,7 +638,28 @@ export default function Dashboard() {
                     className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
                   >
                     <span className="text-sm text-neutral-900">{item?.label ?? a.slug}</span>
-                    <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                    <div className="flex items-center gap-2 ml-3 flex-shrink-0 flex-wrap justify-end">
+                      {priority === 'now' && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-neutral-900 text-white">
+                          {t('dashboard.priority_now')}
+                        </span>
+                      )}
+                      {priority === 'soon' && (
+                        <span className="text-xs px-1.5 py-0.5 rounded border border-neutral-400 text-neutral-700">
+                          {t('dashboard.priority_soon')}
+                        </span>
+                      )}
+                      {expDate && expDays !== null && expDays <= EXPIRY_WARNING_DAYS && (
+                        <span
+                          className={`text-xs ${
+                            expDays < 0 ? 'text-amber-700' : 'text-neutral-500'
+                          }`}
+                        >
+                          {expDays < 0
+                            ? t('item.doc_state.expired', { date: expDate })
+                            : t('item.doc_state.expiring_soon', { date: expDate })}
+                        </span>
+                      )}
                       {hasPastDueSubTask && (
                         <span className="text-xs text-neutral-500" title={t('dashboard.subtask_overdue_hint')}>
                           {t('dashboard.subtask_overdue_flag')}
@@ -530,20 +674,36 @@ export default function Dashboard() {
                   </Link>
                 )
               })}
-              {customAvailable.map((c) => (
-                <Link
-                  key={c.id}
-                  to={`/item/${c.id}`}
-                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
-                >
-                  <span className="text-sm text-neutral-900">{c.label}</span>
-                  {activeTrack === null && (
-                    <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
-                      {t(`dashboard.tracks.${c.track}`, { defaultValue: c.track })}
-                    </span>
-                  )}
-                </Link>
-              ))}
+              {customAvailable.map((c) => {
+                const entry = userData.checklist[c.id]
+                const priority = entry?.priority ?? null
+                return (
+                  <Link
+                    key={c.id}
+                    to={`/item/${c.id}`}
+                    className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors"
+                  >
+                    <span className="text-sm text-neutral-900">{c.label}</span>
+                    <div className="flex items-center gap-2 ml-3 flex-shrink-0 flex-wrap justify-end">
+                      {priority === 'now' && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-neutral-900 text-white">
+                          {t('dashboard.priority_now')}
+                        </span>
+                      )}
+                      {priority === 'soon' && (
+                        <span className="text-xs px-1.5 py-0.5 rounded border border-neutral-400 text-neutral-700">
+                          {t('dashboard.priority_soon')}
+                        </span>
+                      )}
+                      {activeTrack === null && (
+                        <span className="text-xs text-neutral-400">
+                          {t(`dashboard.tracks.${c.track}`, { defaultValue: c.track })}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           )}
         </section>
@@ -587,6 +747,60 @@ export default function Dashboard() {
                     <span className="text-sm text-neutral-700">{c.label}</span>
                     <span className="text-xs text-neutral-500 ml-3 flex-shrink-0">
                       {t(`item.status.${status}`)}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Someday — items with priority 'someday' or 'unsure' */}
+        {(somedayKB.length > 0 || somedayCustom.length > 0) && (
+          <section className="mb-8" aria-labelledby="someday-heading">
+            <h2
+              id="someday-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.someday_section_heading')}
+            </h2>
+            <p className="text-xs text-neutral-500 mb-3 leading-relaxed">
+              {t('dashboard.someday_section_intro')}
+            </p>
+            <div className="space-y-2">
+              {somedayKB.map((a) => {
+                const item = kb!.items[a.slug]
+                const entry = userData.checklist[a.slug]
+                const priority = entry?.priority ?? null
+                return (
+                  <Link
+                    key={a.slug}
+                    to={`/item/${a.slug}`}
+                    className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-75 hover:opacity-100 transition-opacity"
+                  >
+                    <span className="text-sm text-neutral-700">{item?.label ?? a.slug}</span>
+                    <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                      {priority === 'unsure'
+                        ? t('dashboard.priority_unsure')
+                        : t('dashboard.priority_someday')}
+                    </span>
+                  </Link>
+                )
+              })}
+              {somedayCustom.map((c) => {
+                const entry = userData.checklist[c.id]
+                const priority = entry?.priority ?? null
+                return (
+                  <Link
+                    key={c.id}
+                    to={`/item/${c.id}`}
+                    className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-75 hover:opacity-100 transition-opacity"
+                  >
+                    <span className="text-sm text-neutral-700">{c.label}</span>
+                    <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                      {priority === 'unsure'
+                        ? t('dashboard.priority_unsure')
+                        : t('dashboard.priority_someday')}
                     </span>
                   </Link>
                 )

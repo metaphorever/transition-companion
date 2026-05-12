@@ -163,6 +163,40 @@ export type ItemStatus =
 // Default for existing entries without an intent field is 'update' (see storage migration).
 export type ItemIntent = 'update' | 'not_applicable' | 'not_wanted' | 'unknown'
 
+// Per-item timing. Orthogonal to status and intent. `unsure` is for things the
+// user has feelings about but isn't ready to confront — surfaces as gentle
+// later-nudges rather than active work. `null` means no opinion expressed.
+export type ItemPriority = 'now' | 'soon' | 'someday' | 'unsure'
+
+// State of a real-world document — separate from the user's progress on the
+// item ("am I done filing the paperwork"). `name_status` and `marker_status`
+// describe what's printed on the document right now. `in_progress` means an
+// application has been submitted but the new document hasn't arrived.
+export type DocFieldStatus = 'old' | 'new' | 'in_progress' | 'unknown'
+
+// Polymorphic document state. The `kind` discriminator keeps the data shape
+// honest: name-only items don't store a marker_status, and full-document
+// items capture both.
+export type DocumentState =
+  | {
+      kind: 'name'
+      name_status: DocFieldStatus
+      issued: string | null          // YYYY-MM-DD when current doc was issued
+      expiration_date: string | null // YYYY-MM-DD when it expires (if applicable)
+    }
+  | {
+      kind: 'marker'
+      marker_status: DocFieldStatus
+      issued: string | null
+    }
+  | {
+      kind: 'full'
+      name_status: DocFieldStatus
+      marker_status: DocFieldStatus
+      issued: string | null
+      expiration_date: string | null
+    }
+
 export type HousingStatus =
   | 'independent'
   | 'living_with_family_or_others'
@@ -244,6 +278,13 @@ export interface UserProfile {
     publicly: boolean | null
   }
   jurisdiction: { country: string | null; region: string | null }
+  // Where the user was born — drives birth certificate items and similar.
+  // Distinct from `jurisdiction` (current residence) because the two are
+  // frequently different and have independent procedural implications.
+  birth_jurisdiction?: { country: string | null; region: string | null } | null
+  // Prior residences, immigration history, anywhere else with documents
+  // that may need updating. Always optional, free to leave empty.
+  other_jurisdictions?: { country: string | null; region: string | null }[]
   documents_obtained: string[]
   // Explicit "I don't have any of these" response from Step 4. Distinct from
   // documents_obtained being empty because the user skipped the step entirely.
@@ -253,6 +294,14 @@ export interface UserProfile {
   // Wizard position when onboarding is in progress; null when never started
   // or when onboarding is complete. Used for resume-from-where-you-left-off.
   onboarding_step: number | null
+  // Snapshot of the user's broad-direction answers from the onboarding aspiration
+  // step. Map of aspiration slug → priority. Persists across wizard reloads
+  // and survives onboarding completion so Settings can show the user their
+  // own previous answers. Always editable later.
+  onboarding_aspirations?: Record<string, ItemPriority>
+  // Aspirations the bulk-intent step has already processed (prefilled items
+  // or spawned skeletons for). Prevents re-applying on every render.
+  onboarding_aspirations_applied?: string[]
   access: UserAccess
   presence: UserPresence
   contributor_settings: ContributorSettings
@@ -319,6 +368,22 @@ export interface SubTask {
 export interface ChecklistEntry {
   status: ItemStatus
   intent?: ItemIntent      // defaults to 'update' when absent (migration path)
+  // Timing — when the user expects to engage with this. Null = no opinion.
+  // `unsure` surfaces in soft sections for gentle later-nudges.
+  priority?: ItemPriority | null
+  // YYYY-MM-DD; quiet dashboard surfacing on/after this date as a "you wanted
+  // to revisit this" hint. Often set automatically when priority is 'someday'
+  // or 'unsure', but always user-editable.
+  revisit_at?: string | null
+  // Per-item jurisdiction override. Defaults to the right one based on item
+  // type (birth cert → birth_jurisdiction; current ID → residence). Lets users
+  // with prior residences or immigration history capture which jurisdiction
+  // applies to each task without affecting the rest of their checklist.
+  jurisdiction_override?: { country: string | null; region: string | null } | null
+  // Real-world state of the document — independent of work-progress status.
+  // Polymorphic by item kind. Drives flow branching (pre/post-transition
+  // process steps).
+  document_state?: DocumentState | null
   completed_at: string | null
   at_risk_since?: string | null
   at_risk_reason?: string | null
@@ -336,6 +401,13 @@ export interface ChecklistEntry {
 
 // ── Custom Item ───────────────────────────────────────────────────────────────
 
+// How a custom item came into existence. Most are user-created from scratch
+// ('user_created'). 'aspiration_skeleton' marks items the app generated when
+// the user expressed broad intent (e.g. "legal name change") but the KB had
+// no jurisdiction-matched pathway — so the app dropped in a generic skeleton
+// the user fills in and (optionally) contributes back.
+export type CustomItemProvenance = 'user_created' | 'aspiration_skeleton'
+
 export interface CustomItem {
   id: string
   label: string
@@ -344,6 +416,10 @@ export interface CustomItem {
   track: string
   status: ItemStatus  // legacy — source of truth is checklist[id].status
   notes: string       // legacy — source of truth is checklist[id].notes
+  provenance?: CustomItemProvenance
+  // For aspiration_skeleton items: the aspiration slug that spawned it.
+  // Lets us group them and offer contribution hooks per-aspiration later.
+  aspiration_slug?: string
 }
 
 // ── Person ────────────────────────────────────────────────────────────────────

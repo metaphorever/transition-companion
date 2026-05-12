@@ -12,7 +12,7 @@ const PRIVACY_OPTIONS: ContributorPrivacyLevel[] = ['manual', 'always_include', 
 const PROMPTING_OPTIONS: ContributorPromptingLevel[] = ['contextual', 'proactive', 'off']
 const INVOLVEMENT_OPTIONS: ContributorInvolvementLevel[] = ['observer', 'reporter', 'contributor']
 
-export default function Step8Contributor({ step, onBack, onSkip, onNext }: StepProps) {
+export default function Step9Contributor({ step, onBack, onSkip, onNext }: StepProps) {
   const { t } = useTranslation()
   const settings = useAppStore((s) => s.userData.profile.contributor_settings)
   const patchProfile = useAppStore((s) => s.patchProfile)

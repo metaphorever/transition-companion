@@ -3,41 +3,42 @@ import { useMemo } from 'react'
 import WizardLayout from './WizardLayout'
 import type { StepProps } from './OnboardingWizard'
 import { useAppStore } from '../../store'
-import { ONBOARDING_DOCUMENT_KEYS, type OnboardingDocumentKey } from '../../utils/onboarding'
+import {
+  getApplicableDocStateItems,
+  defaultDocumentState,
+  type DocStateItemConfig,
+} from '../../utils/onboarding'
+import type { DocFieldStatus, DocumentState, KBItem } from '../../types'
 
-const NEGATIVE_OPTIONS = ['none', 'not_sure'] as const
-type NegativeOption = (typeof NEGATIVE_OPTIONS)[number]
+const FIELD_STATUSES: DocFieldStatus[] = ['old', 'new', 'in_progress', 'unknown']
 
 export default function Step4Documents({ step, onBack, onSkip, onNext }: StepProps) {
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
-  const patchProfile = useAppStore((s) => s.patchProfile)
+  const checklist = useAppStore((s) => s.userData.checklist)
+  const kb = useAppStore((s) => s.kb)
+  const setItemDocumentState = useAppStore((s) => s.setItemDocumentState)
 
-  const docs = useMemo(() => new Set(profile.documents_obtained as OnboardingDocumentKey[]), [
-    profile.documents_obtained,
-  ])
-  const negative = profile.documents_response
+  const applicable = useMemo(
+    () => getApplicableDocStateItems(kb, profile.jurisdiction, profile.birth_jurisdiction),
+    [kb, profile.jurisdiction, profile.birth_jurisdiction]
+  )
 
-  const showNoDocsNote = negative !== null && docs.size === 0
-
-  const toggleDoc = (key: OnboardingDocumentKey, checked: boolean) => {
-    const next = new Set(docs)
-    if (checked) next.add(key)
-    else next.delete(key)
-    patchProfile({
-      documents_obtained: Array.from(next),
-      // Picking any real document clears the negative response. Unchecking
-      // doesn't reassert one — that requires the user to pick "none" / "not
-      // sure" explicitly.
-      documents_response: checked ? null : negative,
-    })
-  }
-
-  const setNegative = (key: NegativeOption) => {
-    patchProfile({
-      documents_obtained: [],
-      documents_response: negative === key ? null : key,
-    })
+  if (applicable.length === 0) {
+    return (
+      <WizardLayout
+        step={step}
+        title={t('onboarding.steps.documents.title')}
+        subtitle={t('onboarding.steps.documents.subtitle')}
+        onBack={onBack}
+        onSkip={onSkip}
+        onNext={onNext}
+      >
+        <p className="text-sm text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-3 leading-relaxed">
+          {t('onboarding.steps.documents.no_applicable_items')}
+        </p>
+      </WizardLayout>
+    )
   }
 
   return (
@@ -49,62 +50,176 @@ export default function Step4Documents({ step, onBack, onSkip, onNext }: StepPro
       onSkip={onSkip}
       onNext={onNext}
     >
-      <div className="space-y-2">
-        {ONBOARDING_DOCUMENT_KEYS.map((k) => (
-          <label
-            key={k}
-            className="flex items-center gap-3 px-3 py-2 border border-neutral-200 rounded-md cursor-pointer hover:bg-neutral-50"
-          >
-            <input
-              type="checkbox"
-              checked={docs.has(k)}
-              onChange={(e) => toggleDoc(k, e.target.checked)}
-              className="accent-neutral-900"
+      <p className="text-xs text-neutral-500 leading-relaxed mb-4">
+        {t('onboarding.steps.documents.skip_hint')}
+      </p>
+      <div className="space-y-3">
+        {applicable.map(({ config, item }) => {
+          const current = checklist[config.slug]?.document_state ?? null
+          return (
+            <DocStateRow
+              key={config.slug}
+              config={config}
+              item={item}
+              value={current}
+              onChange={(v) => setItemDocumentState(config.slug, v)}
             />
-            <span className="text-sm">
-              {t(`onboarding.steps.documents.options.${kToOptionKey(k)}`)}
-            </span>
-          </label>
-        ))}
-
-        <div className="pt-2 border-t border-neutral-100" />
-
-        {NEGATIVE_OPTIONS.map((k) => (
-          <label
-            key={k}
-            className="flex items-center gap-3 px-3 py-2 border border-neutral-200 rounded-md cursor-pointer hover:bg-neutral-50"
-          >
-            <input
-              type="checkbox"
-              checked={negative === k}
-              onChange={() => setNegative(k)}
-              className="accent-neutral-900"
-            />
-            <span className="text-sm">
-              {t(`onboarding.steps.documents.options.${k}`)}
-            </span>
-          </label>
-        ))}
+          )
+        })}
       </div>
-
-      {showNoDocsNote && (
-        <p className="mt-6 text-sm text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-3 leading-relaxed">
-          {t('onboarding.steps.documents.no_docs_note')}
-        </p>
-      )}
     </WizardLayout>
   )
 }
 
-function kToOptionKey(k: OnboardingDocumentKey): string {
-  switch (k) {
-    case 'court-order':
-      return 'court_order'
-    case 'birth-certificate':
-      return 'birth_certificate'
-    case 'social-security':
-      return 'social_security'
-    case 'photo-id':
-      return 'photo_id'
+interface DocStateRowProps {
+  config: DocStateItemConfig
+  item: KBItem
+  value: DocumentState | null
+  onChange: (v: DocumentState | null) => void
+}
+
+function DocStateRow({ config, item, value, onChange }: DocStateRowProps) {
+  const { t } = useTranslation()
+  const filled = value !== null
+
+  const enable = () => {
+    onChange(defaultDocumentState(config.kind))
   }
+  const clear = () => onChange(null)
+
+  // Helpers that mutate the polymorphic shape safely by re-using current kind.
+  const setNameStatus = (s: DocFieldStatus) => {
+    if (!value) return
+    if (value.kind === 'name' || value.kind === 'full') {
+      onChange({ ...value, name_status: s })
+    }
+  }
+  const setMarkerStatus = (s: DocFieldStatus) => {
+    if (!value) return
+    if (value.kind === 'marker' || value.kind === 'full') {
+      onChange({ ...value, marker_status: s })
+    }
+  }
+  const setIssued = (d: string | null) => {
+    if (!value) return
+    onChange({ ...value, issued: d })
+  }
+  const setExpiration = (d: string | null) => {
+    if (!value) return
+    if (value.kind === 'name' || value.kind === 'full') {
+      onChange({ ...value, expiration_date: d })
+    }
+  }
+
+  return (
+    <div className="border border-neutral-200 rounded-md">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-100">
+        <div className="text-sm font-medium text-neutral-800">{item.label}</div>
+        {!filled ? (
+          <button
+            type="button"
+            onClick={enable}
+            className="text-xs text-neutral-700 underline-offset-2 hover:underline"
+          >
+            {t('onboarding.steps.documents.tell_us')}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={clear}
+            className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+          >
+            {t('onboarding.steps.documents.decide_later')}
+          </button>
+        )}
+      </div>
+      {filled && value && (
+        <div className="px-3 py-3 space-y-3">
+          {(value.kind === 'name' || value.kind === 'full') && (
+            <StatusPicker
+              label={t('onboarding.steps.documents.name_status_label')}
+              value={value.name_status}
+              onChange={setNameStatus}
+            />
+          )}
+          {(value.kind === 'marker' || value.kind === 'full') && (
+            <StatusPicker
+              label={t('onboarding.steps.documents.marker_status_label')}
+              value={value.marker_status}
+              onChange={setMarkerStatus}
+            />
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <DateInput
+              label={t('onboarding.steps.documents.issued_label')}
+              value={value.issued}
+              onChange={setIssued}
+            />
+            {(value.kind === 'name' || value.kind === 'full') && (
+              <DateInput
+                label={t('onboarding.steps.documents.expiration_label')}
+                value={value.expiration_date}
+                onChange={setExpiration}
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function StatusPicker({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: DocFieldStatus
+  onChange: (s: DocFieldStatus) => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <div>
+      <div className="text-xs text-neutral-600 mb-1.5">{label}</div>
+      <div className="flex flex-wrap gap-2">
+        {FIELD_STATUSES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => onChange(s)}
+            className={`px-3 py-1.5 text-xs rounded-md border ${
+              value === s
+                ? 'border-neutral-900 bg-neutral-900 text-white'
+                : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
+            }`}
+          >
+            {t(`onboarding.steps.documents.field_status.${s}`)}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DateInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string | null
+  onChange: (d: string | null) => void
+}) {
+  return (
+    <div>
+      <label className="block text-xs text-neutral-600 mb-1.5">{label}</label>
+      <input
+        type="date"
+        value={value ?? ''}
+        onChange={(e) => onChange(e.target.value || null)}
+        className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+      />
+    </div>
+  )
 }

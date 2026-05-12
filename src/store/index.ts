@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { UserData, KBCache, ItemStatus, ItemIntent, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person, RecurringItem, SubTask } from '../types'
+import type { UserData, KBCache, ItemStatus, ItemIntent, ItemPriority, DocumentState, ChecklistEntry, UserProfile, CustomItem, StatusLogEntry, Blocker, Person, RecurringItem, SubTask } from '../types'
 import {
   readUserData,
   updateUserData,
@@ -36,6 +36,13 @@ interface AppState {
   setItemNotes: (slug: string, notes: string) => void
   setItemDueDate: (slug: string, due_date: string | null) => void
   setItemEventDate: (slug: string, event_date: string | null) => void
+  setItemPriority: (slug: string, priority: ItemPriority | null) => void
+  setItemRevisitAt: (slug: string, revisit_at: string | null) => void
+  setItemDocumentState: (slug: string, document_state: DocumentState | null) => void
+  setItemJurisdictionOverride: (
+    slug: string,
+    override: { country: string | null; region: string | null } | null
+  ) => void
   getOrCreateEntry: (slug: string) => ChecklistEntry
   addItemToChecklist: (slug: string) => void
   removeItemFromChecklist: (slug: string) => void
@@ -173,6 +180,34 @@ export const useAppStore = create<AppState>((set, get) => ({
     get().patchUserData((data) => {
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
       data.checklist[slug] = { ...entry, event_date }
+    })
+  },
+
+  setItemPriority: (slug, priority) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, priority }
+    })
+  },
+
+  setItemRevisitAt: (slug, revisit_at) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, revisit_at }
+    })
+  },
+
+  setItemDocumentState: (slug, document_state) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, document_state }
+    })
+  },
+
+  setItemJurisdictionOverride: (slug, override) => {
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
+      data.checklist[slug] = { ...entry, jurisdiction_override: override }
     })
   },
 

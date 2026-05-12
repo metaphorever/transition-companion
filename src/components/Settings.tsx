@@ -9,7 +9,13 @@ import {
 } from 'react'
 import { useAppStore } from '../store'
 import { COUNTRIES, getRegionsForCountry, getCountryLabel } from '../utils/locations'
-import { ONBOARDING_DOCUMENT_KEYS, type OnboardingDocumentKey } from '../utils/onboarding'
+import {
+  ONBOARDING_DOCUMENT_KEYS,
+  type OnboardingDocumentKey,
+  ASPIRATIONS,
+  PRIORITY_VALUES,
+} from '../utils/onboarding'
+import BulkIntentEditor from './onboarding/BulkIntentEditor'
 import type {
   HousingStatus,
   WorkplaceSafety,
@@ -21,6 +27,7 @@ import type {
   ContributorPrivacyLevel,
   ContributorPromptingLevel,
   ContributorInvolvementLevel,
+  ItemPriority,
 } from '../types'
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
@@ -482,6 +489,238 @@ function LocationSection() {
           )}
         </Field>
       )}
+    </Section>
+  )
+}
+
+// ── Birth jurisdiction section ────────────────────────────────────────────────
+
+function BirthJurisdictionSection() {
+  const { t } = useTranslation()
+  const profile = useAppStore((s) => s.userData.profile)
+  const patchProfile = useAppStore((s) => s.patchProfile)
+
+  const birth = profile.birth_jurisdiction ?? null
+  const country = birth?.country ?? null
+  const region = birth?.region ?? null
+  const regions = useMemo(() => getRegionsForCountry(country), [country])
+
+  const setBirth = (next: { country: string | null; region: string | null } | null) => {
+    patchProfile({ birth_jurisdiction: next })
+  }
+
+  return (
+    <Section title={t('settings.section_birth_jurisdiction')}>
+      <p className="text-xs text-neutral-500 leading-relaxed">
+        {t('onboarding.steps.location.birth_hint')}
+      </p>
+      <Field label={t('onboarding.steps.location.country_label')}>
+        <CountryCombobox
+          value={country}
+          onChange={(code) => setBirth(code ? { country: code, region: null } : null)}
+          placeholder={t('onboarding.steps.location.country_placeholder')}
+        />
+      </Field>
+      {country && (
+        <Field label={t('onboarding.steps.location.region_label')}>
+          {regions ? (
+            <select
+              value={region ?? ''}
+              onChange={(e) => setBirth({ country, region: e.target.value || null })}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
+            >
+              <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
+              {regions.map((r) => (
+                <option key={r.code} value={r.code}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={region ?? ''}
+              onChange={(e) => setBirth({ country, region: e.target.value || null })}
+              placeholder={t('onboarding.steps.location.region_placeholder')}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+            />
+          )}
+        </Field>
+      )}
+    </Section>
+  )
+}
+
+// ── Other jurisdictions section ───────────────────────────────────────────────
+
+function OtherJurisdictionsSection() {
+  const { t } = useTranslation()
+  const profile = useAppStore((s) => s.userData.profile)
+  const patchProfile = useAppStore((s) => s.patchProfile)
+
+  const others = profile.other_jurisdictions ?? []
+  const setOthers = (next: { country: string | null; region: string | null }[]) => {
+    patchProfile({ other_jurisdictions: next })
+  }
+
+  return (
+    <Section title={t('settings.section_other_jurisdictions')}>
+      <p className="text-xs text-neutral-500 leading-relaxed">
+        {t('onboarding.steps.location.others_hint')}
+      </p>
+      {others.map((j, idx) => (
+        <OtherJurisdictionRow
+          key={idx}
+          value={j}
+          onChange={(v) => {
+            const next = [...others]
+            next[idx] = v
+            setOthers(next)
+          }}
+          onRemove={() => setOthers(others.filter((_, i) => i !== idx))}
+        />
+      ))}
+      <button
+        type="button"
+        onClick={() => setOthers([...others, { country: null, region: null }])}
+        className="text-sm text-neutral-700 underline-offset-2 hover:underline"
+      >
+        {t('onboarding.steps.location.add_another_other')}
+      </button>
+    </Section>
+  )
+}
+
+function OtherJurisdictionRow({
+  value,
+  onChange,
+  onRemove,
+}: {
+  value: { country: string | null; region: string | null }
+  onChange: (v: { country: string | null; region: string | null }) => void
+  onRemove: () => void
+}) {
+  const { t } = useTranslation()
+  const regions = useMemo(() => getRegionsForCountry(value.country), [value.country])
+
+  return (
+    <div className="border border-neutral-200 rounded-md p-3 space-y-3">
+      <Field label={t('onboarding.steps.location.country_label')}>
+        <CountryCombobox
+          value={value.country}
+          onChange={(code) => onChange({ country: code, region: null })}
+          placeholder={t('onboarding.steps.location.country_placeholder')}
+        />
+      </Field>
+      {value.country && (
+        <Field label={t('onboarding.steps.location.region_label')}>
+          {regions ? (
+            <select
+              value={value.region ?? ''}
+              onChange={(e) => onChange({ country: value.country, region: e.target.value || null })}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
+            >
+              <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
+              {regions.map((r) => (
+                <option key={r.code} value={r.code}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={value.region ?? ''}
+              onChange={(e) => onChange({ country: value.country, region: e.target.value || null })}
+              placeholder={t('onboarding.steps.location.region_placeholder')}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+            />
+          )}
+        </Field>
+      )}
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+      >
+        {t('onboarding.steps.location.remove_other')}
+      </button>
+    </div>
+  )
+}
+
+// ── Aspirations section ───────────────────────────────────────────────────────
+
+function AspirationsSection() {
+  const { t } = useTranslation()
+  const profile = useAppStore((s) => s.userData.profile)
+  const patchProfile = useAppStore((s) => s.patchProfile)
+  const current = profile.onboarding_aspirations ?? {}
+  const visible = useMemo(() => {
+    if (profile.active_tracks.length === 0) return ASPIRATIONS
+    const set = new Set(profile.active_tracks)
+    return ASPIRATIONS.filter((a) => set.has(a.track))
+  }, [profile.active_tracks])
+
+  const setPriority = (slug: string, priority: ItemPriority | null) => {
+    const next = { ...current }
+    if (priority === null) delete next[slug]
+    else next[slug] = priority
+    patchProfile({ onboarding_aspirations: next })
+  }
+
+  return (
+    <Section title={t('settings.section_aspirations')}>
+      <p className="text-xs text-neutral-500 leading-relaxed">
+        {t('settings.section_aspirations_intro')}
+      </p>
+      <div className="space-y-3">
+        {visible.map((a) => {
+          const value = current[a.slug] ?? null
+          return (
+            <div key={a.slug} className="border border-neutral-200 rounded-md">
+              <div className="px-3 py-2 border-b border-neutral-100">
+                <div className="text-sm font-medium text-neutral-900">
+                  {t(`onboarding.steps.direction.aspirations.${a.i18n_key}.label`)}
+                </div>
+                <div className="text-xs text-neutral-600 mt-0.5 leading-relaxed">
+                  {t(`onboarding.steps.direction.aspirations.${a.i18n_key}.description`)}
+                </div>
+              </div>
+              <div className="px-3 py-2 flex flex-wrap gap-2">
+                {PRIORITY_VALUES.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPriority(a.slug, value === p ? null : p)}
+                    className={`px-3 py-1.5 text-xs rounded-md border ${
+                      value === p
+                        ? 'border-neutral-900 bg-neutral-900 text-white'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
+                    }`}
+                  >
+                    {t(`onboarding.steps.direction.priority.${p}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </Section>
+  )
+}
+
+// ── Bulk intent (Manage your list) section ────────────────────────────────────
+
+function BulkIntentSection() {
+  const { t } = useTranslation()
+  return (
+    <Section title={t('settings.section_bulk_intent')}>
+      <p className="text-xs text-neutral-500 leading-relaxed">
+        {t('settings.section_bulk_intent_intro')}
+      </p>
+      <BulkIntentEditor />
     </Section>
   )
 }
@@ -1141,7 +1380,11 @@ export default function Settings() {
       <div className="space-y-12">
         <ProfileSection />
         <LocationSection />
+        <BirthJurisdictionSection />
+        <OtherJurisdictionsSection />
         <DocumentsSection />
+        <AspirationsSection />
+        <BulkIntentSection />
         <SafetySection />
         <PresenceSection />
         <ContributorSection />

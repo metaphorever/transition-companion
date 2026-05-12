@@ -6,8 +6,11 @@ import BlockersSection from './BlockersSection'
 import type {
   ChecklistEntry,
   CustomItem,
+  DocFieldStatus,
+  DocumentState,
   GenderMarkerChange,
   ItemIntent,
+  ItemPriority,
   ItemStatus,
   KBItem,
   PresenceLevel,
@@ -15,6 +18,7 @@ import type {
   SubTask,
   UserProfile,
 } from '../../types'
+import { defaultDocumentState, ONBOARDING_DOC_STATE_ITEMS } from '../../utils/onboarding'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -731,6 +735,11 @@ function DatesSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) 
   const { t } = useTranslation()
   const setItemDueDate = useAppStore((s) => s.setItemDueDate)
   const setItemEventDate = useAppStore((s) => s.setItemEventDate)
+  const setItemPriority = useAppStore((s) => s.setItemPriority)
+  const setItemRevisitAt = useAppStore((s) => s.setItemRevisitAt)
+
+  const priorities: ItemPriority[] = ['now', 'soon', 'someday', 'unsure']
+  const currentPriority = entry.priority ?? null
 
   return (
     <section className="mb-8" aria-labelledby="dates-heading">
@@ -740,7 +749,37 @@ function DatesSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) 
       >
         {t('item_detail.dates_heading')}
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs text-neutral-500 block mb-1">{t('item.priority_label')}</label>
+          <div className="flex flex-wrap gap-2">
+            {priorities.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setItemPriority(slug, currentPriority === p ? null : p)}
+                className={`px-3 py-1.5 text-xs rounded-md border ${
+                  currentPriority === p
+                    ? 'border-neutral-900 bg-neutral-900 text-white'
+                    : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
+                }`}
+              >
+                {t(`item.priority.${p}`)}
+              </button>
+            ))}
+            {currentPriority !== null && (
+              <button
+                type="button"
+                onClick={() => setItemPriority(slug, null)}
+                className="px-3 py-1.5 text-xs text-neutral-500 underline-offset-2 hover:underline"
+              >
+                {t('item.priority_clear')}
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">{t('item.priority_hint')}</p>
+        </div>
+
         <div>
           <label className="text-xs text-neutral-500 block mb-1">{t('item_detail.due_date_label')}</label>
           <input
@@ -759,7 +798,161 @@ function DatesSection({ slug, entry }: { slug: string; entry: ChecklistEntry }) 
             className="px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
           />
         </div>
+        <div>
+          <label className="text-xs text-neutral-500 block mb-1">{t('item.revisit.label')}</label>
+          <input
+            type="date"
+            value={entry.revisit_at ?? ''}
+            onChange={(e) => setItemRevisitAt(slug, e.target.value || null)}
+            className="px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-neutral-600"
+          />
+          <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">{t('item.revisit.hint')}</p>
+        </div>
       </div>
+    </section>
+  )
+}
+
+// Document state — what the real-world document currently shows. Separate
+// from the user's progress on changing it.
+function DocumentStateSection({
+  slug,
+  entry,
+  kind,
+}: {
+  slug: string
+  entry: ChecklistEntry
+  kind: DocumentState['kind']
+}) {
+  const { t } = useTranslation()
+  const setDocState = useAppStore((s) => s.setItemDocumentState)
+  const value = entry.document_state ?? null
+
+  // Initialize with the configured kind. If the stored kind doesn't match
+  // (e.g. data migration drift), we trust the stored value and don't overwrite.
+  const enable = () => setDocState(slug, defaultDocumentState(kind))
+  const clear = () => setDocState(slug, null)
+
+  const setNameStatus = (s: DocFieldStatus) => {
+    if (!value) return
+    if (value.kind === 'name' || value.kind === 'full') setDocState(slug, { ...value, name_status: s })
+  }
+  const setMarkerStatus = (s: DocFieldStatus) => {
+    if (!value) return
+    if (value.kind === 'marker' || value.kind === 'full') setDocState(slug, { ...value, marker_status: s })
+  }
+  const setIssued = (d: string | null) => {
+    if (!value) return
+    setDocState(slug, { ...value, issued: d })
+  }
+  const setExpiration = (d: string | null) => {
+    if (!value) return
+    if (value.kind === 'name' || value.kind === 'full') setDocState(slug, { ...value, expiration_date: d })
+  }
+
+  const fieldStatuses: DocFieldStatus[] = ['old', 'new', 'in_progress', 'unknown']
+
+  return (
+    <section className="mb-8" aria-labelledby="doc-state-heading">
+      <h2
+        id="doc-state-heading"
+        className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+      >
+        {t('item.doc_state.heading')}
+      </h2>
+      <p className="text-xs text-neutral-500 mb-3 leading-relaxed">{t('item.doc_state.intro')}</p>
+
+      {value === null ? (
+        <button
+          type="button"
+          onClick={enable}
+          className="text-sm text-neutral-700 underline-offset-2 hover:underline"
+        >
+          {t('item.doc_state.capture')}
+        </button>
+      ) : (
+        <div className="space-y-4">
+          {(value.kind === 'name' || value.kind === 'full') && (
+            <div>
+              <div className="text-xs text-neutral-600 mb-1.5">
+                {t('item.doc_state.name_status_label')}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {fieldStatuses.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setNameStatus(s)}
+                    className={`px-3 py-1.5 text-xs rounded-md border ${
+                      value.name_status === s
+                        ? 'border-neutral-900 bg-neutral-900 text-white'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
+                    }`}
+                  >
+                    {t(`item.doc_state.field_status.${s}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {(value.kind === 'marker' || value.kind === 'full') && (
+            <div>
+              <div className="text-xs text-neutral-600 mb-1.5">
+                {t('item.doc_state.marker_status_label')}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {fieldStatuses.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setMarkerStatus(s)}
+                    className={`px-3 py-1.5 text-xs rounded-md border ${
+                      value.marker_status === s
+                        ? 'border-neutral-900 bg-neutral-900 text-white'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
+                    }`}
+                  >
+                    {t(`item.doc_state.field_status.${s}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-neutral-500 mb-1">
+                {t('item.doc_state.issued_label')}
+              </label>
+              <input
+                type="date"
+                value={value.issued ?? ''}
+                onChange={(e) => setIssued(e.target.value || null)}
+                className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg"
+              />
+            </div>
+            {(value.kind === 'name' || value.kind === 'full') && (
+              <div>
+                <label className="block text-xs text-neutral-500 mb-1">
+                  {t('item.doc_state.expiration_label')}
+                </label>
+                <input
+                  type="date"
+                  value={value.expiration_date ?? ''}
+                  onChange={(e) => setExpiration(e.target.value || null)}
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg"
+                />
+              </div>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={clear}
+            className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+          >
+            {t('item.doc_state.clear')}
+          </button>
+        </div>
+      )}
     </section>
   )
 }
@@ -1286,6 +1479,16 @@ export default function ItemDetail() {
 
       {/* Dates (C5) */}
       {slug && <DatesSection slug={slug} entry={entry} />}
+
+      {/* Document state (Phase 14) — only for items in the doc-state registry
+          or that already have document_state captured. */}
+      {slug &&
+        (() => {
+          const config = ONBOARDING_DOC_STATE_ITEMS.find((c) => c.slug === slug)
+          const kind = entry.document_state?.kind ?? config?.kind
+          if (!kind) return null
+          return <DocumentStateSection slug={slug} entry={entry} kind={kind} />
+        })()}
 
       {/* Notes */}
       <section className="mb-8" aria-labelledby="notes-heading">

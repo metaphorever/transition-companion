@@ -62,24 +62,39 @@
       "location": {
         "title": "Where are you?",
         "subtitle": "This helps us show you the right steps and flag anything specific to your area.",
+        "current_heading": "Where you live now",
         "country_label": "Country",
         "country_placeholder": "Search countries...",
         "region_label": "State or region",
         "region_placeholder": "Select...",
-        "no_kb_data": "We do not have specific information for your area yet. We will still help you find the right direction for each item, and you can add what you discover."
+        "no_kb_data": "We do not have specific information for your area yet. We will still help you find the right direction for each item, and you can add what you discover.",
+        "birth_heading": "Were you born somewhere different?",
+        "birth_hint": "Birth certificates and some other records are usually issued where you were born — not where you live now.",
+        "others_heading": "Anywhere else with documents that may matter?",
+        "others_hint": "Prior residences, immigration history, anywhere you still hold records that may need updating.",
+        "add": "Add",
+        "hide": "Hide",
+        "clear": "Clear",
+        "remove_other": "Remove",
+        "add_another_other": "Add another place"
       },
       "documents": {
-        "title": "What documents do you have?",
-        "subtitle": "These help figure out what steps are available to you right now.",
-        "options": {
-          "court_order": "Court order / legal name change decree",
-          "birth_certificate": "Updated birth certificate",
-          "social_security": "Updated Social Security card",
-          "photo_id": "Updated government photo ID (driver's license, state ID, or passport)",
-          "none": "None of these yet",
-          "not_sure": "Not sure"
+        "title": "Documents you already have",
+        "subtitle": "Tell us where each of these stands today. Skip anything you would rather come back to later.",
+        "skip_hint": "These details help us show you the right next step on each item. Nothing here is required.",
+        "tell_us": "Tell us about this",
+        "decide_later": "Decide later",
+        "name_status_label": "Name on the document",
+        "marker_status_label": "Gender marker on the document",
+        "issued_label": "Issued (optional)",
+        "expiration_label": "Expires (optional)",
+        "field_status": {
+          "old": "Old name / marker",
+          "new": "New name / marker",
+          "in_progress": "Update in progress",
+          "unknown": "Not sure"
         },
-        "no_docs_note": "That is completely fine. You can still build your list and see the full path ahead. We will highlight what is available to you now and what opens up as documents arrive."
+        "no_applicable_items": "Based on where you are, we don't have specific documents to ask about right now. You can capture document state on each item later if it is useful."
       },
       "safety": {
         "title": "Safety and access",
@@ -155,18 +170,83 @@
         "open_doors_no": "No",
         "per_track_note": "You can set this differently for each track. For now your overall setting applies everywhere, and you can adjust per-track from the dashboard at any time."
       },
-      "categories": {
+      "direction": {
+        "title": "What are you heading toward?",
+        "subtitle": "A loose sense of where things sit for you. You can change any of this at any time.",
+        "hint": "For each one, pick what feels true today. Leave any blank that does not apply or that you do not want to think about right now.",
+        "footer": "These choices help us shape what your dashboard shows you first. Nothing here is a commitment.",
+        "unset": "Clear",
+        "priority": {
+          "now": "Now",
+          "soon": "Soon",
+          "someday": "Someday",
+          "unsure": "Not sure"
+        },
+        "aspirations": {
+          "legal_name_change": {
+            "label": "Legal name change",
+            "description": "Changing the name on official records — full change, partial, or a specific document."
+          },
+          "gender_marker_change": {
+            "label": "Gender marker on documents",
+            "description": "Updating the marker on IDs and other records, where possible."
+          },
+          "birth_certificate_update": {
+            "label": "Birth certificate update",
+            "description": "Amending or reissuing your birth certificate."
+          },
+          "medical_transition": {
+            "label": "Medical transition",
+            "description": "Finding care, starting hormones, surgical consultations, or whatever path fits you."
+          },
+          "social_name_use": {
+            "label": "Using your name socially",
+            "description": "Choosing where and with whom your name is used — distinct from legal change."
+          },
+          "finding_a_name": {
+            "label": "Finding the right name",
+            "description": "Still working out what to call yourself. That is its own kind of work."
+          },
+          "accounts_and_services": {
+            "label": "Updating accounts and services",
+            "description": "Banks, employers, subscriptions, anywhere your name or marker is stored."
+          },
+          "workplace_update": {
+            "label": "Workplace name or presentation",
+            "description": "Changes at work — name, pronouns, how you show up."
+          }
+        }
+      },
+      "bulk_intent": {
         "title": "Build your list",
-        "subtitle": "For each section, check what applies to you. No item is pre-selected. There is no pressure to include anything.",
-        "skip_category": "Skip this whole section",
+        "subtitle": "Mark items by what you want to do with them. Anything you leave alone stays off your list.",
+        "hint": "You can mark a whole section at once or pick item by item. Search to find something specific.",
+        "search_placeholder": "Search items...",
+        "no_kb_yet": "We do not have suggested items loaded for these tracks yet. You can still add your own here, or add things later from the dashboard.",
+        "relationship_note": "Whether, when, and how to come out to anyone is entirely your choice. Nothing in this section is a suggestion.",
+        "expand": "Show",
+        "collapse": "Hide",
+        "mark_all_as": "Mark all in this section as: {{intent}}",
+        "mark_all": {
+          "update": "All: do",
+          "not_applicable": "All: doesn't apply",
+          "not_wanted": "All: skip",
+          "unknown": "All: not sure"
+        },
+        "intent_short": {
+          "update": "Do",
+          "not_applicable": "N/A",
+          "not_wanted": "Skip",
+          "unknown": "Not sure"
+        },
+        "off_list": "Off list",
         "add_custom": "Add something else here",
         "custom_placeholder": "What do you want to call it?",
         "custom_add_button": "Add",
         "custom_cancel": "Cancel",
-        "relationship_note": "Whether, when, and how to come out to anyone is entirely your choice. Nothing in this section is a suggestion.",
-        "no_kb_yet": "We do not have suggested items loaded for these tracks yet. You can still add your own here, or add things later from the dashboard.",
-        "track_skipped": "Skipped for now. You can always come back.",
-        "remove_custom": "Remove",
+        "skeletons_heading": "From your earlier answers",
+        "skeletons_note": "We added these as starting points based on what you said earlier. They are placeholders you can fill in — anything you learn here helps the next person too.",
+        "skeleton_description": "Placeholder. Fill in the steps that apply to your jurisdiction. You can contribute what you learn back to the knowledge base later.",
         "selected_count_one": "1 item on your list",
         "selected_count_other": "{{count}} items on your list"
       },
@@ -260,7 +340,15 @@
     "subtask_overdue_hint": "One or more sub-tasks on this item are past their due date",
     "dated_heading": "Coming up",
     "policy_blocked_heading": "Currently not possible",
-    "policy_blocked_intro": "These items are blocked by policy right now. They will still be here if the situation changes."
+    "policy_blocked_intro": "These items are blocked by policy right now. They will still be here if the situation changes.",
+    "priority_now": "Now",
+    "priority_soon": "Soon",
+    "priority_someday": "Someday",
+    "priority_unsure": "Not sure",
+    "revisit_section_heading": "Worth revisiting",
+    "revisit_section_intro": "You wanted to come back to these. No pressure — they are just here when you are ready.",
+    "someday_section_heading": "Someday",
+    "someday_section_intro": "Things you want on the list but are not actively working on right now."
   },
   "item": {
     "status": {
@@ -280,6 +368,45 @@
       "not_applicable": "Does not apply to me",
       "not_wanted": "Choosing not to do this",
       "unknown": "Not sure yet"
+    },
+    "priority": {
+      "now": "Now",
+      "soon": "Soon",
+      "someday": "Someday",
+      "unsure": "Not sure"
+    },
+    "priority_hint": "When you expect to be working on this. Editable any time.",
+    "priority_label": "Timing",
+    "priority_clear": "Clear",
+    "doc_state": {
+      "heading": "Document state",
+      "intro": "What the current document looks like — separate from how far you are with the paperwork to change it.",
+      "name_status_label": "Name on the document",
+      "marker_status_label": "Gender marker on the document",
+      "issued_label": "Issued",
+      "expiration_label": "Expires",
+      "field_status": {
+        "old": "Old name / marker",
+        "new": "New name / marker",
+        "in_progress": "Update in progress",
+        "unknown": "Not sure"
+      },
+      "not_captured": "Not captured yet",
+      "capture": "Add document state",
+      "clear": "Clear document state",
+      "expiring_soon": "Expires {{date}}",
+      "expired": "Expired {{date}}"
+    },
+    "jurisdiction_override": {
+      "label": "Jurisdiction for this item",
+      "hint": "Defaults to the right place based on the item type. Change this if a different jurisdiction applies.",
+      "use_default": "Use default",
+      "set_override": "Use a different jurisdiction"
+    },
+    "revisit": {
+      "label": "Revisit on",
+      "hint": "We will surface this quietly on your dashboard on or after this date.",
+      "due": "Wanted to revisit"
     },
     "importance": {
       "critical": "Critical",
@@ -326,6 +453,12 @@
     "back": "Back to dashboard",
     "section_profile": "Your profile",
     "section_location": "Location",
+    "section_birth_jurisdiction": "Where you were born",
+    "section_other_jurisdictions": "Other places with documents",
+    "section_aspirations": "Your broad direction",
+    "section_aspirations_intro": "What you said you were heading toward when you started. Edit any time.",
+    "section_bulk_intent": "Manage your list",
+    "section_bulk_intent_intro": "Add, remove, or change the intent on any item. Use the search box to find something quickly.",
     "section_documents": "Documents you have",
     "section_safety": "Safety and access",
     "section_presence": "Presence level",

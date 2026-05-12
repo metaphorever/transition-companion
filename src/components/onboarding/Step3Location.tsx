@@ -5,27 +5,15 @@ import type { StepProps } from './OnboardingWizard'
 import { useAppStore } from '../../store'
 import { COUNTRIES, getRegionsForCountry, getCountryLabel } from '../../utils/locations'
 
+type JLike = { country: string | null; region: string | null }
+
 export default function Step3Location({ step, onBack, onSkip, onNext }: StepProps) {
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
   const patchProfile = useAppStore((s) => s.patchProfile)
+  const kb = useAppStore((s) => s.kb)
 
   const country = profile.jurisdiction.country
-  const region = profile.jurisdiction.region
-  const regions = useMemo(() => getRegionsForCountry(country), [country])
-
-  const setCountry = (code: string | null) => {
-    patchProfile({ jurisdiction: { country: code, region: null } })
-  }
-  const setRegion = (code: string | null) => {
-    patchProfile({ jurisdiction: { country, region: code } })
-  }
-
-  // Heuristic: if the user picked a country and we don't yet have KB
-  // jurisdiction data for it, surface the reassuring note. KB cache is
-  // optional here — if it isn't loaded, we don't show the note (no false
-  // alarm).
-  const kb = useAppStore((s) => s.kb)
   const showNoKBDataNote = useMemo(() => {
     if (!country || !kb) return false
     const hasAny = Object.values(kb.jurisdictions).some(
@@ -33,6 +21,24 @@ export default function Step3Location({ step, onBack, onSkip, onNext }: StepProp
     )
     return !hasAny
   }, [country, kb])
+
+  const setMain = (next: JLike) => {
+    patchProfile({ jurisdiction: next })
+  }
+
+  const birth = profile.birth_jurisdiction ?? null
+  const [birthExpanded, setBirthExpanded] = useState(
+    Boolean(birth?.country) && (birth?.country !== country || birth?.region !== profile.jurisdiction.region)
+  )
+  const setBirth = (next: JLike | null) => {
+    patchProfile({ birth_jurisdiction: next })
+  }
+
+  const others = profile.other_jurisdictions ?? []
+  const [othersExpanded, setOthersExpanded] = useState(others.length > 0)
+  const setOthers = (next: JLike[]) => {
+    patchProfile({ other_jurisdictions: next })
+  }
 
   return (
     <WizardLayout
@@ -43,63 +49,177 @@ export default function Step3Location({ step, onBack, onSkip, onNext }: StepProp
       onSkip={onSkip}
       onNext={onNext}
     >
-      <div className="space-y-6">
-        <div>
-          <label
-            htmlFor="country"
-            className="block text-sm font-medium text-neutral-800 mb-2"
+      <div className="space-y-8">
+        <section className="space-y-4">
+          <h3 className="text-sm font-medium text-neutral-800">
+            {t('onboarding.steps.location.current_heading')}
+          </h3>
+          <JurisdictionPicker value={profile.jurisdiction} onChange={setMain} />
+          {showNoKBDataNote && (
+            <p className="text-sm text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-3 leading-relaxed">
+              {t('onboarding.steps.location.no_kb_data')}
+            </p>
+          )}
+        </section>
+
+        <section className="space-y-3 border-t border-neutral-100 pt-6">
+          <button
+            type="button"
+            onClick={() => setBirthExpanded((v) => !v)}
+            className="flex items-center justify-between w-full text-left"
           >
-            {t('onboarding.steps.location.country_label')}
-          </label>
-          <CountryCombobox
-            value={country}
-            onChange={setCountry}
-            placeholder={t('onboarding.steps.location.country_placeholder')}
-          />
-        </div>
-
-        {country && (
-          <div>
-            <label
-              htmlFor="region"
-              className="block text-sm font-medium text-neutral-800 mb-2"
-            >
-              {t('onboarding.steps.location.region_label')}
-            </label>
-            {regions ? (
-              <select
-                id="region"
-                value={region ?? ''}
-                onChange={(e) => setRegion(e.target.value || null)}
-                className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
-              >
-                <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
-                {regions.map((r) => (
-                  <option key={r.code} value={r.code}>
-                    {r.label}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                id="region"
-                type="text"
-                value={region ?? ''}
-                onChange={(e) => setRegion(e.target.value || null)}
-                placeholder={t('onboarding.steps.location.region_placeholder')}
-                className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+            <div>
+              <div className="text-sm font-medium text-neutral-800">
+                {t('onboarding.steps.location.birth_heading')}
+              </div>
+              <div className="text-xs text-neutral-500 mt-0.5 leading-relaxed">
+                {t('onboarding.steps.location.birth_hint')}
+              </div>
+            </div>
+            <span className="text-xs text-neutral-500 underline-offset-2">
+              {birthExpanded
+                ? t('onboarding.steps.location.hide')
+                : t('onboarding.steps.location.add')}
+            </span>
+          </button>
+          {birthExpanded && (
+            <div className="space-y-3">
+              <JurisdictionPicker
+                value={birth ?? { country: null, region: null }}
+                onChange={(v) =>
+                  setBirth(v.country || v.region ? v : null)
+                }
               />
-            )}
-          </div>
-        )}
+              {birth && (birth.country || birth.region) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBirth(null)
+                    setBirthExpanded(false)
+                  }}
+                  className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+                >
+                  {t('onboarding.steps.location.clear')}
+                </button>
+              )}
+            </div>
+          )}
+        </section>
 
-        {showNoKBDataNote && (
-          <p className="text-sm text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-3 leading-relaxed">
-            {t('onboarding.steps.location.no_kb_data')}
-          </p>
-        )}
+        <section className="space-y-3 border-t border-neutral-100 pt-6">
+          <button
+            type="button"
+            onClick={() => setOthersExpanded((v) => !v)}
+            className="flex items-center justify-between w-full text-left"
+          >
+            <div>
+              <div className="text-sm font-medium text-neutral-800">
+                {t('onboarding.steps.location.others_heading')}
+              </div>
+              <div className="text-xs text-neutral-500 mt-0.5 leading-relaxed">
+                {t('onboarding.steps.location.others_hint')}
+              </div>
+            </div>
+            <span className="text-xs text-neutral-500 underline-offset-2">
+              {othersExpanded
+                ? t('onboarding.steps.location.hide')
+                : t('onboarding.steps.location.add')}
+            </span>
+          </button>
+          {othersExpanded && (
+            <div className="space-y-3">
+              {others.map((j, idx) => (
+                <div key={idx} className="space-y-2 border border-neutral-200 rounded-md p-3">
+                  <JurisdictionPicker
+                    value={j}
+                    onChange={(v) => {
+                      const next = [...others]
+                      next[idx] = v
+                      setOthers(next)
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setOthers(others.filter((_, i) => i !== idx))}
+                    className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+                  >
+                    {t('onboarding.steps.location.remove_other')}
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setOthers([...others, { country: null, region: null }])}
+                className="text-sm text-neutral-700 underline-offset-2 hover:underline"
+              >
+                {t('onboarding.steps.location.add_another_other')}
+              </button>
+            </div>
+          )}
+        </section>
       </div>
     </WizardLayout>
+  )
+}
+
+interface JurisdictionPickerProps {
+  value: JLike
+  onChange: (next: JLike) => void
+}
+
+function JurisdictionPicker({ value, onChange }: JurisdictionPickerProps) {
+  const { t } = useTranslation()
+  const regions = useMemo(() => getRegionsForCountry(value.country), [value.country])
+
+  const setCountry = (code: string | null) => {
+    onChange({ country: code, region: null })
+  }
+  const setRegion = (code: string | null) => {
+    onChange({ country: value.country, region: code })
+  }
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <label className="block text-sm font-medium text-neutral-800 mb-2">
+          {t('onboarding.steps.location.country_label')}
+        </label>
+        <CountryCombobox
+          value={value.country}
+          onChange={setCountry}
+          placeholder={t('onboarding.steps.location.country_placeholder')}
+        />
+      </div>
+      {value.country && (
+        <div>
+          <label className="block text-sm font-medium text-neutral-800 mb-2">
+            {t('onboarding.steps.location.region_label')}
+          </label>
+          {regions ? (
+            <select
+              value={value.region ?? ''}
+              onChange={(e) => setRegion(e.target.value || null)}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
+            >
+              <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
+              {regions.map((r) => (
+                <option key={r.code} value={r.code}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={value.region ?? ''}
+              onChange={(e) => setRegion(e.target.value || null)}
+              placeholder={t('onboarding.steps.location.region_placeholder')}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+            />
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -115,15 +235,11 @@ function CountryCombobox({ value, onChange, placeholder }: CountryComboboxProps)
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
 
-  // Sync the visible text when the stored value changes externally (e.g. the
-  // user navigated away and back). Adjusting state during render — preferred
-  // over useEffect for prop-derived state.
   if (value !== trackedValue) {
     setTrackedValue(value)
     setQuery(getCountryLabel(value) ?? '')
   }
 
-  // Click-outside collapses the suggestion list.
   useEffect(() => {
     if (!open) return
     const handler = (e: MouseEvent) => {
@@ -150,7 +266,6 @@ function CountryCombobox({ value, onChange, placeholder }: CountryComboboxProps)
   return (
     <div ref={wrapRef} className="relative">
       <input
-        id="country"
         type="text"
         value={query}
         onChange={(e) => {

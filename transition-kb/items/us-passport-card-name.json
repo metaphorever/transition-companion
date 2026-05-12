@@ -1,10 +1,10 @@
 {
-  "slug": "us-passport-card",
-  "label": "U.S. Passport Card",
+  "slug": "us-passport-card-name",
+  "label": "U.S. Passport Card — Name Update",
   "category": "federal-id",
   "track": "legal",
   "subcategory": null,
-  "description": "Update your name and gender marker on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically.",
+  "description": "Update your name on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically. The sex designation field is tracked separately — see U.S. Passport Card — Sex Designation.",
   "importance": "medium",
   "jurisdiction": { "country": "US", "region": null },
   "requires": ["ssa-name"],
@@ -59,16 +59,13 @@
     "notes": null
   },
   "gender_marker_change": {
-    "applies": true,
-    "status": "danger",
-    "status_note": "Same restrictions apply as for the passport book. As of January 2025, only M and F are available. The X marker was suspended by executive order. Consult an LGBTQ+ legal organization before applying for a gender marker change.",
-    "status_date": "2025-01-20",
-    "markers_historically_available": ["M", "F", "X"],
-    "markers_currently_available": ["M", "F"],
-    "advocacy_links": [
-      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
-      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
-    ]
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
   },
   "discrimination_notes": null,
   "presence_level_content": {

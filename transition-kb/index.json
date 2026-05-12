@@ -1,10 +1,13 @@
 {
   "items": [
     "ssa-name",
+    "ssa-marker",
     "il-birth-cert",
     "il-dl",
-    "us-passport",
-    "us-passport-card",
+    "us-passport-name",
+    "us-passport-marker",
+    "us-passport-card-name",
+    "us-passport-card-marker",
     "il-voter-reg",
     "usps-informed-delivery",
     "fsa-id",

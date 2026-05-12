@@ -16,7 +16,7 @@
       "phase": 2,
       "label": "Identity Documents",
       "description": "Government-issued photo ID and travel documents. An updated driver's license or state ID is required by banks, employers, and many other institutions.",
-      "items": ["il-dl", "us-passport", "us-passport-card"],
+      "items": ["il-dl", "us-passport-name", "us-passport-card-name"],
       "note": "The driver's license is required before most phase 3 and 4 updates. Passport and passport card can be done simultaneously."
     },
     {

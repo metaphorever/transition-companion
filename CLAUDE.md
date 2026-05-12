@@ -40,16 +40,27 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 13 — Wave 2: Multi-Aspect Item Split + KB Content Refresh**
+**PHASE: 14 — Wave 3: Onboarding Overhaul (Document State + Jurisdiction + Bulk Intent UI)**
 **Status: Not started**
-**Model: Sonnet · Effort: high — Opus subsession for B6 federal marker alert copy**
-**Last session: Opus session opened to start Phase 14 was redirected — Phase 13 (Wave 2) had not been done yet (Sonnet had miscounted phase order). No code changes; this CLAUDE.md update is the only output, repointing the Current Phase header at Phase 13 so the next session opens to the right place.**
+**Model: Opus · Effort: high**
+**Last session: Phase 13 (Wave 2) complete. All item splits, KB content refresh, storage migration, and snapshot rebuild shipped. See carryover notes below.**
 
-**Phase 13 prep — read before starting:**
-- See "Phase 13 — Wave 2" in the Phase Map below for the full task list. Touchpoints: KB JSON files, schema (split items get new slugs like `ssa-name`/`ssa-marker`, `passport-name`/`passport-marker`, etc.), storage migration to redistribute existing `ssa`/`passport`/etc. ChecklistEntry data to the split slugs, dependency graph references in KB items that point to the old slugs.
-- **Phase 11 carryover applies here**: `recovery_items` is unpopulated in KB. Add `recovery_items` to items like `il-dl` (revocation surfaces residency steps) and `ssa-name` (revocation surfaces court-order item) as part of this wave's KB content refresh. The schema field already exists.
-- **B6 alert copy is an Opus subsession** — when the main Sonnet session reaches the federal marker alert rewrite, commit progress and open a brief Opus · xhigh subsession for the copy alone. Same tone constraints as Phase 5 alert copy. Then return to Sonnet to land it.
-- **Migration shape (per phase spec)**: existing `ssa` ChecklistEntry → `ssa-name` (status preserved); `ssa-marker` starts fresh with `intent: 'update'` if any prior progress on `ssa`, else `intent: 'unknown'`. Same pattern for passport, passport card, FSA ID. `irs-marker` is a new item; IRS name auto-derives from SSA so no `irs-name` split.
+**Previous phase (13 — Wave 2: Multi-Aspect Item Split + KB Content Refresh): COMPLETE.**
+
+Item splits shipped: `ssa-name` (label updated to "Social Security Administration — Name Update") stays as-is; new `ssa-marker` created. `us-passport` renamed to `us-passport-name` (old file deleted); new `us-passport-marker` created. `us-passport-card` renamed to `us-passport-card-name` (old file deleted); new `us-passport-card-marker` created. `fsa-id` and `irs-name` were NOT split — both have `gender_marker_change.applies: false` in the KB data, so no marker variants exist for them. `irs-marker` and `fsa-id-marker` as described in the spec were skipped as they would be inaccurate.
+
+All three marker items (`ssa-marker`, `us-passport-marker`, `us-passport-card-marker`) are `immutable: true` — reusing Phase 12's auto-set-to-`policy_blocked`-on-first-open behavior. Phase 15's KB-conditions model is the proper home for tracking "policy may change" — for now immutable is the pragmatic call.
+
+Storage migration in `src/utils/storage.ts`: renames `us-passport` → `us-passport-name` and `us-passport-card` → `us-passport-card-name` checklist entries; seeds `policy_blocked` + `intent: 'update'` marker entries for any user who had engagement with the corresponding name item.
+
+`recovery_items` added: `il-dl` gets `["ssa-name", "il-birth-cert"]`; `ssa-name` gets `["il-birth-cert"]`.
+
+`transition-kb/index.json` and `il-legal-name.json` sequence updated to use new slugs. `public/kb-snapshot/index.json` rebuilt from source (Python script, no Node required — Node not in sandbox PATH).
+
+**Phase 13 carryover notes:**
+- **B6 alert copy is draft/placeholder Sonnet copy** — all three marker items have factually accurate descriptions and status_notes, but tone has not been through Opus review. Per user direction, Opus copy polish is deferred to pre-public-beta, not a blocking concern for ongoing development.
+- **Node/npm not available in sandbox shells** — tests could not be run in the worktree. Run `npm test` in the main project directory (`C:\Users\Clover\Desktop\transition-companion`) before deploying. TypeScript types verified by grep: `recovery_items?: string[]` and `policy_blocked` both confirmed present in `src/types/index.ts`. Ordering tests use generic mock slugs — no actual KB slug references that need updating.
+- **Old `us-passport.json` and `us-passport-card.json` deleted** — if any user data export from before this phase is imported, the migration in `mergeWithDefaults` handles the rename. The old files are gone from the repo.
 
 **Previous phase (12 — Wave 1: Bugs + Intent Field + Custom Items First-Class + Immutable Handling): COMPLETE.** All Phase 12 items shipped. Schema: added `ItemIntent` type, `policy_blocked` and `researching` to `ItemStatus`, `intent?`/`due_date?`/`event_date?` to `ChecklistEntry`, `start_date?` to `RecurringItem`, `description?` to `CustomItem`. Bugs A1–A6 fixed (scroll-to-top, iOS zoom, track-scope warning, dashboard intent filter, timezone-safe date arithmetic via `localDateString()` in `src/utils/recurring.ts`, page title). Storage migration back-fills `intent: 'update'` on existing checklist entries and creates default `ChecklistEntry` records for existing custom items. Custom items are now first-class: full detail page with edit/delete, sub-tasks, blockers, intent, dates (C1). Immutable KB items auto-set to `policy_blocked` on first open and live in a collapsible "Currently not possible" section on the dashboard (C2). Dated one-shot tasks: `due_date`/`event_date` on `ChecklistEntry`, surfaces within 30 days on dashboard (C5). `start_date` on `RecurringItem` as fixed-mode anchor before first log (C4). 72 tests passing, clean build and type-check.
 
@@ -64,7 +75,7 @@ Check the current build phase below. The phase determines which model should be 
 - **Phase 10 carryover — `required_by` field unpopulated in KB snapshot**: All dependency edges are declared only in the requiring item's `requires` array (e.g., `il-dl.requires = ['ssa-name']`). The `required_by` field on KB items is always `[]` in the current snapshot. `UnlocksHint` correctly derives dependents by scanning all items for `requires.includes(slug)` — this is correct and doesn't need the field. If the KB eventually populates `required_by`, the ordering graph's merge logic handles both directions.
 - **Phase 10 carryover — open_doors description text**: The KB `description` field is used in the open_doors section cards. All current items have descriptions, but if a future item has a null or empty description the card still renders cleanly (description only shows when truthy).
 
-- **Phase 11 carryover — recovery_items not yet populated in KB seed data**: `recovery_items` is an optional field on KBItem — the type is `string[] | undefined`. The bundled snapshot has no `recovery_items` on any item. UI handles undefined/empty correctly. Pick up during Phase 13 (Wave 2 — KB content refresh) — add `recovery_items` to items like `il-dl` (revocation surfaces residency steps) and `ssa-name` (revocation surfaces court-order item).
+- **Phase 11 carryover — recovery_items populated in Phase 13**: `il-dl` now has `["ssa-name", "il-birth-cert"]`; `ssa-name` has `["il-birth-cert"]`. Other items still have no `recovery_items` — add as appropriate during future KB content passes.
 - **Phase 11 carryover — ICS calendar export not built**: Deferred to v2 (Phase 23). Data model already supports it when prioritized.
 - **Phase 11 carryover — "First Sunday of month" recurrence + multi-time-per-day patterns not built**: Calendar-based recurrence and multi-event-per-day (morning/evening doses) deferred to v2.
 

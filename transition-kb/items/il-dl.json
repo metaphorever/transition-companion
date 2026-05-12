@@ -74,6 +74,7 @@
       { "label": "Transformative Justice Law Project of Illinois", "url": "https://www.tjlp.org" }
     ]
   },
+  "recovery_items": ["ssa-name", "il-birth-cert"],
   "discrimination_notes": "Illinois Human Rights Act prohibits discrimination based on sexual orientation and gender identity. Staff at Driver Services facilities are required to treat you with respect throughout the process.",
   "presence_level_content": {
     "some_guidance": "An updated driver's license or state ID is often the most-requested document when updating other records — banks, employers, and utilities frequently use it as proof of identity. Doing this soon after SSA makes the rest of the list move faster.",

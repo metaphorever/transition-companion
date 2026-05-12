@@ -1,6 +1,6 @@
 {
   "slug": "ssa-name",
-  "label": "Social Security Administration",
+  "label": "Social Security Administration — Name Update",
   "category": "federal-id",
   "track": "legal",
   "subcategory": null,
@@ -68,18 +68,15 @@
     "notes": null
   },
   "gender_marker_change": {
-    "applies": true,
-    "status": "danger",
-    "status_note": "As of January 2025, federal executive orders directed the SSA to recognize only binary sex designations (M or F). The X marker option is no longer available, and changes between M and F now require documentation rather than self-certification. This is being litigated. Check current SSA policy and consult an LGBTQ+ legal organization before attempting a gender marker update.",
-    "status_date": "2025-01-20",
-    "markers_historically_available": ["M", "F", "X"],
-    "markers_currently_available": ["M", "F"],
-    "advocacy_links": [
-      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
-      { "label": "ACLU LGBTQ+ Rights", "url": "https://www.aclu.org/lgbtq-rights" },
-      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
-    ]
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
   },
+  "recovery_items": ["il-birth-cert"],
   "discrimination_notes": "Federal law prohibits discrimination based on sex, which courts have interpreted to include gender identity in employment contexts. SSA staff are required to process your application regardless of your appearance or presentation.",
   "presence_level_content": {
     "some_guidance": "SSA is the anchor for most downstream name changes. Employment records, tax filings, and financial institutions often verify your name against SSA records. Doing this first prevents mismatches that slow other updates.",

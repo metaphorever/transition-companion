@@ -1,0 +1,70 @@
+{
+  "slug": "us-passport-marker",
+  "label": "U.S. Passport — Sex Designation",
+  "category": "federal-id",
+  "track": "legal",
+  "subcategory": null,
+  "description": "Update the sex designation on your U.S. passport. This is tracked separately from the passport name update because the two aspects have different legal statuses. The sex designation on U.S. passports is currently not changeable under federal policy.",
+  "importance": "high",
+  "jurisdiction": { "country": "US", "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": true,
+  "immutable_note": "Federal executive orders issued in January 2025 suspended the X gender marker option for U.S. passports and now require a physician's statement or medical documentation for M/F changes, reversing the self-certification policy in place since 2022. This policy is being challenged in court. This item will be updated as legal status changes.",
+  "immutable_compassion_note": "This is a policy situation, not a permanent legal reality. Advocacy organizations including Lambda Legal and the ACLU are actively challenging these orders. If this matters to you, the advocacy links below are the best source of current status.",
+  "workarounds": [],
+  "process": {
+    "summary": "When federal policy permits: sex designation changes on a U.S. passport are made as part of the same DS-11 or DS-82 application used for name changes. The current executive orders have suspended the X option and added documentation requirements for M/F changes.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Monitor current policy through LGBTQ+ legal advocacy organizations. The legal landscape around this has changed rapidly and may change again.",
+        "modes": ["preparation"],
+        "note": "Lambda Legal, the ACLU, and the National Center for Transgender Equality publish updates on federal ID policy changes."
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["preparation"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "No additional cost beyond the passport application fee when available",
+    "estimated_time_days": "Not currently available.",
+    "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
+    "url_info": "https://transequality.org/know-your-rights/federal-updates",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": true,
+    "status": "danger",
+    "status_note": "Federal executive orders issued in January 2025 suspended the X gender marker option for U.S. passports. Only M and F are currently available. M/F changes now require a physician's statement or medical documentation — the self-certification policy in place since 2022 has been reversed. Active litigation may alter this. Do not attempt a sex designation change without first checking current guidance from an LGBTQ+ legal organization.",
+    "status_date": "2025-01-20",
+    "markers_historically_available": ["M", "F", "X"],
+    "markers_currently_available": ["M", "F"],
+    "advocacy_links": [
+      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
+      { "label": "ACLU: Passport Gender Marker", "url": "https://www.aclu.org/lgbtq-rights" },
+      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
+    ]
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": "This item is here so you know it exists and can track whether policy changes. You do not need to act on it now.",
+    "walk_with_me": "It is reasonable to feel frustrated that something that was possible is no longer available. Knowing where things stand — even when the answer is 'not right now' — is more useful than not tracking it."
+  },
+  "last_verified": "2026-05-11",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://transequality.org/know-your-rights/federal-updates",
+      "label": "National Center for Transgender Equality: Federal ID Updates",
+      "retrieved": "2026-05-11"
+    }
+  ]
+}

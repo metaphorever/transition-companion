@@ -1,10 +1,10 @@
 {
-  "slug": "us-passport",
-  "label": "U.S. Passport",
+  "slug": "us-passport-name",
+  "label": "U.S. Passport — Name Update",
   "category": "federal-id",
   "track": "legal",
   "subcategory": null,
-  "description": "Update your name and, if applicable, gender marker on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID.",
+  "description": "Update your name on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID. The sex designation field is tracked separately — see U.S. Passport — Sex Designation.",
   "importance": "high",
   "jurisdiction": { "country": "US", "region": null },
   "requires": ["ssa-name"],
@@ -71,17 +71,13 @@
     "notes": null
   },
   "gender_marker_change": {
-    "applies": true,
-    "status": "danger",
-    "status_note": "As of early 2025, federal executive orders suspended the X gender marker option for U.S. passports. Only M and F are currently available. Changes between M and F now require a physician's statement or medical documentation, reversing the previous self-certification policy. This is being challenged in court. Consult an LGBTQ+ legal organization for current guidance before applying for a gender marker change.",
-    "status_date": "2025-01-20",
-    "markers_historically_available": ["M", "F", "X"],
-    "markers_currently_available": ["M", "F"],
-    "advocacy_links": [
-      { "label": "Lambda Legal", "url": "https://www.lambdalegal.org" },
-      { "label": "ACLU: Passport Gender Marker", "url": "https://www.aclu.org" },
-      { "label": "National Center for Transgender Equality", "url": "https://transequality.org" }
-    ]
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
   },
   "discrimination_notes": null,
   "presence_level_content": {

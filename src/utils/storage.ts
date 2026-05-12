@@ -101,6 +101,44 @@ function mergeWithDefaults(stored: UserData): UserData {
     }
   }
 
+  // Phase 13: rename us-passport → us-passport-name; us-passport-card → us-passport-card-name.
+  // Also seed policy_blocked marker entries for users who had progress on the source items.
+  const MARKER_MIGRATIONS: Array<{ oldSlug: string; nameSlug: string; markerSlug: string }> = [
+    { oldSlug: 'us-passport',      nameSlug: 'us-passport-name',      markerSlug: 'us-passport-marker' },
+    { oldSlug: 'us-passport-card', nameSlug: 'us-passport-card-name', markerSlug: 'us-passport-card-marker' },
+  ]
+  for (const { oldSlug, nameSlug, markerSlug } of MARKER_MIGRATIONS) {
+    if (checklist[oldSlug] && !checklist[nameSlug]) {
+      checklist[nameSlug] = checklist[oldSlug]
+      delete checklist[oldSlug]
+    }
+    // Seed a policy_blocked marker entry if the user had any engagement with the name item
+    const nameEntry = checklist[nameSlug]
+    if (nameEntry && !checklist[markerSlug]) {
+      checklist[markerSlug] = {
+        status: 'policy_blocked',
+        intent: 'update' as const,
+        completed_at: null,
+        blockers: [],
+        notes: '',
+        custom_fields: {},
+        sub_tasks: [],
+      }
+    }
+  }
+  // SSA marker: seed policy_blocked entry if user has an ssa-name entry
+  if (checklist['ssa-name'] && !checklist['ssa-marker']) {
+    checklist['ssa-marker'] = {
+      status: 'policy_blocked',
+      intent: 'update' as const,
+      completed_at: null,
+      blockers: [],
+      notes: '',
+      custom_fields: {},
+      sub_tasks: [],
+    }
+  }
+
   // Migrate custom items: ensure every custom item has a ChecklistEntry
   const custom_items = stored.custom_items ?? []
   for (const c of custom_items) {

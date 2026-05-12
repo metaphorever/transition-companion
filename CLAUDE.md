@@ -398,8 +398,11 @@ Completion-moment hook (B5):
 
 *This is a technical phase followed by a sustained personal use period before Phase 19 begins.*
 
+**Deployment note (2026-05-11):** The subdomain was accidentally deleted and recreated. The `.htaccess` config required non-obvious settings to work correctly (had trouble with it previously). When Phase 18 begins, recovering the working `.htaccess` setup is the first priority — check git history and any notes for the config that was confirmed working. Do not assume a default Apache/cPanel config will handle Vite's client-side routing correctly without it.
+
 Technical work:
 - Deploy the app to your website (static hosting, Vite build output)
+- Restore and document the working `.htaccess` (SPA routing rewrite rules — was tricky last time)
 - Set up any CI/CD needed for future deploys (GitHub Actions or equivalent)
 - Confirm the app loads correctly on mobile (responsive check, no broken layouts)
 - Confirm localStorage behaves correctly across browsers you actually use

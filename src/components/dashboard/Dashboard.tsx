@@ -433,6 +433,40 @@ export default function Dashboard() {
     return results
   }, [userData.checklist, userData.custom_items, kb, profile.presence, activeTrack])
 
+  // Dashboard-level policy-changed nudge for presence > just_the_path.
+  // Surfaces parents that have an active policy blocker whose linked KB
+  // condition's status_date has advanced past the blocker's own status_date —
+  // i.e. policy has moved since the user noted it blocked.
+  const policyChangedParents = useMemo(() => {
+    const overallLevel = profile.presence.overall_level
+    if (overallLevel === 'just_the_path' && !profile.presence.open_doors) return []
+    if (!kb) return []
+
+    const results: { id: string; label: string }[] = []
+    for (const [parentSlug, entry] of Object.entries(userData.checklist)) {
+      if (effectiveIntent(entry) !== 'update') continue
+      let policyMoved = false
+      for (const b of entry.blockers) {
+        if (!isActiveStoredBlocker(b)) continue
+        if (b.resolution_mode !== 'out_of_control') continue
+        if (b.out_of_control_kind !== 'policy') continue
+        if (!b.kb_condition_ref) continue
+        const cond = kb.conditions?.[b.kb_condition_ref]
+        if (!cond) continue
+        if (cond.status_date > b.status_date) {
+          policyMoved = true
+          break
+        }
+      }
+      if (!policyMoved) continue
+      const kbItem = kb.items[parentSlug]
+      const customItem = userData.custom_items.find((c) => c.id === parentSlug)
+      if (activeTrack && (kbItem?.track ?? customItem?.track) !== activeTrack) continue
+      results.push({ id: parentSlug, label: kbItem?.label ?? customItem?.label ?? parentSlug })
+    }
+    return results
+  }, [userData.checklist, userData.custom_items, kb, profile.presence, activeTrack])
+
   // KB items not on the user's checklist — surfaced when open_doors is on or walk_with_me is active
   const openDoorsItems = useMemo(() => {
     if (!kb) return []
@@ -787,6 +821,30 @@ export default function Dashboard() {
             </p>
             <ul className="space-y-1">
               {resolveReadyParents.map((p) => (
+                <li key={p.id}>
+                  <Link
+                    to={`/item/${p.id}`}
+                    className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+                  >
+                    {p.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Policy-changed nudge (presence > just_the_path) */}
+        {policyChangedParents.length > 0 && (
+          <div className="mb-6 px-4 py-3 border border-neutral-400 rounded-lg">
+            <p className="text-sm font-medium text-neutral-900 mb-1">
+              {t('dashboard.policy_changed_nudge_heading')}
+            </p>
+            <p className="text-xs text-neutral-600 mb-2 leading-relaxed">
+              {t('dashboard.policy_changed_nudge_intro')}
+            </p>
+            <ul className="space-y-1">
+              {policyChangedParents.map((p) => (
                 <li key={p.id}>
                   <Link
                     to={`/item/${p.id}`}

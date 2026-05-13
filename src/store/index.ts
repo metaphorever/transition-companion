@@ -78,7 +78,9 @@ interface AppState {
   removeCustomItem: (id: string) => void
 
   // Recurring item actions
-  addRecurringItem: (item: Omit<RecurringItem, 'id'>) => void
+  // Returns the id of the newly created recurring item — callers (e.g. blocker
+  // re-check setup) need it to link the item back to the originating record.
+  addRecurringItem: (item: Omit<RecurringItem, 'id'>) => string
   updateRecurringItem: (id: string, patch: Partial<Omit<RecurringItem, 'id'>>) => void
   removeRecurringItem: (id: string) => void
   // Log completion: sets last_logged_at to today; for fixed mode next_date stays null (computed on the fly)
@@ -418,10 +420,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   addRecurringItem: (item) => {
+    const id = `rec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
     get().patchUserData((data) => {
-      const id = `rec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
       data.recurring_items = [...(data.recurring_items ?? []), { id, ...item }]
     })
+    return id
   },
 
   updateRecurringItem: (id, patch) => {

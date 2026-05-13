@@ -395,13 +395,19 @@ export interface Blocker {
   // referenced condition's status_date advances past this blocker's
   // status_date.
   kb_condition_ref?: string
+  // For out_of_control + personal_circumstance: id of a RecurringItem the
+  // user has attached as a re-check reminder. Optional — the user opts in.
+  // When the recurring item is due/overdue, the parent task surfaces a
+  // quiet "time to re-check this?" prompt.
+  reminder_recurring_id?: string
   // Free-text user-authored description ("what's in the way"). Primary
   // user-facing field for the blocker.
   description?: string
   status: BlockerStatus
   // YYYY-MM-DD when status was last set. Used to detect "the policy changed
   // since you noted this" for policy blockers (compare against the
-  // condition's status_date).
+  // condition's status_date). Also bumped by the "I've seen this" policy-
+  // changed acknowledgment to quiet the prompt until the next change.
   status_date: string
   suppress_workaround?: boolean
 }

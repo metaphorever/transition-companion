@@ -15,6 +15,7 @@ import type {
   UserData,
 } from '../../types'
 import { isActiveStoredBlocker } from '../../utils/ordering'
+import { dueDateLabel, getEffectiveDueDate, localDateString } from '../../utils/recurring'
 
 // Only user-defined blocker types are surfaced. `document` blockers are
 // graph-derived and never stored — see CLAUDE.md.
@@ -198,33 +199,192 @@ function KBConditionPanel({
   condition,
   blockerStatusDate,
   onRevisit,
+  onAcknowledge,
 }: {
   condition: KBCondition
   blockerStatusDate: string
   onRevisit: () => void
+  onAcknowledge: () => void
 }) {
   const { t } = useTranslation()
   const policyChanged = condition.status_date > blockerStatusDate
+  const firstReference = condition.references[0]
   return (
     <div className="mt-2 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded">
       <p className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-1">
         {t('blockers.policy_situation_heading')}
       </p>
       <p className="text-sm text-neutral-800 leading-relaxed">{condition.name}</p>
-      <p className="text-xs text-neutral-600 leading-relaxed mt-1">{condition.status_summary}</p>
+      {condition.status_summary && (
+        <p className="text-xs text-neutral-600 leading-relaxed mt-1">{condition.status_summary}</p>
+      )}
+      <p className="text-xs text-neutral-500 leading-relaxed mt-1">
+        {t('blockers.policy_situation_status_line', {
+          status: t(`blockers.condition_status.${condition.current_status}`),
+          date: condition.status_date,
+        })}
+      </p>
+      {firstReference && (
+        <p className="text-xs mt-1">
+          <a
+            href={firstReference.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+          >
+            {firstReference.label}
+          </a>
+        </p>
+      )}
       {policyChanged && (
         <div className="mt-2 px-3 py-2 border border-neutral-400 rounded">
           <p className="text-sm font-medium text-neutral-900 mb-1">
             {t('blockers.policy_changed_heading')}
           </p>
           <p className="text-xs text-neutral-600 mb-2">{t('blockers.policy_changed_intro')}</p>
-          <button
-            type="button"
-            onClick={onRevisit}
-            className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
-          >
-            {t('blockers.policy_changed_revisit')}
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={onRevisit}
+              className="text-sm text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+            >
+              {t('blockers.policy_changed_revisit')}
+            </button>
+            <button
+              type="button"
+              onClick={onAcknowledge}
+              className="text-sm text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
+            >
+              {t('blockers.policy_changed_acknowledge')}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const REMINDER_INTERVAL_OPTIONS = [30, 90, 180, 365] as const
+
+function PersonalCircumstancePanel({
+  blocker,
+  userData,
+  onAttachReminder,
+  onLogReminder,
+  onDetachReminder,
+}: {
+  blocker: Blocker
+  userData: UserData
+  onAttachReminder: (intervalDays: number) => void
+  onLogReminder: () => void
+  onDetachReminder: () => void
+}) {
+  const { t } = useTranslation()
+  const [showForm, setShowForm] = useState(false)
+  const [interval, setInterval] = useState<number>(90)
+
+  const reminder = useMemo(() => {
+    if (!blocker.reminder_recurring_id) return null
+    return userData.recurring_items.find((r) => r.id === blocker.reminder_recurring_id) ?? null
+  }, [blocker.reminder_recurring_id, userData.recurring_items])
+
+  const today = localDateString()
+  const due = reminder ? getEffectiveDueDate(reminder) : null
+  const isOverdueOrToday = due !== null && due <= today
+
+  return (
+    <div className="mt-2 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded">
+      <p className="text-xs text-neutral-600 leading-relaxed">
+        {t('blockers.personal_circumstance_note')}
+      </p>
+
+      {!reminder && !showForm && (
+        <button
+          type="button"
+          onClick={() => setShowForm(true)}
+          className="mt-2 text-xs text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+        >
+          {t('blockers.reminder_attach')}
+        </button>
+      )}
+
+      {!reminder && showForm && (
+        <div className="mt-2 space-y-2">
+          <p className="text-xs text-neutral-500 leading-relaxed">
+            {t('blockers.reminder_form_intro')}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {REMINDER_INTERVAL_OPTIONS.map((days) => (
+              <button
+                key={days}
+                type="button"
+                onClick={() => setInterval(days)}
+                className={`px-2 py-1 text-xs rounded border ${
+                  interval === days
+                    ? 'border-neutral-700 bg-neutral-100 text-neutral-900'
+                    : 'border-neutral-300 text-neutral-600 hover:border-neutral-500'
+                }`}
+              >
+                {t(`blockers.reminder_interval.${days}`)}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                onAttachReminder(interval)
+                setShowForm(false)
+              }}
+              className="px-3 py-1.5 text-xs bg-neutral-900 text-white rounded hover:bg-neutral-800"
+            >
+              {t('blockers.reminder_save')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900"
+            >
+              {t('blockers.cancel')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {reminder && (
+        <div className="mt-2">
+          <p className="text-xs text-neutral-700 leading-relaxed">
+            {due
+              ? t('blockers.reminder_due_label', {
+                  when: dueDateLabel(due, today),
+                  date: due,
+                })
+              : t('blockers.reminder_open')}
+          </p>
+          <div className="flex flex-wrap gap-3 mt-1.5">
+            {isOverdueOrToday && (
+              <button
+                type="button"
+                onClick={onLogReminder}
+                className="text-xs text-neutral-700 underline underline-offset-2 hover:text-neutral-900"
+              >
+                {t('blockers.reminder_log')}
+              </button>
+            )}
+            <Link
+              to="/recurring"
+              className="text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
+            >
+              {t('blockers.reminder_open_in_recurring')}
+            </Link>
+            <button
+              type="button"
+              onClick={onDetachReminder}
+              className="text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
+            >
+              {t('blockers.reminder_remove')}
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -385,6 +545,10 @@ function BlockerCard({
   onDismiss,
   onReactivate,
   onConvertToTask,
+  onAcknowledgePolicyChange,
+  onAttachReminder,
+  onLogReminder,
+  onDetachReminder,
 }: {
   blocker: Blocker
   parentSlug: string
@@ -404,6 +568,10 @@ function BlockerCard({
     track: string
     description?: string
   }) => void
+  onAcknowledgePolicyChange: () => void
+  onAttachReminder: (intervalDays: number) => void
+  onLogReminder: () => void
+  onDetachReminder: () => void
 }) {
   const { t } = useTranslation()
   const [showConvert, setShowConvert] = useState(false)
@@ -558,16 +726,21 @@ function BlockerCard({
             condition={condition}
             blockerStatusDate={blocker.status_date}
             onRevisit={onEdit}
+            onAcknowledge={onAcknowledgePolicyChange}
           />
         )}
 
-      {/* Personal circumstance note */}
+      {/* Personal circumstance panel — text + optional re-check reminder */}
       {isActive &&
         blocker.resolution_mode === 'out_of_control' &&
         blocker.out_of_control_kind === 'personal_circumstance' && (
-          <p className="mt-2 text-xs text-neutral-500 leading-relaxed">
-            {t('blockers.personal_circumstance_note')}
-          </p>
+          <PersonalCircumstancePanel
+            blocker={blocker}
+            userData={userData}
+            onAttachReminder={onAttachReminder}
+            onLogReminder={onLogReminder}
+            onDetachReminder={onDetachReminder}
+          />
         )}
 
       {/* Confirm-resolve prompt — a linked resolution task is complete */}
@@ -845,8 +1018,56 @@ export default function BlockersSection({
   const dismissBlocker = useAppStore((s) => s.dismissBlocker)
   const reactivateBlocker = useAppStore((s) => s.reactivateBlocker)
   const convertBlockerToTask = useAppStore((s) => s.convertBlockerToTask)
+  const addRecurringItem = useAppStore((s) => s.addRecurringItem)
+  const removeRecurringItem = useAppStore((s) => s.removeRecurringItem)
+  const logRecurringItem = useAppStore((s) => s.logRecurringItem)
   const kb = useAppStore((s) => s.kb)
   const userData = useAppStore((s) => s.userData)
+
+  // Build a label for a re-check recurring item from the parent + blocker.
+  // Pulled into a helper because both branches (drill into onAttachReminder
+  // from the active and the show-resolved card list) call it.
+  function buildReminderLabel(blocker: Blocker): string {
+    const parentLabel =
+      kb?.items[slug]?.label ??
+      userData.custom_items.find((c) => c.id === slug)?.label ??
+      slug
+    return t('blockers.recurring_label_template', {
+      parent: parentLabel,
+      blocker: blocker.description ?? t('blockers.recurring_label_fallback'),
+    })
+  }
+
+  function handleAttachReminder(blocker: Blocker, intervalDays: number) {
+    const newId = addRecurringItem({
+      label: buildReminderLabel(blocker),
+      mode: 'fixed',
+      interval_days: intervalDays,
+      next_date: null,
+      last_logged_at: null,
+      start_date: localDateString(),
+      track: parentTrack,
+      notes: '',
+    })
+    updateBlocker(slug, blocker.id, { reminder_recurring_id: newId })
+  }
+
+  function handleDetachReminder(blocker: Blocker) {
+    if (blocker.reminder_recurring_id) {
+      removeRecurringItem(blocker.reminder_recurring_id)
+    }
+    updateBlocker(slug, blocker.id, { reminder_recurring_id: undefined })
+  }
+
+  function handleLogReminder(blocker: Blocker) {
+    if (blocker.reminder_recurring_id) {
+      logRecurringItem(blocker.reminder_recurring_id)
+    }
+  }
+
+  function handleAcknowledgePolicyChange(blocker: Blocker) {
+    updateBlocker(slug, blocker.id, { status_date: localDateString() })
+  }
 
   // Read ?trail= from the URL so drill-in links can stack the breadcrumb.
   const currentTrail = useMemo(() => {
@@ -936,6 +1157,10 @@ export default function BlockersSection({
                     // Drill into the new task immediately, with breadcrumb back here.
                     navigate(buildDrillInHref(newId, slug, currentTrail))
                   }}
+                  onAcknowledgePolicyChange={() => handleAcknowledgePolicyChange(b)}
+                  onAttachReminder={(days) => handleAttachReminder(b, days)}
+                  onLogReminder={() => handleLogReminder(b)}
+                  onDetachReminder={() => handleDetachReminder(b)}
                 />
               )}
             </li>
@@ -1013,6 +1238,10 @@ export default function BlockersSection({
                       const newId = convertBlockerToTask(slug, b.id, init)
                       navigate(buildDrillInHref(newId, slug, currentTrail))
                     }}
+                    onAcknowledgePolicyChange={() => handleAcknowledgePolicyChange(b)}
+                    onAttachReminder={(days) => handleAttachReminder(b, days)}
+                    onLogReminder={() => handleLogReminder(b)}
+                    onDetachReminder={() => handleDetachReminder(b)}
                   />
                 </li>
               ))}

@@ -41,9 +41,21 @@ Check the current build phase below. The phase determines which model should be 
 ## Current Phase
 
 **PHASE: 15 — Wave 4: Blocker Model Rework**
-**Status: Not started**
+**Status: Stage A complete. Stages B and C pending in separate sessions.**
 **Model: Opus · Effort: high**
-**Last session: Phase 14 (Wave 3) complete. Onboarding overhauled with new direction step + bulk intent picker + document state capture; jurisdiction model expanded; priority/revisit fields on ChecklistEntry; Settings parity for all of it.**
+**Last session: Phase 15 Stage A — schema + KB conditions plumbing + store actions shipped. Per user direction, Phase 15 is split into three stages with a fresh session per stage; Stage B (dashboard reshape + item detail blocker UI rewrite) is next.**
+
+**Phase 15 Stage A carryover notes:**
+- **Phase split into three stages.** A = schema + plumbing (this session, complete). B = dashboard reshape into Active / Working on blockers / Waiting + item detail blocker section rewrite with inline-expandable resolution tasks, breadcrumb drill-in, convert-to-task button, confirm-resolve prompts, reverse-lookup "this task resolves blockers on [X]" header. C = KB condition change detection (compare blocker.status_date vs. condition.status_date), policy-changed nudges, optional recurring re-check for personal_circumstance blockers, Opus alert-copy pass on the new prompts and on the federal-marker-policy `status_summary`.
+- **Old `Blocker` fields kept as deprecated optionals** in `src/types/index.ts` so the pre-Phase-15 `BlockersSection.tsx` still compiles untouched. Fields marked: `label`, `kb_dependency`, `person_ref`, `user_defined`, `severity`, `resolvable`, `resolvable_note`, `workaround_available`, `workaround_note`. Stage B's UI rewrite must delete all of them along with `BlockerResolvable` and `BlockerSeverity` enums — nothing in new code should reference them. `suppress_workaround` is still considered relevant for the new model so it stays.
+- **`addBlocker` return value + signature change.** Now returns the new blocker id (`string`) and auto-fills `id`, `status: 'active'`, `status_date: <today>`. Callers pass `Omit<Blocker, 'id' | 'status' | 'status_date'>` and MUST provide `resolution_mode`. Stage B's new form UI will set this from the form's resolvable/out-of-control radio.
+- **`isActiveStoredBlocker` (in `src/utils/ordering.ts`)** now filters by `status === 'active'` in addition to the existing `type !== 'document'` check. Defensive default for missing `status` is `'active'`. Resolved/dismissed blockers no longer count as blocking in the dependency graph.
+- **`primaryBlockerLabel`** in `computeItemAvailability` falls through `description → label → null`. Stage B should ensure new blockers always have a `description` so this is no longer a fallback chain.
+- **KB conditions seeded:** `federal-marker-policy` (current_status: `restricted`, covers `ssa-marker`, `us-passport-marker`, `us-passport-card-marker`) and `us-marriage-policy` (current_status: `blocked`, covers `us-marriage-cert`). Both have factual `status_summary` text — Stage C should run them through the alert-copy review. Other immutable items can get `kb_condition_ref` set in later phases as needed.
+- **`KBCache.conditions` is required.** Anywhere that constructs a `KBCache` literal (network fetch, snapshot fallback, test mocks) needs to provide it. Defensive read added in `storage.readKBCache()` for pre-Phase-15 stored caches (fills `conditions: {}`).
+- **`convertBlockerToTask(slug, blockerId, taskInit)`** spawns a custom item, gives it its own ChecklistEntry, and pushes the new id into the parent blocker's `resolution_task_ids`. The CustomItem is created with `provenance: 'user_created'`. Caller supplies label/category/track/description.
+- **No Node/npm in sandbox** — `npm run build` + `npm test` need to run in the main project directory before deploy or Stage B work begins. Python is available; JSON validity confirmed on all 29 KB source files + the snapshot.
+- **Snapshot mojibake unchanged** — pre-existing UTF-8 mojibake (`â€"` for em-dashes) in `public/kb-snapshot/index.json` was not touched. Separate KB content cleanup pass, not in Phase 15 scope.
 
 **Previous phase (14 — Wave 3: Onboarding Overhaul): COMPLETE.**
 

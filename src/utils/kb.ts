@@ -1,4 +1,4 @@
-import type { KBCache, KBItem, Category, Track, Sequence, Jurisdiction } from '../types'
+import type { KBCache, KBItem, Category, Track, Sequence, Jurisdiction, KBCondition } from '../types'
 import { readKBCache, writeKBCache, isKBCacheValid } from './storage'
 
 const KB_ORG = 'metaphorever'
@@ -17,6 +17,20 @@ type BundledSnapshot = {
   tracks: Record<string, Track>
   sequences: Record<string, Sequence>
   jurisdictions: Record<string, Jurisdiction>
+  // Optional in the type because pre-Phase-15 snapshots don't carry it.
+  // Runtime defaults to {} when absent.
+  conditions?: Record<string, KBCondition>
+}
+
+interface KBIndex {
+  items: string[]
+  categories: string[]
+  tracks: string[]
+  sequences: string[]
+  jurisdictions: string[]
+  // Optional because the remote may not yet carry the conditions key when
+  // this code first deploys. Missing key → no conditions loaded.
+  conditions?: string[]
 }
 
 async function fetchJSON<T>(url: string): Promise<T> {
@@ -25,19 +39,20 @@ async function fetchJSON<T>(url: string): Promise<T> {
   return res.json() as Promise<T>
 }
 
-async function fetchIndex(): Promise<{ items: string[]; categories: string[]; tracks: string[]; sequences: string[]; jurisdictions: string[] }> {
+async function fetchIndex(): Promise<KBIndex> {
   return fetchJSON(`${KB_BASE}/index.json`)
 }
 
 async function fetchAllFromNetwork(): Promise<KBCache> {
   const index = await fetchIndex()
 
-  const [items, categories, tracks, sequences, jurisdictions] = await Promise.all([
+  const [items, categories, tracks, sequences, jurisdictions, conditions] = await Promise.all([
     Promise.all(index.items.map(slug => fetchJSON<KBItem>(`${KB_BASE}/items/${slug}.json`))),
     Promise.all(index.categories.map(slug => fetchJSON<Category>(`${KB_BASE}/categories/${slug}.json`))),
     Promise.all(index.tracks.map(slug => fetchJSON<Track>(`${KB_BASE}/tracks/${slug}.json`))),
     Promise.all(index.sequences.map(slug => fetchJSON<Sequence>(`${KB_BASE}/sequences/${slug}.json`))),
     Promise.all(index.jurisdictions.map(path => fetchJSON<Jurisdiction>(`${KB_BASE}/jurisdictions/${path}.json`))),
+    Promise.all((index.conditions ?? []).map(slug => fetchJSON<KBCondition>(`${KB_BASE}/conditions/${slug}.json`))),
   ])
 
   const cache: KBCache = {
@@ -47,6 +62,7 @@ async function fetchAllFromNetwork(): Promise<KBCache> {
     tracks: Object.fromEntries(tracks.map(t => [t.slug, t])),
     sequences: Object.fromEntries(sequences.map(s => [s.slug, s])),
     jurisdictions: Object.fromEntries(jurisdictions.map(j => [`${j.jurisdiction.country}-${j.jurisdiction.region ?? 'null'}`, j])),
+    conditions: Object.fromEntries(conditions.map(c => [c.slug, c])),
   }
 
   return cache
@@ -60,6 +76,7 @@ function snapshotToCache(snapshot: BundledSnapshot): KBCache {
     tracks: snapshot.tracks,
     sequences: snapshot.sequences,
     jurisdictions: snapshot.jurisdictions,
+    conditions: snapshot.conditions ?? {},
   }
 }
 

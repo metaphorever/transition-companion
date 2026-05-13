@@ -210,7 +210,8 @@
           "label": "ACLU: LGBTQ+ Rights",
           "retrieved": "2026-05-11"
         }
-      ]
+      ],
+      "kb_condition_ref": "federal-marker-policy"
     },
     "il-birth-cert": {
       "slug": "il-birth-cert",
@@ -667,7 +668,8 @@
           "label": "National Center for Transgender Equality: Federal ID Updates",
           "retrieved": "2026-05-11"
         }
-      ]
+      ],
+      "kb_condition_ref": "federal-marker-policy"
     },
     "us-passport-card-name": {
       "slug": "us-passport-card-name",
@@ -855,7 +857,8 @@
           "label": "National Center for Transgender Equality: Federal ID Updates",
           "retrieved": "2026-05-11"
         }
-      ]
+      ],
+      "kb_condition_ref": "federal-marker-policy"
     },
     "il-voter-reg": {
       "slug": "il-voter-reg",
@@ -2285,7 +2288,8 @@
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
-      "sources": []
+      "sources": [],
+      "kb_condition_ref": "us-marriage-policy"
     },
     "informed-consent": {
       "slug": "informed-consent",
@@ -2756,6 +2760,44 @@
         "il-dl",
         "il-birth-cert",
         "il-voter-reg"
+      ]
+    }
+  },
+  "conditions": {
+    "federal-marker-policy": {
+      "slug": "federal-marker-policy",
+      "name": "U.S. federal sex designation policy",
+      "current_status": "restricted",
+      "status_date": "2025-01-20",
+      "status_summary": "Federal executive orders issued in January 2025 removed the X sex designation from Social Security records, U.S. passports, and U.S. passport cards, and replaced the self-certification policy that had been in effect since 2022 with a requirement for physician documentation or a court order for M-to-F or F-to-M changes. Active litigation may alter this. Until that changes, federal sex designation changes are not available through the routes that were available before January 2025.",
+      "references": [
+        {
+          "url": "https://transequality.org/know-your-rights/federal-updates",
+          "label": "National Center for Transgender Equality: Federal ID Updates",
+          "retrieved": "2026-05-11"
+        },
+        {
+          "url": "https://www.lambdalegal.org",
+          "label": "Lambda Legal"
+        },
+        {
+          "url": "https://www.aclu.org/lgbtq-rights",
+          "label": "ACLU: LGBTQ+ Rights"
+        }
+      ]
+    },
+    "us-marriage-policy": {
+      "slug": "us-marriage-policy",
+      "name": "U.S. marriage certificate amendment",
+      "current_status": "blocked",
+      "status_date": "2025-05-01",
+      "status_summary": "In most U.S. states, a marriage certificate is treated as a contemporaneous record of a legal event and cannot be amended to reflect a later legal name change. The accepted practice is to present the original certificate alongside a court order for the name change, which the receiving agency uses to bridge the two names. A small number of states allow an attached amendment order — that does not alter the original certificate, but creates an official link between the two names. State law would need to change for this to become directly amendable.",
+      "references": [
+        {
+          "url": "https://transequality.org/know-your-rights/name-change",
+          "label": "National Center for Transgender Equality: Name Change",
+          "retrieved": "2026-05-11"
+        }
       ]
     }
   }

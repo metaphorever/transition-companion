@@ -48,9 +48,24 @@ interface AppState {
   removeItemFromChecklist: (slug: string) => void
 
   // Blocker actions
-  addBlocker: (slug: string, blocker: Omit<Blocker, 'id'>) => void
+  // Store fills in `id`, `status: 'active'`, `status_date: <today>` so callers
+  // only declare the substantive fields. Use updateBlocker/resolveBlocker etc.
+  // to advance status afterward.
+  addBlocker: (slug: string, blocker: Omit<Blocker, 'id' | 'status' | 'status_date'>) => string
   updateBlocker: (slug: string, blockerId: string, patch: Partial<Omit<Blocker, 'id'>>) => void
   removeBlocker: (slug: string, blockerId: string) => void
+  resolveBlocker: (slug: string, blockerId: string) => void
+  dismissBlocker: (slug: string, blockerId: string) => void
+  // Undo a resolve/dismiss — flips status back to 'active' and bumps status_date.
+  reactivateBlocker: (slug: string, blockerId: string) => void
+  // Spawn a custom item as a resolution task for the blocker, and link the
+  // new task's id into the blocker's resolution_task_ids. Returns the new
+  // task id. Caller supplies the substantive task fields.
+  convertBlockerToTask: (
+    slug: string,
+    blockerId: string,
+    taskInit: { label: string; category: string; track: string; description?: string }
+  ) => string
 
   // People actions
   addPerson: (person: Omit<Person, 'id'>) => void
@@ -230,14 +245,22 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   addBlocker: (slug, blocker) => {
+    const id = `blocker-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
     get().patchUserData((data) => {
       const entry = data.checklist[slug] ?? { ...DEFAULT_ENTRY }
-      const id = `blocker-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      const today = localDateString()
+      const full: Blocker = {
+        id,
+        status: 'active',
+        status_date: today,
+        ...blocker,
+      }
       data.checklist[slug] = {
         ...entry,
-        blockers: [...entry.blockers, { id, ...blocker }],
+        blockers: [...entry.blockers, full],
       }
     })
+    return id
   },
 
   updateBlocker: (slug, blockerId, patch) => {
@@ -262,6 +285,85 @@ export const useAppStore = create<AppState>((set, get) => ({
         blockers: entry.blockers.filter((b) => b.id !== blockerId),
       }
     })
+  },
+
+  resolveBlocker: (slug, blockerId) => {
+    const today = localDateString()
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        blockers: entry.blockers.map((b) =>
+          b.id === blockerId ? { ...b, status: 'resolved', status_date: today } : b
+        ),
+      }
+    })
+  },
+
+  dismissBlocker: (slug, blockerId) => {
+    const today = localDateString()
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        blockers: entry.blockers.map((b) =>
+          b.id === blockerId ? { ...b, status: 'manually_dismissed', status_date: today } : b
+        ),
+      }
+    })
+  },
+
+  reactivateBlocker: (slug, blockerId) => {
+    const today = localDateString()
+    get().patchUserData((data) => {
+      const entry = data.checklist[slug]
+      if (!entry) return
+      data.checklist[slug] = {
+        ...entry,
+        blockers: entry.blockers.map((b) =>
+          b.id === blockerId ? { ...b, status: 'active', status_date: today } : b
+        ),
+      }
+    })
+  },
+
+  convertBlockerToTask: (slug, blockerId, taskInit) => {
+    const newId = `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+    get().patchUserData((data) => {
+      // Spawn the custom item.
+      data.custom_items = [
+        ...data.custom_items,
+        {
+          id: newId,
+          label: taskInit.label,
+          description: taskInit.description,
+          category: taskInit.category,
+          track: taskInit.track,
+          status: 'not_started',
+          notes: '',
+          provenance: 'user_created',
+        },
+      ]
+      // Give it its own checklist entry so it can carry sub-tasks/blockers.
+      if (!data.checklist[newId]) {
+        data.checklist[newId] = { ...DEFAULT_ENTRY }
+      }
+      // Link the new task into the parent blocker's resolution_task_ids.
+      const entry = data.checklist[slug]
+      if (entry) {
+        data.checklist[slug] = {
+          ...entry,
+          blockers: entry.blockers.map((b) => {
+            if (b.id !== blockerId) return b
+            const existing = b.resolution_task_ids ?? []
+            return { ...b, resolution_task_ids: [...existing, newId] }
+          }),
+        }
+      }
+    })
+    return newId
   },
 
   addPerson: (person) => {

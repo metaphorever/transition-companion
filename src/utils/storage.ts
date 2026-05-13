@@ -217,7 +217,11 @@ export function readKBCache(): KBCache | null {
   try {
     const raw = localStorage.getItem(KB_CACHE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as KBCache
+    const parsed = JSON.parse(raw) as Partial<KBCache>
+    // Pre-Phase-15 caches lack the `conditions` key. Fill it in so the
+    // KBCache contract holds for downstream consumers.
+    if (!parsed.conditions) parsed.conditions = {}
+    return parsed as KBCache
   } catch {
     return null
   }

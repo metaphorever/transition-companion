@@ -103,6 +103,38 @@ export interface KBItem {
   // UI surfaces these as "you may want to look at" — user decides whether to add them.
   // Optional: not all items have recovery paths.
   recovery_items?: string[]
+  // Slug of the KB condition tracking the policy state for this item. When the
+  // referenced condition's status_date advances, downstream UI can prompt the
+  // user to revisit. Primarily used on immutable items so they're not stuck
+  // marked policy_blocked forever once policy changes.
+  kb_condition_ref?: string
+}
+
+// ── KB Conditions ─────────────────────────────────────────────────────────────
+
+// A policy / legal / regulatory situation tracked centrally in the KB so that
+// items don't each repeat the same policy claim. When a contributor updates a
+// condition (someone watching the news submits a PR bumping `status_date` and
+// adjusting `current_status`), every item or blocker that references the
+// condition becomes eligible for a "policy has changed — want to revisit?"
+// prompt downstream. Source of truth for "is this currently possible."
+export type KBConditionStatus = 'available' | 'restricted' | 'blocked' | 'unknown'
+
+export interface KBCondition {
+  slug: string
+  name: string
+  // Current state. 'available' means the underlying action can be taken.
+  // 'restricted' means it can be done but with new gates (documentation,
+  // narrower eligibility). 'blocked' means it cannot currently be done.
+  current_status: KBConditionStatus
+  // YYYY-MM-DD when current_status was last verified or changed. Downstream
+  // change-detection compares this against a blocker's own status_date.
+  status_date: string
+  // Plain-language description of the current situation. Tone matches alert
+  // copy guidelines — no hedging, no sympathy performance, factual.
+  status_summary: string
+  // Why the condition exists — provenance, who set it, where to read more.
+  references: { url: string; label: string; retrieved?: string }[]
 }
 
 // ── Sequences ─────────────────────────────────────────────────────────────────
@@ -319,6 +351,36 @@ export type BlockerType =
   | 'waiting'
   | 'custom'
 
+// How the blocker is expected to resolve. Orthogonal to `type`.
+//  - `resolvable`: the user can do something about it. The blocker may carry
+//    `resolution_task_ids` pointing at concrete tasks (KB or custom) that, once
+//    complete, surface a "this blocker is now resolvable" prompt on the parent.
+//  - `out_of_control`: the user can't directly resolve it. See
+//    `out_of_control_kind` for the sub-distinction.
+export type BlockerResolutionMode = 'resolvable' | 'out_of_control'
+
+// Sub-classification for out-of-control blockers.
+//  - `policy`: tracked by a KB condition (`kb_condition_ref`). When the
+//    condition changes, the app surfaces a non-anxious "want to revisit?"
+//    prompt. The KB is the source of truth — someone watching the news files
+//    a PR.
+//  - `personal_circumstance`: no central source of truth — only the user knows
+//    when their parents come around. The user can optionally attach a recurring
+//    re-check reminder.
+export type BlockerOutOfControlKind = 'policy' | 'personal_circumstance'
+
+// Lifecycle.
+//  - `active`: currently blocking the parent task.
+//  - `resolved`: marked resolved by the user (typically after a resolution
+//    task completed and the user confirmed via the one-click prompt).
+//  - `manually_dismissed`: user dismissed it without completing the
+//    resolution path — kept in the record for history, but no longer
+//    blocking.
+export type BlockerStatus = 'active' | 'resolved' | 'manually_dismissed'
+
+// ── Deprecated blocker sub-types (Stage B will delete) ─────────────────────
+// These exist only so the pre-Phase-15 BlockersSection.tsx still compiles
+// during the Stage A → Stage B transition. Do not use in new code.
 export type BlockerResolvable =
   | 'yes'
   | 'no'
@@ -335,16 +397,45 @@ export type BlockerSeverity =
 export interface Blocker {
   id: string
   type: BlockerType
-  label: string
+
+  // ── New shape (Phase 15 / D-7a/b/c) ──
+  resolution_mode: BlockerResolutionMode
+  // Required when resolution_mode === 'out_of_control'. Undefined for
+  // 'resolvable' blockers.
+  out_of_control_kind?: BlockerOutOfControlKind
+  // For resolvable blockers: ids of checklist entries (KB slugs or custom
+  // item ids) whose completion can resolve this blocker. Resolution does NOT
+  // cascade — completing a resolution task surfaces a confirm-resolve prompt,
+  // it does not automatically flip the blocker to resolved.
+  resolution_task_ids?: string[]
+  // For out_of_control + policy: slug of the KB condition tracking the
+  // underlying situation. Drives the policy-changed prompt when the
+  // referenced condition's status_date advances past this blocker's
+  // status_date.
+  kb_condition_ref?: string
+  // Free-text user-authored description ("what's in the way"). Stage B's UI
+  // makes this the primary user-facing field, replacing the legacy `label`.
+  description?: string
+  status: BlockerStatus
+  // YYYY-MM-DD when status was last set. Used to detect "the policy changed
+  // since you noted this" for policy blockers (compare against the
+  // condition's status_date).
+  status_date: string
+  suppress_workaround?: boolean
+
+  // ── Deprecated (Stage B will delete) ──
+  // These keep BlockersSection.tsx compiling untouched through the schema
+  // change. New code paths must not rely on them — they're carrying old data
+  // shape only.
+  label?: string
   kb_dependency?: string
   person_ref?: string
-  user_defined: boolean
+  user_defined?: boolean
   severity?: BlockerSeverity
-  resolvable: BlockerResolvable
+  resolvable?: BlockerResolvable
   resolvable_note?: string
-  workaround_available: boolean
+  workaround_available?: boolean
   workaround_note?: string
-  suppress_workaround?: boolean
 }
 
 // ── Checklist Entry ───────────────────────────────────────────────────────────
@@ -505,4 +596,5 @@ export interface KBCache {
   tracks: Record<string, Track>
   sequences: Record<string, Sequence>
   jurisdictions: Record<string, Jurisdiction>
+  conditions: Record<string, KBCondition>
 }

@@ -270,12 +270,18 @@ const IMPLICIT_STATUS: ItemStatus = 'not_started'
 
 /**
  * A stored blocker counts as actively blocking iff its `type` is anything
- * other than `document`. Document blockers must not be stored — see CLAUDE.md.
- * If a stored document blocker exists (e.g. legacy import), we ignore it:
- * the graph is the source of truth for document satisfaction.
+ * other than `document` AND its `status` is `active`. Document blockers must
+ * not be stored — see CLAUDE.md. If a stored document blocker exists (e.g.
+ * legacy import), we ignore it: the graph is the source of truth for
+ * document satisfaction. Resolved or dismissed blockers no longer block.
  */
 export function isActiveStoredBlocker(blocker: Blocker): boolean {
-  return blocker.type !== 'document'
+  if (blocker.type === 'document') return false
+  // Defensive: a pre-Phase-15 blocker record without `status` is treated as
+  // active. After the schema migration only the addBlocker action produces
+  // records, and it always fills in status='active', so this is just belt-
+  // and-suspenders for any old in-memory shapes during transition.
+  return (blocker.status ?? 'active') === 'active'
 }
 
 export interface ItemAvailability {
@@ -334,7 +340,7 @@ export function computeItemAvailability(
 
   let primaryBlockerLabel: string | null = null
   if (activeStored.length > 0) {
-    primaryBlockerLabel = activeStored[0].label
+    primaryBlockerLabel = activeStored[0].description ?? activeStored[0].label ?? null
   } else if (unmet.length > 0) {
     const firstUnmet = unmet[0]
     primaryBlockerLabel = kb.items[firstUnmet]?.label ?? firstUnmet

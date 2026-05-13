@@ -65,6 +65,7 @@ function mockKB(items: KBItem[]): KBCache {
     tracks: {},
     sequences: {},
     jurisdictions: {},
+    conditions: {},
   }
 }
 
@@ -148,6 +149,12 @@ function mockUserData(overrides?: {
 
 function blocker(partial: Partial<Blocker> & { id: string; type: Blocker['type'] }): Blocker {
   const defaults: Omit<Blocker, 'id' | 'type'> = {
+    resolution_mode: 'resolvable',
+    status: 'active',
+    status_date: '2026-01-01',
+    description: `blocker ${partial.id}`,
+    // Deprecated old-shape fields kept here so the legacy ordering tests
+    // that read them still see what they expect.
     label: `blocker ${partial.id}`,
     user_defined: true,
     resolvable: 'maybe',

@@ -62,20 +62,28 @@ function emptyDraft(): BlockerDraft {
 function draftFromBlocker(b: Blocker): BlockerDraft {
   return {
     type: b.type,
-    label: b.label,
+    // Stage A transition: prefer the new `description` field, fall back to
+    // the deprecated `label`. Stage B will collapse to one field.
+    label: b.description ?? b.label ?? '',
     person_ref: b.person_ref ?? '',
     severity: b.severity ?? '',
-    resolvable: b.resolvable,
+    resolvable: b.resolvable ?? 'unknown',
     resolvable_note: b.resolvable_note ?? '',
-    workaround_available: b.workaround_available,
+    workaround_available: b.workaround_available ?? false,
     workaround_note: b.workaround_note ?? '',
     suppress_workaround: b.suppress_workaround ?? false,
   }
 }
 
-function buildBlockerPayload(draft: BlockerDraft): Omit<Blocker, 'id'> {
-  const payload: Omit<Blocker, 'id'> = {
+function buildBlockerPayload(draft: BlockerDraft): Omit<Blocker, 'id' | 'status' | 'status_date'> {
+  // Phase 15 transition: the new structured-blocker UI lands in Stage B.
+  // Until then, all user-defined blockers added through this section default
+  // to `resolution_mode: 'resolvable'` per the Phase 15 migration spec, and
+  // the store fills in status/status_date.
+  const payload: Omit<Blocker, 'id' | 'status' | 'status_date'> = {
     type: draft.type,
+    resolution_mode: 'resolvable',
+    description: draft.label.trim(),
     label: draft.label.trim(),
     user_defined: true,
     resolvable: draft.resolvable,
@@ -149,7 +157,7 @@ function BlockerCard({
               </span>
             )}
           </div>
-          <p className="text-sm text-neutral-900">{blocker.label}</p>
+          <p className="text-sm text-neutral-900">{blocker.description ?? blocker.label}</p>
           {personLabel && (
             <p className="text-xs text-neutral-500 mt-0.5">
               {t('blockers.person_label', { name: personLabel })}
@@ -157,7 +165,7 @@ function BlockerCard({
           )}
           <p className="text-xs text-neutral-500 mt-1">
             {t('blockers.resolvable_label')}{' '}
-            {t(`blockers.resolvable.${blocker.resolvable}`)}
+            {t(`blockers.resolvable.${blocker.resolvable ?? 'unknown'}`)}
             {blocker.resolvable_note && (
               <span className="text-neutral-500"> — {blocker.resolvable_note}</span>
             )}
@@ -221,7 +229,7 @@ function BlockerForm({
   onCancel,
 }: {
   initial?: Blocker
-  onSubmit: (payload: Omit<Blocker, 'id'>) => void
+  onSubmit: (payload: Omit<Blocker, 'id' | 'status' | 'status_date'>) => void
   onCancel: () => void
 }) {
   const { t } = useTranslation()

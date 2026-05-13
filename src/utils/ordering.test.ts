@@ -153,12 +153,6 @@ function blocker(partial: Partial<Blocker> & { id: string; type: Blocker['type']
     status: 'active',
     status_date: '2026-01-01',
     description: `blocker ${partial.id}`,
-    // Deprecated old-shape fields kept here so the legacy ordering tests
-    // that read them still see what they expect.
-    label: `blocker ${partial.id}`,
-    user_defined: true,
-    resolvable: 'maybe',
-    workaround_available: false,
   }
   return { ...defaults, ...partial }
 }
@@ -466,7 +460,7 @@ describe('isActiveStoredBlocker', () => {
     // (e.g. legacy import), the graph is the source of truth and we ignore it.
     expect(
       isActiveStoredBlocker(
-        blocker({ id: 'legacy', type: 'document', user_defined: false })
+        blocker({ id: 'legacy', type: 'document' })
       )
     ).toBe(false)
   })
@@ -530,7 +524,7 @@ describe('computeItemAvailability', () => {
     const ud = mockUserData({
       checklist: {
         a: {
-          blockers: [blocker({ id: 'd1', type: 'document', user_defined: false })],
+          blockers: [blocker({ id: 'd1', type: 'document' })],
         },
       },
     })

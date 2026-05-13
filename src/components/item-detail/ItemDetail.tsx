@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
@@ -100,8 +100,46 @@ function PageShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="flex-1 px-4 py-6 max-w-2xl mx-auto w-full">
+        <BreadcrumbBackLink />
         {children}
       </main>
+    </div>
+  )
+}
+
+// Surfaces a "Back to {parent}" link when the URL carries a ?trail= breadcrumb
+// stack. Pops one entry off the trail on click so chained drill-in works
+// across arbitrary depths. Survives refresh because the trail lives in the URL.
+function BreadcrumbBackLink() {
+  const { t } = useTranslation()
+  const location = useLocation()
+  const kb = useAppStore((s) => s.kb)
+  const customItems = useAppStore((s) => s.userData.custom_items)
+
+  const params = new URLSearchParams(location.search)
+  const trail = params.get('trail')
+  if (!trail) return null
+  const parts = trail.split(',').filter(Boolean)
+  if (parts.length === 0) return null
+  const parentSlug = parts[parts.length - 1]
+  const remaining = parts.slice(0, -1).join(',')
+  const backHref = remaining
+    ? `/item/${parentSlug}?trail=${encodeURIComponent(remaining)}`
+    : `/item/${parentSlug}`
+
+  const parentLabel =
+    kb?.items[parentSlug]?.label ??
+    customItems.find((c) => c.id === parentSlug)?.label ??
+    parentSlug
+
+  return (
+    <div className="mb-4">
+      <Link
+        to={backHref}
+        className="text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-900"
+      >
+        ← {t('item_detail.breadcrumb_back_to', { label: parentLabel })}
+      </Link>
     </div>
   )
 }
@@ -1163,7 +1201,13 @@ function CustomItemDetail({ item }: { item: CustomItem }) {
       <SubTasksSection slug={item.id} entry={entry} />
 
       {/* Blockers */}
-      <BlockersSection slug={item.id} entry={entry} presenceLevel="some_guidance" />
+      <BlockersSection
+        slug={item.id}
+        entry={entry}
+        presenceLevel="some_guidance"
+        parentCategory={item.category}
+        parentTrack={item.track}
+      />
 
       {/* Dates */}
       <DatesSection slug={item.id} entry={entry} />
@@ -1475,7 +1519,15 @@ export default function ItemDetail() {
       {slug && <SubTasksSection slug={slug} entry={entry} />}
 
       {/* Blockers */}
-      {slug && <BlockersSection slug={slug} entry={entry} presenceLevel={presenceLevel} />}
+      {slug && (
+        <BlockersSection
+          slug={slug}
+          entry={entry}
+          presenceLevel={presenceLevel}
+          parentCategory={item.category}
+          parentTrack={item.track}
+        />
+      )}
 
       {/* Dates (C5) */}
       {slug && <DatesSection slug={slug} entry={entry} />}

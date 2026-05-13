@@ -378,27 +378,9 @@ export type BlockerOutOfControlKind = 'policy' | 'personal_circumstance'
 //    blocking.
 export type BlockerStatus = 'active' | 'resolved' | 'manually_dismissed'
 
-// ── Deprecated blocker sub-types (Stage B will delete) ─────────────────────
-// These exist only so the pre-Phase-15 BlockersSection.tsx still compiles
-// during the Stage A → Stage B transition. Do not use in new code.
-export type BlockerResolvable =
-  | 'yes'
-  | 'no'
-  | 'maybe'
-  | 'eventually'
-  | 'unknown'
-
-export type BlockerSeverity =
-  | 'minor'
-  | 'moderate'
-  | 'significant'
-  | 'absolute'
-
 export interface Blocker {
   id: string
   type: BlockerType
-
-  // ── New shape (Phase 15 / D-7a/b/c) ──
   resolution_mode: BlockerResolutionMode
   // Required when resolution_mode === 'out_of_control'. Undefined for
   // 'resolvable' blockers.
@@ -413,8 +395,8 @@ export interface Blocker {
   // referenced condition's status_date advances past this blocker's
   // status_date.
   kb_condition_ref?: string
-  // Free-text user-authored description ("what's in the way"). Stage B's UI
-  // makes this the primary user-facing field, replacing the legacy `label`.
+  // Free-text user-authored description ("what's in the way"). Primary
+  // user-facing field for the blocker.
   description?: string
   status: BlockerStatus
   // YYYY-MM-DD when status was last set. Used to detect "the policy changed
@@ -422,20 +404,6 @@ export interface Blocker {
   // condition's status_date).
   status_date: string
   suppress_workaround?: boolean
-
-  // ── Deprecated (Stage B will delete) ──
-  // These keep BlockersSection.tsx compiling untouched through the schema
-  // change. New code paths must not rely on them — they're carrying old data
-  // shape only.
-  label?: string
-  kb_dependency?: string
-  person_ref?: string
-  user_defined?: boolean
-  severity?: BlockerSeverity
-  resolvable?: BlockerResolvable
-  resolvable_note?: string
-  workaround_available?: boolean
-  workaround_note?: string
 }
 
 // ── Checklist Entry ───────────────────────────────────────────────────────────

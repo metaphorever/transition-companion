@@ -1071,6 +1071,9 @@ function ContributorSection() {
   const PROMPTING_OPTIONS: ContributorPromptingLevel[] = ['contextual', 'proactive', 'off']
   const INVOLVEMENT_OPTIONS: ContributorInvolvementLevel[] = ['observer', 'reporter', 'contributor']
 
+  const showWalkthrough =
+    settings.involvement_level === 'contributor' && !settings.seen_contributor_walkthrough
+
   return (
     <Section title={t('settings.section_contributor')}>
       <RadioGroup
@@ -1103,6 +1106,38 @@ function ContributorSection() {
         value={settings.involvement_level}
         onChange={(v) => update({ involvement_level: v as ContributorInvolvementLevel })}
       />
+
+      {showWalkthrough && (
+        <div className="mt-4 p-4 bg-neutral-50 border border-neutral-200 rounded-lg space-y-3">
+          <p className="text-sm font-medium text-neutral-800">
+            {t('settings.walkthrough_heading')}
+          </p>
+          <p className="text-sm text-neutral-600 leading-relaxed">
+            {t('settings.walkthrough_body')}
+          </p>
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-neutral-700">
+              {t('settings.walkthrough_issue_heading')}
+            </p>
+            <p className="text-xs text-neutral-600 leading-relaxed">
+              {t('settings.walkthrough_issue_body')}
+            </p>
+            <p className="text-xs font-medium text-neutral-700 mt-2">
+              {t('settings.walkthrough_pr_heading')}
+            </p>
+            <p className="text-xs text-neutral-600 leading-relaxed">
+              {t('settings.walkthrough_pr_body')}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => update({ seen_contributor_walkthrough: true })}
+            className="text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-700"
+          >
+            {t('settings.walkthrough_dismiss')}
+          </button>
+        </div>
+      )}
     </Section>
   )
 }

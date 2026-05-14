@@ -479,6 +479,33 @@ export default function Dashboard() {
       .slice(0, 5)
   }, [kb, profile.presence, checklistSlugs, activeTrack])
 
+  // D-9: items the user explicitly marked 'unknown' intent — surfaced gently when
+  // presence is walk_with_me or contributor prompting is set to proactive.
+  // Never shown when prompting is off.
+  const unknownRows = useMemo(() => {
+    const cs = profile.contributor_settings
+    const presenceOk = profile.presence.overall_level === 'walk_with_me'
+    const promptingOk = cs.prompting_level === 'proactive'
+    if (cs.prompting_level === 'off' && !presenceOk) return []
+    if (!presenceOk && !promptingOk) return []
+
+    const rows: { id: string; label: string }[] = []
+    for (const [slug, entry] of Object.entries(userData.checklist)) {
+      if (entry.intent !== 'unknown') continue
+      if (activeTrack) {
+        const kbItem = kb?.items[slug]
+        const customItem = userData.custom_items.find((c) => c.id === slug)
+        if (kbItem && kbItem.track !== activeTrack) continue
+        if (!kbItem && customItem && customItem.track !== activeTrack) continue
+      }
+      const kbItem = kb?.items[slug]
+      const customItem = userData.custom_items.find((c) => c.id === slug)
+      const label = kbItem?.label ?? customItem?.label ?? slug
+      rows.push({ id: slug, label })
+    }
+    return rows
+  }, [userData.checklist, userData.custom_items, kb, profile.presence, profile.contributor_settings, activeTrack])
+
   // Unfiltered progress counts for the warm label (all tracks, intent='update' only)
   const { totalOnList, totalCompleted } = useMemo(() => {
     let total = 0
@@ -941,6 +968,35 @@ export default function Dashboard() {
                     {row.priority === 'unsure'
                       ? t('dashboard.priority_unsure')
                       : t('dashboard.priority_someday')}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Unknown intent — items the user is unsure about, surfaced gently */}
+        {unknownRows.length > 0 && (
+          <section className="mb-8" aria-labelledby="unknown-intent-heading">
+            <h2
+              id="unknown-intent-heading"
+              className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
+            >
+              {t('dashboard.unknown_intent_heading')}
+            </h2>
+            <p className="text-xs text-neutral-500 mb-3 leading-relaxed">
+              {t('dashboard.unknown_intent_intro')}
+            </p>
+            <div className="space-y-2">
+              {unknownRows.map((row) => (
+                <Link
+                  key={row.id}
+                  to={`/item/${row.id}`}
+                  className="flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-60 hover:opacity-100 transition-opacity"
+                >
+                  <span className="text-sm text-neutral-600">{row.label}</span>
+                  <span className="text-xs text-neutral-400 ml-3 flex-shrink-0">
+                    {t('dashboard.unknown_intent_badge')}
                   </span>
                 </Link>
               ))}

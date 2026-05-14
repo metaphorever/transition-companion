@@ -40,10 +40,20 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 16 — Wave 5: Item Detail UX + People Map Expansion + Name-Finding Flow + Social Name Change**
-**Status: COMPLETE. All three stages shipped.**
-**Model: Sonnet · Effort: high**
-**Last session: Phase 16 — Three stages across item detail UX reorder (Stage A), people map out_to expansion (Stage B), and name-finding KB items + onboarding opt-in (Stage C). Build clean, 78 tests passing, browser-verified for all three stages.**
+**PHASE: 17 — Wave 6: Contribution Surfacing + Completion-Moment Hooks**
+**Status: COMPLETE.**
+**Model: Sonnet · Effort: medium**
+**Last session: Phase 17 — Contribution surfacing wired up end-to-end. Build clean, 78 tests passing.**
+
+**Phase 17 carryover notes:**
+- **New `/contribute-review/:slug` route** (`src/components/contribute/ContributeReview.tsx`) — the "share what I learned" flow, distinct from the existing "report an issue" form at `/contribute/:slug`. Handles both KB items and custom items (`isCustom` flag derived from whether slug matches a custom item vs. KB item). Builds a pre-filled GitHub issue or JSON snippet. Two zones: shareable fields (process notes, links, time, cost — all optional) and a private zone showing personal notes read-only, clearly labeled as never-included.
+- **`CompletionAck` now context-aware.** Props changed: `{ completedAt, slug, contributorSettings }`. When `prompting_level !== 'off'`, a second row appears with two links: "add a note while it's fresh" (anchors to `#notes-heading`) and "want to contribute this to the guide?" (navigates to `/contribute-review/:slug`). Both KB and custom item detail pages pass contributor settings; KB items pass the URL `slug`, custom items pass `item.id`.
+- **Dashboard unknown intent section** below Someday. Shown only when `presence_level === 'walk_with_me'` OR `prompting_level === 'proactive'`; suppressed when `prompting_level === 'off'`. Items with `intent === 'unknown'` in the checklist (explicitly set, not silent). Gentle framing — "not sure about", badge says "not sure".
+- **Contributor walkthrough in Settings** (`ContributorSection`). Shown when `involvement_level === 'contributor'` and `!seen_contributor_walkthrough`. Explains GitHub issue vs. PR paths. Dismissed via `patchProfile({ contributor_settings: { ...settings, seen_contributor_walkthrough: true } })`. New `seen_contributor_walkthrough?: boolean` on `ContributorSettings` type; default `false` in storage, merged correctly by existing `contributor_settings` spread in `mergeWithDefaults`.
+- **C12 verified and working.** Phase 9 shipped the infrastructure (settings capture, onboarding step, `/contribute/:slug` form, "report issue" link in item detail). Phase 17 wired the runtime behavior: prompting_level / privacy_level are now read at runtime. The "report issue" link at the bottom of item detail is unchanged — it's still there for the "something is wrong" path. The new "contribute what I learned" path surfaces on completion only.
+- **Aspiration skeleton items** (Phase 14 carryover) — still no contribution hook tied to `provenance: 'aspiration_skeleton'` custom items. Phase 18 or later can add a targeted nudge ("you built this path yourself — want to contribute it?") on completion of skeleton items specifically.
+
+**Previous phase (16 — Wave 5: Item Detail UX + People Map Expansion + Name-Finding Flow + Social Name Change): COMPLETE.**
 
 **Phase 16 carryover notes:**
 - **ItemDetail hierarchy reordered (D-8 implemented).** New order: Alerts → title → Status → Intent → CompletionAck → BlockersSection → SubTasksSection → WalkthroughSection → Notes → DocumentState → DatesSection → History → Report. `WalkthroughSection` is a collapsible wrapper (collapsed by default) around presence content, discrimination notes, ProcessSection, and UnlocksHint. `CompletionAck` is a quiet inline panel (shown when status === 'complete') with completed date + back-to-dashboard link. Same reorder applied to `CustomItemDetail`.

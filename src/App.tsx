@@ -7,6 +7,7 @@ import Dashboard from './components/dashboard/Dashboard'
 import ChecklistView from './components/checklist/ChecklistView'
 import ItemDetail from './components/item-detail/ItemDetail'
 import Contribute from './components/contribute/Contribute'
+import ContributeReview from './components/contribute/ContributeReview'
 import Settings from './components/Settings'
 import PeopleMap from './components/people/PeopleMap'
 import RecurringItems from './components/recurring/RecurringItems'
@@ -36,6 +37,7 @@ function AppRoutes() {
         <Route path="/item/:slug" element={<ItemDetail />} />
         <Route path="/contribute" element={<Contribute />} />
         <Route path="/contribute/:slug" element={<Contribute />} />
+        <Route path="/contribute-review/:slug" element={<ContributeReview />} />
         <Route path="/people" element={<PeopleMap />} />
         <Route path="/recurring" element={<RecurringItems />} />
         <Route path="/settings" element={<Settings />} />

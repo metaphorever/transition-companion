@@ -5,6 +5,7 @@ import { useAppStore } from '../../store'
 import BlockersSection from './BlockersSection'
 import type {
   ChecklistEntry,
+  ContributorSettings,
   CustomItem,
   DocFieldStatus,
   DocumentState,
@@ -1057,21 +1058,48 @@ function WalkthroughSection({
 
 // ── Completion acknowledgment ─────────────────────────────────────────────────
 
-function CompletionAck({ completedAt }: { completedAt: string | null }) {
+function CompletionAck({
+  completedAt,
+  slug,
+  contributorSettings,
+}: {
+  completedAt: string | null
+  slug: string
+  contributorSettings: ContributorSettings
+}) {
   const { t } = useTranslation()
+  const showContributeNudge = contributorSettings.prompting_level !== 'off'
   return (
-    <div className="mb-6 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg flex items-center justify-between gap-4">
-      <p className="text-sm text-neutral-700">
-        {completedAt
-          ? t('item_detail.complete_ack_dated', { date: fmtDate(completedAt) })
-          : t('item_detail.complete_ack')}
-      </p>
-      <Link
-        to="/dashboard"
-        className="text-sm text-neutral-600 underline underline-offset-2 hover:text-neutral-900 shrink-0"
-      >
-        {t('item_detail.complete_ack_back')}
-      </Link>
+    <div className="mb-6 bg-neutral-50 border border-neutral-200 rounded-lg overflow-hidden">
+      <div className="px-4 py-3 flex items-center justify-between gap-4">
+        <p className="text-sm text-neutral-700">
+          {completedAt
+            ? t('item_detail.complete_ack_dated', { date: fmtDate(completedAt) })
+            : t('item_detail.complete_ack')}
+        </p>
+        <Link
+          to="/dashboard"
+          className="text-sm text-neutral-600 underline underline-offset-2 hover:text-neutral-900 shrink-0"
+        >
+          {t('item_detail.complete_ack_back')}
+        </Link>
+      </div>
+      {showContributeNudge && (
+        <div className="px-4 py-2 border-t border-neutral-200 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <a
+            href="#notes-heading"
+            className="text-xs text-neutral-500 hover:text-neutral-700 underline underline-offset-2"
+          >
+            {t('item_detail.complete_ack_notes_nudge')}
+          </a>
+          <Link
+            to={`/contribute-review/${slug}`}
+            className="text-xs text-neutral-500 hover:text-neutral-700 underline underline-offset-2"
+          >
+            {t('item_detail.complete_ack_contribute_nudge')}
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
@@ -1279,7 +1307,13 @@ function CustomItemDetail({ item }: { item: CustomItem }) {
       </section>
 
       {/* Completion acknowledgment */}
-      {currentStatus === 'complete' && <CompletionAck completedAt={entry.completed_at} />}
+      {currentStatus === 'complete' && (
+        <CompletionAck
+          completedAt={entry.completed_at}
+          slug={item.id}
+          contributorSettings={userData.profile.contributor_settings}
+        />
+      )}
 
       {/* Blockers */}
       <BlockersSection
@@ -1568,7 +1602,13 @@ export default function ItemDetail() {
       </section>
 
       {/* Completion acknowledgment */}
-      {currentStatus === 'complete' && <CompletionAck completedAt={entry.completed_at} />}
+      {currentStatus === 'complete' && slug && (
+        <CompletionAck
+          completedAt={entry.completed_at}
+          slug={slug}
+          contributorSettings={userData.profile.contributor_settings}
+        />
+      )}
 
       {/* Blockers */}
       {slug && (

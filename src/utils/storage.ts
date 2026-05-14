@@ -62,6 +62,7 @@ const DEFAULT_USER_DATA: UserData = {
       prompting_level: 'contextual',
       involvement_level: 'observer',
       github_connected: false,
+      seen_contributor_walkthrough: false,
     },
   },
   checklist: {},

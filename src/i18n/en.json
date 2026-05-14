@@ -363,7 +363,10 @@
     "revisit_section_heading": "Worth revisiting",
     "revisit_section_intro": "You wanted to come back to these. No pressure — they are just here when you are ready.",
     "someday_section_heading": "Someday",
-    "someday_section_intro": "Things you want on the list but are not actively working on right now."
+    "someday_section_intro": "Things you want on the list but are not actively working on right now.",
+    "unknown_intent_heading": "Not sure about",
+    "unknown_intent_intro": "Items you flagged as uncertain. No pressure — open any of them to revisit, or leave them here.",
+    "unknown_intent_badge": "not sure"
   },
   "item": {
     "status": {
@@ -484,7 +487,14 @@
     "kb_refreshing": "Refreshing...",
     "kb_last_updated": "Last updated {{date}}",
     "kb_never_loaded": "Not yet loaded",
-    "people_map_link": "Manage the people in your life"
+    "people_map_link": "Manage the people in your life",
+    "walkthrough_heading": "How to contribute",
+    "walkthrough_body": "There are two ways to share what you know. Both go to the same place — a GitHub repository where the guide lives. No account is required for the simpler path.",
+    "walkthrough_issue_heading": "Open a GitHub issue (no account required)",
+    "walkthrough_issue_body": "When you complete an item and choose to contribute, the app opens a pre-filled issue in your browser. You can add anything you want, then click Submit. Someone with repo access reviews it and applies the update.",
+    "walkthrough_pr_heading": "Submit a pull request (GitHub account required)",
+    "walkthrough_pr_body": "The app can also copy a JSON snippet you can paste into a pull request. This path is faster to apply but requires a GitHub account and some comfort with the PR flow. The JSON format is documented in the repository.",
+    "walkthrough_dismiss": "Got it"
   },
   "item_detail": {
     "loading": "Loading...",
@@ -589,7 +599,9 @@
     "walkthrough_hide": "Hide",
     "complete_ack": "Marked complete.",
     "complete_ack_dated": "Marked complete on {{date}}.",
-    "complete_ack_back": "Back to dashboard"
+    "complete_ack_back": "Back to dashboard",
+    "complete_ack_notes_nudge": "Add a note while it is fresh",
+    "complete_ack_contribute_nudge": "Want to contribute this to the guide?"
   },
   "people_map": {
     "title": "People",
@@ -707,6 +719,34 @@
     "json_copy": "Copy JSON",
     "json_copied": "Copied to clipboard",
     "issue_open": "Open issue"
+  },
+  "contribute_review": {
+    "title": "Share what you learned",
+    "back_item": "Back to item",
+    "back_dashboard": "Back to dashboard",
+    "intro": "Anything you fill in below gets included in a GitHub issue for the guide. All fields are optional — even contributing that you completed this item is useful.",
+    "intro_custom": "You built this item yourself. If it covers something not in the guide, contributing it helps others who may need the same path.",
+    "item_label": "Item",
+    "custom_note": "This is a custom item — contributing it suggests it be added to the guide.",
+    "no_item": "No item found.",
+    "shared_heading": "What would be shared",
+    "field_process": "How did the process go? (optional)",
+    "field_process_placeholder": "Broad steps, what worked, anything that surprised you — write for the next person going through this",
+    "field_links": "Useful links (optional)",
+    "field_links_placeholder": "Official pages, helpful resources — one per line",
+    "field_time": "Time (optional)",
+    "field_time_placeholder": "e.g. 2 weeks",
+    "field_cost": "Cost (optional)",
+    "field_cost_placeholder": "e.g. $30 filing fee",
+    "private_heading": "Your notes",
+    "private_label": "Private — not included",
+    "privacy_note": "Only the fields above are included in any submission. Your personal notes are shown here for reference only and are never shared.",
+    "zero_fill_note": "You can submit with nothing filled in — it tells us you completed this item, which is useful on its own.",
+    "issue_label": "Open a GitHub issue",
+    "issue_sublabel": "No account required",
+    "pr_label": "Copy JSON for a pull request",
+    "pr_sublabel": "GitHub account required",
+    "json_copied": "Copied to clipboard"
   },
   "recurring": {
     "title": "Recurring items",

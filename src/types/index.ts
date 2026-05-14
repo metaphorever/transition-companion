@@ -290,6 +290,7 @@ export interface ContributorSettings {
   prompting_level: ContributorPromptingLevel
   involvement_level: ContributorInvolvementLevel
   github_connected: boolean
+  seen_contributor_walkthrough?: boolean
 }
 
 export interface UserProfile {

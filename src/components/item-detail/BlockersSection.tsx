@@ -579,7 +579,6 @@ function BlockerCard({
 
   const isActive = (blocker.status ?? 'active') === 'active'
   const isResolved = blocker.status === 'resolved'
-  const isDismissed = blocker.status === 'manually_dismissed'
 
   const resolutionRefs = useMemo<ResolutionTaskRef[]>(
     () =>

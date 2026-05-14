@@ -25,8 +25,6 @@ import type {
 // in the dashboard nudge surface (presence > just_the_path).
 const RESOLUTION_COMPLETE_STATUSES: ItemStatus[] = ['complete', 'at_risk']
 
-type DashboardBucket = 'active' | 'working' | 'waiting' | 'completed' | 'someday' | null
-
 interface BucketRow {
   id: string
   label: string

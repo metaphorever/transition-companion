@@ -508,7 +508,7 @@ describe('computeItemAvailability', () => {
       checklist: {
         a: {
           blockers: [
-            blocker({ id: 'r1', type: 'relationship', label: 'Not sure she is safe' }),
+            blocker({ id: 'r1', type: 'relationship', description: 'Not sure she is safe' }),
           ],
         },
       },

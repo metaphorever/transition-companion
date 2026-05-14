@@ -340,7 +340,7 @@ export function computeItemAvailability(
 
   let primaryBlockerLabel: string | null = null
   if (activeStored.length > 0) {
-    primaryBlockerLabel = activeStored[0].description ?? activeStored[0].label ?? null
+    primaryBlockerLabel = activeStored[0].description ?? null
   } else if (unmet.length > 0) {
     const firstUnmet = unmet[0]
     primaryBlockerLabel = kb.items[firstUnmet]?.label ?? firstUnmet

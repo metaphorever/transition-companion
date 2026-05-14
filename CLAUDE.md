@@ -52,7 +52,7 @@ Check the current build phase below. The phase determines which model should be 
 - **Dashboard policy-changed nudge is gated on `presence.overall_level !== 'just_the_path' || presence.open_doors`** — same gate as the confirm-resolve nudge from Stage B. Lives directly below it (in `Dashboard.tsx`). Track filter respected. Computed via a `useMemo` keyed on checklist + custom_items + kb + presence + activeTrack.
 - **Condition `status_summary` content philosophy**: terse pointer + reference link, not encyclopedic summary. Carryover principle from this session (and reinforced from Phase 14): the KB should map terrain and point to authoritative sources rather than re-summarize them. Future condition adds should follow this pattern — one to two sentences of factual orientation, then defer to `references`.
 - **Verified in browser preview** with seeded test data — dashboard nudge surfaces SSA-marker; per-blocker panel shows status line + reference link + both prompt buttons; acknowledgment bumps status_date and silences the prompt; personal-circumstance interval picker creates a correctly-shaped recurring item with parent-inherited track; "Re-check in 3mo (date)" computed correctly from start_date + interval; Open-in-Recurring shows the item with parent+blocker label; remove deletes the recurring item and clears the link. Console clean (no errors, no warnings).
-- **Snapshot mojibake unchanged** — pre-existing UTF-8 mojibake (`â€"` for em-dashes) in `public/kb-snapshot/index.json` was not touched. Same as Stage A/B. The two `status_summary` edits use plain ASCII so they don't add new mojibake. Separate KB content cleanup pass.
+- **Snapshot mojibake fixed**. Source `transition-kb/items/*.json` files were always clean (proper UTF-8 em-dashes). The pre-existing mojibake (`â€”` JSON escapes, rendering as `â€"` in the browser) was a snapshot-build artifact — cp1252 reinterpretation of the UTF-8 byte sequence at some point during the Phase 13 Python rebuild. Repaired in this session via a one-shot replace (`scripts/fix_mojibake.py`): 57 mojibake em-dash triplets → `—`, 1 mojibake en-dash triplet → `–`. `scripts/audit_mojibake.py` runs the same check non-destructively. If a future snapshot rebuild regresses, run the fix script. The deeper fix is to write a UTF-8-clean snapshot-build script — deferred until a content phase touches multiple KB files at once.
 - **No Node/npm in sandbox** — `npm run build` + `npm test` need to run in the main project directory before deploy. Vite dev preview worked through the Claude Preview MCP for verification.
 - **Phase 16 carryover idea logged**: recurring check-in reminders for `priority === 'unsure'` (and possibly `'someday'`) items. Same machinery as Stage C's personal-circumstance re-check — a linked `RecurringItem` per checklist entry, with an interval asked up-front (default during onboarding, editable per-item later). Threads into the onboarding direction step (Step 7), Settings (default interval), the item-detail priority picker, and possibly the dashboard. Flagged here so Phase 16 can pick it up alongside the item-detail UX hierarchy work. The user's framing: "checking in on how things change is the name of the game here. If the blocker is 'too scared' you want to keep checking in about how you feel."
 
@@ -630,6 +630,27 @@ These apply to every string in the app, including error messages. When in doubt,
 - No emoji anywhere in UI, copy, components, or KB files
 - No motivational micro-copy that feels performative
 - Error messages: plain language, say whether data is safe, offer a next step, no HTTP codes or stack traces
+
+---
+
+## Content philosophy (KB items, conditions, alerts, item descriptions)
+
+These rules govern what goes into KB content files (item descriptions, process steps, status notes, condition `status_summary`, alert copy). They are separate from the language/tone constraints above — those say *how* to phrase things, this says *what* to put in.
+
+**Authoritative reference > broad steps > full summary.** The Companion's job is to map terrain and point at the source of truth. It is not a legal encyclopedia, a policy newsletter, or a process documentation site. Those exist; link to them.
+
+When writing or editing KB content:
+
+- **Find the authoritative reference and link to it.** BoA's name-change help page, the USPS form page, the federal court order tracker at Lambda Legal, the state DMV's appointment booker. These are the substance.
+- **List broad/skeletal steps, not full process detail.** "Submit by mail or in person — find a location" beats summarizing the eight-step instructions on the source page. Steps should orient, not replicate.
+- **Status summaries on conditions should be one or two sentences of factual orientation, then defer to `references`.** The Phase 15 Stage C rewrites of `federal-marker-policy` and `us-marriage-policy` are the canonical examples. Don't reach for paragraph-length policy explanations even when the topic is heavy — the references carry it.
+- **No promises about timelines, eligibility, or outcomes the app can't verify.** Defer to the authoritative source for anything the user will act on.
+
+Why: keeps the DB small, keeps content fresh by deferring to a source we don't have to maintain, makes contribution easy (link + sketch is something a layperson can submit), and avoids the app misstating something high-stakes because a contributor's summary went out of date six months ago.
+
+**Existing KB content does not yet uniformly follow this pattern.** Several item files still summarize process steps at length. This is incremental cleanup, not a single content pass — when a content phase touches an item, conform it to this standard.
+
+**Encoding hygiene for KB content files**: write em-dashes as `—` (U+2014), en-dashes as `–` (U+2013), curly quotes as `"` `"` `'` `'` directly in UTF-8. Do not paste from cp1252/Windows-1252-encoded sources without verifying. The `public/kb-snapshot/index.json` build process must read source as UTF-8 and write either real UTF-8 or correct `\uXXXX` JSON escapes — never `â€”` and similar mojibake (cp1252 reinterpretation of UTF-8 punctuation byte sequences). See `scripts/audit_mojibake.py` and `scripts/fix_mojibake.py` for a defensive check and a one-shot repair if the snapshot regresses.
 
 ---
 

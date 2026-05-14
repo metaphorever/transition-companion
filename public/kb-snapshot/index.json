@@ -3,7 +3,7 @@
   "items": {
     "ssa-name": {
       "slug": "ssa-name",
-      "label": "Social Security Administration \u00e2\u20ac\u201d Name Update",
+      "label": "Social Security Administration \u2014 Name Update",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
@@ -57,7 +57,7 @@
           },
           {
             "step": 5,
-            "description": "Your new Social Security card arrives by mail, typically within 10 to 14 business days. Keep it somewhere safe. For most downstream updates, you will provide your SSN and new name \u00e2\u20ac\u201d the card itself is rarely required.",
+            "description": "Your new Social Security card arrives by mail, typically within 10 to 14 business days. Keep it somewhere safe. For most downstream updates, you will provide your SSN and new name \u2014 the card itself is rarely required.",
             "modes": [
               "preparation"
             ],
@@ -79,7 +79,7 @@
           "copies": false,
           "notary": false,
           "travel_required": true,
-          "travel_note": "An in-person visit to a local SSA office is typically required. Some offices accept mail submissions \u00e2\u20ac\u201d call ahead to confirm."
+          "travel_note": "An in-person visit to a local SSA office is typically required. Some offices accept mail submissions \u2014 call ahead to confirm."
         },
         "cost": "Free",
         "estimated_time_days": "10 to 14 business days for the new card to arrive after submitting.",
@@ -116,7 +116,7 @@
     },
     "ssa-marker": {
       "slug": "ssa-marker",
-      "label": "Social Security Administration \u00e2\u20ac\u201d Sex Designation",
+      "label": "Social Security Administration \u2014 Sex Designation",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
@@ -166,7 +166,7 @@
       "gender_marker_change": {
         "applies": true,
         "status": "danger",
-        "status_note": "Federal executive orders issued in January 2025 directed the SSA to recognize only binary (M/F) sex designations. The X option is no longer available. M/F changes now require documentation \u00e2\u20ac\u201d physician statement or court order \u00e2\u20ac\u201d rather than the self-certification that had been policy since 2022. Active litigation may alter this. Do not attempt a sex designation change without first checking current guidance from an LGBTQ+ legal organization.",
+        "status_note": "Federal executive orders issued in January 2025 directed the SSA to recognize only binary (M/F) sex designations. The X option is no longer available. M/F changes now require documentation \u2014 physician statement or court order \u2014 rather than the self-certification that had been policy since 2022. Active litigation may alter this. Do not attempt a sex designation change without first checking current guidance from an LGBTQ+ legal organization.",
         "status_date": "2025-01-20",
         "markers_historically_available": [
           "M",
@@ -195,7 +195,7 @@
       "discrimination_notes": null,
       "presence_level_content": {
         "some_guidance": "This item is here so you know it exists and can track whether policy changes. You do not need to act on it now.",
-        "walk_with_me": "It is reasonable to feel frustrated that something that was possible is no longer available. Knowing where things stand \u00e2\u20ac\u201d even when the answer is 'not right now' \u00e2\u20ac\u201d is more useful than not tracking it."
+        "walk_with_me": "It is reasonable to feel frustrated that something that was possible is no longer available. Knowing where things stand \u2014 even when the answer is 'not right now' \u2014 is more useful than not tracking it."
       },
       "last_verified": "2026-05-11",
       "verified_by": "transition-kb-seed",
@@ -232,7 +232,7 @@
       "immutable_compassion_note": null,
       "workarounds": [],
       "process": {
-        "summary": "File a Petition for Correction of Certificate of Birth (form VS-134) with the Illinois Department of Public Health. For a name change, attach your court order. For a gender marker change, Illinois allows self-certification as of 2023 \u00e2\u20ac\u201d no surgical requirement.",
+        "summary": "File a Petition for Correction of Certificate of Birth (form VS-134) with the Illinois Department of Public Health. For a name change, attach your court order. For a gender marker change, Illinois allows self-certification as of 2023 \u2014 no surgical requirement.",
         "steps": [
           {
             "step": 1,
@@ -248,7 +248,7 @@
             "modes": [
               "preparation"
             ],
-            "note": "Illinois law (410 ILCS 535/17) allows gender marker amendment based on self-attestation \u00e2\u20ac\u201d no physician letter or surgery is required."
+            "note": "Illinois law (410 ILCS 535/17) allows gender marker amendment based on self-attestation \u2014 no physician letter or surgery is required."
           },
           {
             "step": 3,
@@ -296,7 +296,7 @@
         "estimated_time_days": "28 to 56 days standard processing; faster with expedite option.",
         "url_official": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/amendment.html",
         "url_info": null,
-        "notes": "Order at least two certified copies \u00e2\u20ac\u201d one for your own records and one if a passport application or other agency requires an original."
+        "notes": "Order at least two certified copies \u2014 one for your own records and one if a passport application or other agency requires an original."
       },
       "gender_marker_change": {
         "applies": true,
@@ -314,11 +314,11 @@
         ],
         "advocacy_links": [
           {
-            "label": "Illinois Department of Public Health \u00e2\u20ac\u201d Birth Records",
+            "label": "Illinois Department of Public Health \u2014 Birth Records",
             "url": "https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records"
           },
           {
-            "label": "Heartland Alliance \u00e2\u20ac\u201d Trans Legal Resources",
+            "label": "Heartland Alliance \u2014 Trans Legal Resources",
             "url": "https://www.heartlandalliance.org"
           }
         ]
@@ -326,7 +326,7 @@
       "discrimination_notes": null,
       "presence_level_content": {
         "some_guidance": "An updated birth certificate is often required for a first-time passport and is widely accepted as primary identification. If you were born in Illinois, amending it early can simplify several later steps.",
-        "walk_with_me": "The notarization step can feel like a lot for a form that is simply correcting a record to reflect who you are. Some people find it helpful to frame it that way \u00e2\u20ac\u201d this is a correction, not a petition."
+        "walk_with_me": "The notarization step can feel like a lot for a form that is simply correcting a record to reflect who you are. Some people find it helpful to frame it that way \u2014 this is a correction, not a petition."
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
@@ -448,7 +448,7 @@
       ],
       "discrimination_notes": "Illinois Human Rights Act prohibits discrimination based on sexual orientation and gender identity. Staff at Driver Services facilities are required to treat you with respect throughout the process.",
       "presence_level_content": {
-        "some_guidance": "An updated driver's license or state ID is often the most-requested document when updating other records \u00e2\u20ac\u201d banks, employers, and utilities frequently use it as proof of identity. Doing this soon after SSA makes the rest of the list move faster.",
+        "some_guidance": "An updated driver's license or state ID is often the most-requested document when updating other records \u2014 banks, employers, and utilities frequently use it as proof of identity. Doing this soon after SSA makes the rest of the list move faster.",
         "walk_with_me": "The in-person aspect means you will be presenting yourself and your documents to someone you have not met. Most people find the process straightforward, but it makes sense to plan for a moment of decompression afterward."
       },
       "last_verified": "2025-05-01",
@@ -463,11 +463,11 @@
     },
     "us-passport-name": {
       "slug": "us-passport-name",
-      "label": "U.S. Passport \u00e2\u20ac\u201d Name Update",
+      "label": "U.S. Passport \u2014 Name Update",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
-      "description": "Update your name on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID. The sex designation field is tracked separately \u00e2\u20ac\u201d see U.S. Passport \u00e2\u20ac\u201d Sex Designation.",
+      "description": "Update your name on your U.S. passport. A passport serves as both a travel document and a widely accepted form of federal photo ID. The sex designation field is tracked separately \u2014 see U.S. Passport \u2014 Sex Designation.",
       "importance": "high",
       "jurisdiction": {
         "country": "US",
@@ -547,7 +547,7 @@
           "travel_required": true,
           "travel_note": "DS-11 applications require an in-person visit to a passport acceptance facility. DS-82 applications can be submitted by mail."
         },
-        "cost": "$130 application fee plus $35 execution fee for DS-11 (in-person); $130 by mail for DS-82. Expedited processing adds $60. Photo fee ($15\u00e2\u20ac\u201c$20) if obtaining photos at the facility.",
+        "cost": "$130 application fee plus $35 execution fee for DS-11 (in-person); $130 by mail for DS-82. Expedited processing adds $60. Photo fee ($15\u2013$20) if obtaining photos at the facility.",
         "estimated_time_days": "42 to 56 days routine; 14 to 21 days expedited.",
         "url_official": "https://travel.state.gov/content/travel/en/passports/need-passport/update-a-passport.html",
         "url_info": "https://travel.state.gov/content/travel/en/passports.html",
@@ -565,7 +565,7 @@
       "discrimination_notes": null,
       "presence_level_content": {
         "some_guidance": "A passport is accepted everywhere a driver's license is, and by many places that do not accept a state ID. If you travel internationally or want a federal ID with no state residency requirement, it is worth doing alongside or shortly after your driver's license.",
-        "walk_with_me": "Some people feel relief holding a passport with their correct name \u00e2\u20ac\u201d it is one of the most portable pieces of documentation you carry. Others find the fees and wait time discouraging. Both are valid responses to a process that should be simpler."
+        "walk_with_me": "Some people feel relief holding a passport with their correct name \u2014 it is one of the most portable pieces of documentation you carry. Others find the fees and wait time discouraging. Both are valid responses to a process that should be simpler."
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
@@ -579,7 +579,7 @@
     },
     "us-passport-marker": {
       "slug": "us-passport-marker",
-      "label": "U.S. Passport \u00e2\u20ac\u201d Sex Designation",
+      "label": "U.S. Passport \u2014 Sex Designation",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
@@ -629,7 +629,7 @@
       "gender_marker_change": {
         "applies": true,
         "status": "danger",
-        "status_note": "Federal executive orders issued in January 2025 suspended the X gender marker option for U.S. passports. Only M and F are currently available. M/F changes now require a physician's statement or medical documentation \u00e2\u20ac\u201d the self-certification policy in place since 2022 has been reversed. Active litigation may alter this. Do not attempt a sex designation change without first checking current guidance from an LGBTQ+ legal organization.",
+        "status_note": "Federal executive orders issued in January 2025 suspended the X gender marker option for U.S. passports. Only M and F are currently available. M/F changes now require a physician's statement or medical documentation \u2014 the self-certification policy in place since 2022 has been reversed. Active litigation may alter this. Do not attempt a sex designation change without first checking current guidance from an LGBTQ+ legal organization.",
         "status_date": "2025-01-20",
         "markers_historically_available": [
           "M",
@@ -658,7 +658,7 @@
       "discrimination_notes": null,
       "presence_level_content": {
         "some_guidance": "This item is here so you know it exists and can track whether policy changes. You do not need to act on it now.",
-        "walk_with_me": "It is reasonable to feel frustrated that something that was possible is no longer available. Knowing where things stand \u00e2\u20ac\u201d even when the answer is 'not right now' \u00e2\u20ac\u201d is more useful than not tracking it."
+        "walk_with_me": "It is reasonable to feel frustrated that something that was possible is no longer available. Knowing where things stand \u2014 even when the answer is 'not right now' \u2014 is more useful than not tracking it."
       },
       "last_verified": "2026-05-11",
       "verified_by": "transition-kb-seed",
@@ -673,11 +673,11 @@
     },
     "us-passport-card-name": {
       "slug": "us-passport-card-name",
-      "label": "U.S. Passport Card \u00e2\u20ac\u201d Name Update",
+      "label": "U.S. Passport Card \u2014 Name Update",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
-      "description": "Update your name on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically. The sex designation field is tracked separately \u00e2\u20ac\u201d see U.S. Passport Card \u00e2\u20ac\u201d Sex Designation.",
+      "description": "Update your name on your U.S. passport card. A passport card is valid for land and sea travel between the U.S., Canada, Mexico, the Caribbean, and Bermuda, and is accepted as a federal photo ID domestically. The sex designation field is tracked separately \u2014 see U.S. Passport Card \u2014 Sex Designation.",
       "importance": "medium",
       "jurisdiction": {
         "country": "US",
@@ -692,7 +692,7 @@
       "immutable_compassion_note": null,
       "workarounds": [],
       "process": {
-        "summary": "Apply simultaneously with or separately from a passport book. Use Form DS-11 if applying for the first time or if a significant name change is involved; use Form DS-82 for routine renewals. The process is identical to a passport book \u00e2\u20ac\u201d you can request both on the same application.",
+        "summary": "Apply simultaneously with or separately from a passport book. Use Form DS-11 if applying for the first time or if a significant name change is involved; use Form DS-82 for routine renewals. The process is identical to a passport book \u2014 you can request both on the same application.",
         "steps": [
           {
             "step": 1,
@@ -700,7 +700,7 @@
             "modes": [
               "preparation"
             ],
-            "note": "Applying for both the book and the card at the same time saves the execution fee \u00e2\u20ac\u201d you only pay it once."
+            "note": "Applying for both the book and the card at the same time saves the execution fee \u2014 you only pay it once."
           },
           {
             "step": 2,
@@ -772,7 +772,7 @@
     },
     "us-passport-card-marker": {
       "slug": "us-passport-card-marker",
-      "label": "U.S. Passport Card \u00e2\u20ac\u201d Sex Designation",
+      "label": "U.S. Passport Card \u2014 Sex Designation",
       "category": "federal-id",
       "track": "legal",
       "subcategory": null,
@@ -976,7 +976,7 @@
       "immutable_compassion_note": null,
       "workarounds": [],
       "process": {
-        "summary": "Log in to your USPS.com account and update your name in account settings. If you do not have an Informed Delivery account, you can skip this step \u00e2\u20ac\u201d it is not a required document.",
+        "summary": "Log in to your USPS.com account and update your name in account settings. If you do not have an Informed Delivery account, you can skip this step \u2014 it is not a required document.",
         "steps": [
           {
             "step": 1,
@@ -1068,7 +1068,7 @@
             "modes": [
               "online"
             ],
-            "note": "Your FSA ID is validated against Social Security Administration records. Allow at least two weeks after your SSA update before updating FSA \u00e2\u20ac\u201d the systems sync on a delay."
+            "note": "Your FSA ID is validated against Social Security Administration records. Allow at least two weeks after your SSA update before updating FSA \u2014 the systems sync on a delay."
           },
           {
             "step": 2,
@@ -1117,7 +1117,7 @@
       },
       "discrimination_notes": null,
       "presence_level_content": {
-        "some_guidance": "If you have active student loans or are planning to submit a FAFSA, keeping your FSA ID name current is important \u00e2\u20ac\u201d name mismatches can delay processing.",
+        "some_guidance": "If you have active student loans or are planning to submit a FAFSA, keeping your FSA ID name current is important \u2014 name mismatches can delay processing.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -1167,7 +1167,7 @@
             "modes": [
               "preparation"
             ],
-            "note": "If you file before the SSA-IRS sync has completed, your name may not match IRS records, which can delay processing. Filing electronically reduces this risk \u00e2\u20ac\u201d tax software can flag mismatches."
+            "note": "If you file before the SSA-IRS sync has completed, your name may not match IRS records, which can delay processing. Filing electronically reduces this risk \u2014 tax software can flag mismatches."
           },
           {
             "step": 3,
@@ -1412,7 +1412,7 @@
       },
       "discrimination_notes": "Chase's non-discrimination policy covers gender identity and expression. The CFPB accepts complaints about discriminatory treatment by financial institutions.",
       "presence_level_content": {
-        "some_guidance": "Same process as most major banks \u00e2\u20ac\u201d updated ID plus court order, in person.",
+        "some_guidance": "Same process as most major banks \u2014 updated ID plus court order, in person.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -1533,7 +1533,7 @@
       "category": "banking",
       "track": "social",
       "subcategory": null,
-      "description": "Update your legal name at other financial institutions \u00e2\u20ac\u201d banks, credit unions, or investment accounts. The general process is similar across most institutions: in-person visit, updated ID, and name change documentation.",
+      "description": "Update your legal name at other financial institutions \u2014 banks, credit unions, or investment accounts. The general process is similar across most institutions: in-person visit, updated ID, and name change documentation.",
       "importance": "high",
       "jurisdiction": {
         "country": "US",
@@ -1573,7 +1573,7 @@
             "modes": [
               "in_person"
             ],
-            "note": "Some credit unions and smaller banks may also accept mailed documentation \u00e2\u20ac\u201d ask when you call ahead."
+            "note": "Some credit unions and smaller banks may also accept mailed documentation \u2014 ask when you call ahead."
           },
           {
             "step": 4,
@@ -1605,7 +1605,7 @@
         "estimated_time_days": "Varies by institution. Typically same-day update with new cards in 5 to 10 business days.",
         "url_official": null,
         "url_info": null,
-        "notes": "If you have investment accounts (brokerage, IRA, 401k), those may have their own name change process \u00e2\u20ac\u201d often handled through the institution's customer service line or a separate form."
+        "notes": "If you have investment accounts (brokerage, IRA, 401k), those may have their own name change process \u2014 often handled through the institution's customer service line or a separate form."
       },
       "gender_marker_change": {
         "applies": false,
@@ -1618,7 +1618,7 @@
       },
       "discrimination_notes": "The Equal Credit Opportunity Act and other federal laws protect against discrimination in financial services. The CFPB (consumerfinance.gov) handles complaints about financial institution discrimination.",
       "presence_level_content": {
-        "some_guidance": "If you have accounts at multiple smaller institutions, it can help to call each one first \u00e2\u20ac\u201d some will accept mailed documents, which saves in-person trips.",
+        "some_guidance": "If you have accounts at multiple smaller institutions, it can help to call each one first \u2014 some will accept mailed documents, which saves in-person trips.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -1650,7 +1650,7 @@
         "steps": [
           {
             "step": 1,
-            "description": "Contact your HR or payroll department \u00e2\u20ac\u201d by email, phone, or in person \u00e2\u20ac\u201d and ask about their process for a legal name change.",
+            "description": "Contact your HR or payroll department \u2014 by email, phone, or in person \u2014 and ask about their process for a legal name change.",
             "modes": [
               "preparation",
               "phone"
@@ -1667,7 +1667,7 @@
           },
           {
             "step": 3,
-            "description": "Submit the documents as directed \u00e2\u20ac\u201d in person, by email, or through your employer's HR portal.",
+            "description": "Submit the documents as directed \u2014 in person, by email, or through your employer's HR portal.",
             "modes": [
               "in_person",
               "online"
@@ -1718,7 +1718,7 @@
       },
       "discrimination_notes": "Title VII of the Civil Rights Act, as interpreted by the Supreme Court in Bostock v. Clayton County (2020), prohibits employment discrimination based on gender identity and sexual orientation. Illinois law provides additional protections under the Illinois Human Rights Act. If you experience discrimination in this process, the EEOC and Illinois Department of Human Rights both accept complaints.",
       "presence_level_content": {
-        "some_guidance": "Updating payroll records is important for accurate W-2s. HR departments handle name changes routinely \u00e2\u20ac\u201d you do not need to explain more than you want to.",
+        "some_guidance": "Updating payroll records is important for accurate W-2s. HR departments handle name changes routinely \u2014 you do not need to explain more than you want to.",
         "walk_with_me": "Navigating this at work involves people who know you, which can feel different from dealing with an anonymous government agency. You get to decide what you share and how. HR is legally required to keep your records confidential."
       },
       "last_verified": "2025-05-01",
@@ -1763,7 +1763,7 @@
           },
           {
             "step": 2,
-            "description": "Submit your legal name change documentation as directed \u00e2\u20ac\u201d by mail, fax, or through the insurer's secure portal. You may also be asked for a copy of your updated ID.",
+            "description": "Submit your legal name change documentation as directed \u2014 by mail, fax, or through the insurer's secure portal. You may also be asked for a copy of your updated ID.",
             "modes": [
               "mail",
               "online"
@@ -1832,7 +1832,7 @@
       "discrimination_notes": "The Affordable Care Act's Section 1557 prohibits discrimination based on sex (including gender identity) by health insurers receiving federal funding. If you are denied coverage or treated differently because of your gender identity, the Office for Civil Rights at the Department of Health and Human Services accepts complaints.",
       "presence_level_content": {
         "some_guidance": "Updating your insurance name does not require an in-person visit. A phone call or online request with documentation is typically sufficient.",
-        "walk_with_me": "If your insurance currently has the wrong name, it is worth updating before any scheduled procedures or appointments \u00e2\u20ac\u201d it avoids billing issues that can take months to resolve."
+        "walk_with_me": "If your insurance currently has the wrong name, it is worth updating before any scheduled procedures or appointments \u2014 it avoids billing issues that can take months to resolve."
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
@@ -1912,7 +1912,7 @@
       },
       "discrimination_notes": null,
       "presence_level_content": {
-        "some_guidance": "This takes about two minutes. Your Gmail address does not change \u00e2\u20ac\u201d only the display name that appears in emails you send and in Google products.",
+        "some_guidance": "This takes about two minutes. Your Gmail address does not change \u2014 only the display name that appears in emails you send and in Google products.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -2093,7 +2093,7 @@
       "category": "digital-accounts",
       "track": "social",
       "subcategory": null,
-      "description": "Update the display name on your Netflix account. Netflix accounts use a display name that you can set to any name you choose \u00e2\u20ac\u201d no legal documentation is required.",
+      "description": "Update the display name on your Netflix account. Netflix accounts use a display name that you can set to any name you choose \u2014 no legal documentation is required.",
       "importance": "low",
       "jurisdiction": {
         "country": null,
@@ -2155,7 +2155,7 @@
       },
       "discrimination_notes": null,
       "presence_level_content": {
-        "some_guidance": "Netflix uses a display name only \u00e2\u20ac\u201d no legal name is required and no documentation is needed.",
+        "some_guidance": "Netflix uses a display name only \u2014 no legal name is required and no documentation is needed.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -2236,7 +2236,7 @@
       },
       "discrimination_notes": null,
       "presence_level_content": {
-        "some_guidance": "Display name only \u00e2\u20ac\u201d no documentation needed.",
+        "some_guidance": "Display name only \u2014 no documentation needed.",
         "walk_with_me": null
       },
       "last_verified": "2025-05-01",
@@ -2255,7 +2255,7 @@
       "category": "vital-records",
       "track": "legal",
       "subcategory": null,
-      "description": "A marriage certificate records the names of both parties as they were at the time of the ceremony. In most U.S. states, this record cannot be amended to reflect a later legal name change \u00e2\u20ac\u201d it is a historical record of what was true on that date.",
+      "description": "A marriage certificate records the names of both parties as they were at the time of the ceremony. In most U.S. states, this record cannot be amended to reflect a later legal name change \u2014 it is a historical record of what was true on that date.",
       "importance": "medium",
       "jurisdiction": {
         "country": "US",
@@ -2265,10 +2265,10 @@
       "required_by": [],
       "immutable": true,
       "immutable_note": "A marriage certificate is a contemporaneous record of a legal event. In most U.S. states, it cannot be amended to reflect names that were not in effect at the time of the marriage.",
-      "immutable_compassion_note": "This is one of the documents where the law simply has not caught up. Your marriage happened, it was real, and the certificate remains valid \u00e2\u20ac\u201d it just reflects your name as it was at that moment. Many agencies have ways to work with this, and you are not without options.",
+      "immutable_compassion_note": "This is one of the documents where the law simply has not caught up. Your marriage happened, it was real, and the certificate remains valid \u2014 it just reflects your name as it was at that moment. Many agencies have ways to work with this, and you are not without options.",
       "workarounds": [
         "Present your marriage certificate alongside your court order for legal name change. Most agencies and institutions accept this combination as proof that both names belong to the same person.",
-        "Some states allow a name amendment to be attached to a marriage certificate as a separate order \u00e2\u20ac\u201d this does not alter the original certificate, but creates an official link between the two names. Check your state's vital records office.",
+        "Some states allow a name amendment to be attached to a marriage certificate as a separate order \u2014 this does not alter the original certificate, but creates an official link between the two names. Check your state's vital records office.",
         "For passport applications and similar documents, a combination of your marriage certificate plus a court order (or updated ID) is the standard approach when the names differ."
       ],
       "process": null,
@@ -2284,7 +2284,7 @@
       "discrimination_notes": null,
       "presence_level_content": {
         "some_guidance": "Agencies that ask for a marriage certificate alongside a name-changed ID are familiar with this situation. Presenting both documents together is the accepted practice.",
-        "walk_with_me": "It can feel strange that a document about your marriage does not reflect your name. Some people find it helps to think of it as a record of a day \u00e2\u20ac\u201d not a definition of who you are now."
+        "walk_with_me": "It can feel strange that a document about your marriage does not reflect your name. Some people find it helps to think of it as a record of a day \u2014 not a definition of who you are now."
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
@@ -2379,8 +2379,8 @@
       },
       "discrimination_notes": "Section 1557 of the Affordable Care Act prohibits discrimination based on sex (including gender identity) in health care programs receiving federal funds. Some states have additional protections; others have enacted restrictions on gender-affirming care for adults. Illinois has affirmed the right to gender-affirming care.",
       "presence_level_content": {
-        "some_guidance": "Informed consent providers exist in most metropolitan areas and across telehealth. If a provider tells you they require a mental health referral or a specific diagnosis to prescribe HRT, they are using a gatekeeping model \u00e2\u20ac\u201d you can look for a provider who does not.",
-        "walk_with_me": "Starting HRT is a significant step for many people \u00e2\u20ac\u201d one that can take time to think through, and also one that people sometimes wait longer than they need to because the process seems harder than it is. If you have questions about what the process looks like, your first appointment with an informed consent provider is the right place to ask them."
+        "some_guidance": "Informed consent providers exist in most metropolitan areas and across telehealth. If a provider tells you they require a mental health referral or a specific diagnosis to prescribe HRT, they are using a gatekeeping model \u2014 you can look for a provider who does not.",
+        "walk_with_me": "Starting HRT is a significant step for many people \u2014 one that can take time to think through, and also one that people sometimes wait longer than they need to because the process seems harder than it is. If you have questions about what the process looks like, your first appointment with an informed consent provider is the right place to ask them."
       },
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
@@ -2680,7 +2680,7 @@
   "sequences": {
     "il-legal-name": {
       "slug": "il-legal-name",
-      "label": "Legal Name Change \u00e2\u20ac\u201d Illinois",
+      "label": "Legal Name Change \u2014 Illinois",
       "description": "A recommended order for updating name and gender marker records across government agencies and institutions in Illinois. Each phase builds on the previous one.",
       "track": "legal",
       "jurisdiction": "US-IL",
@@ -2715,7 +2715,7 @@
             "fsa-id",
             "irs-name"
           ],
-          "note": "The IRS name update happens automatically after SSA \u00e2\u20ac\u201d no separate action needed. Verify it on your next tax return."
+          "note": "The IRS name update happens automatically after SSA \u2014 no separate action needed. Verify it on your next tax return."
         },
         {
           "phase": 4,
@@ -2743,7 +2743,7 @@
             "netflix-account",
             "hulu-account"
           ],
-          "note": "These can be done at any point \u00e2\u20ac\u201d no dependencies. Many take only a few minutes."
+          "note": "These can be done at any point \u2014 no dependencies. Many take only a few minutes."
         }
       ]
     }

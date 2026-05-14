@@ -643,6 +643,25 @@ These apply to every string in the app, including error messages. When in doubt,
 - No motivational micro-copy that feels performative
 - Error messages: plain language, say whether data is safe, offer a next step, no HTTP codes or stack traces
 
+### Privacy posture and first-person voice
+
+The app has no relationship with the user's data. It is a tool, not a service, not a companion with feelings, and not an entity the user is communicating with. Data is recorded locally for the user's own reference — it is not shared with, reported to, or interpreted by anyone.
+
+**There is no "we" or "us" in this app.** The parties that exist are:
+- The user (second person: "you", "your")
+- The user's personal social graph (people they are or are not out to)
+- The community (contributors to the KB — an impersonal third party, not a relationship)
+
+Consequences for copy:
+- "Tell us" → "Record" or drop entirely
+- "Help us show you" → "Determines" or "Used to show"
+- "What you've told us" → "Your location and document status" (be specific about what data is actually used)
+- "We need" → rewrite to remove the agent entirely
+- Onboarding prompts collect data the user is recording for themselves, not submitting to anyone
+- Contribution prompts are explicit that sharing is optional, one-directional, and anonymized at the process level — personal notes are never included
+
+When reviewing any new copy, ask: is there an implied "us" receiving this information? If yes, rewrite.
+
 ---
 
 ## Content philosophy (KB items, conditions, alerts, item descriptions)

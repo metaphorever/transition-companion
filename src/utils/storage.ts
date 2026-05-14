@@ -1,4 +1,4 @@
-import type { UserData, KBCache } from '../types'
+import type { UserData, KBCache, OutToLevel } from '../types'
 
 const USER_DATA_KEY = 'tc_user_data'
 const KB_CACHE_KEY = 'tc_kb_cache'
@@ -165,7 +165,17 @@ export function mergeWithDefaults(stored: UserData): UserData {
     checklist,
     custom_items,
     recurring_items: stored.recurring_items ?? [],
-    people: stored.people ?? {},
+    people: Object.fromEntries(
+      Object.entries(stored.people ?? {}).map(([id, p]) => {
+        // Migrate boolean out_to (pre-Phase-16) → OutToLevel
+        const raw = p as typeof p & { out_to: OutToLevel | boolean }
+        const out_to: OutToLevel =
+          typeof raw.out_to === 'boolean'
+            ? raw.out_to ? 'completely' : 'not_yet'
+            : raw.out_to
+        return [id, { ...p, out_to }]
+      })
+    ),
   }
 }
 

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import WizardLayout from './WizardLayout'
 import type { StepProps } from './OnboardingWizard'
 import { useAppStore } from '../../store'
+
+const FIND_A_NAME_SLUG = 'find-a-name'
 
 // The six "What are you here for?" options the wizard surfaces. Each maps to
 // some combination of profile.change_types and profile.active_tracks. The
@@ -86,6 +88,11 @@ export default function Step2AboutYou({ step, onBack, onSkip, onNext }: StepProp
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
   const patchProfile = useAppStore((s) => s.patchProfile)
+  const checklist = useAppStore((s) => s.userData.checklist)
+  const addItemToChecklist = useAppStore((s) => s.addItemToChecklist)
+
+  const findANameOnList = FIND_A_NAME_SLUG in checklist
+  const [wantFindAName, setWantFindAName] = useState(findANameOnList)
 
   const hereFor = useMemo(
     () => deriveHereFor(profile.change_types, profile.active_tracks),
@@ -153,6 +160,22 @@ export default function Step2AboutYou({ step, onBack, onSkip, onNext }: StepProp
             placeholder={t('onboarding.steps.about_you.name_placeholder')}
             className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
           />
+          {!profile.display_name && (
+            <label className="flex items-start gap-2 mt-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={wantFindAName}
+                onChange={(e) => {
+                  setWantFindAName(e.target.checked)
+                  if (e.target.checked) addItemToChecklist(FIND_A_NAME_SLUG)
+                }}
+                className="mt-0.5 accent-neutral-900"
+              />
+              <span className="text-sm text-neutral-700">
+                {t('onboarding.steps.about_you.find_a_name_opt_in')}
+              </span>
+            </label>
+          )}
         </Field>
 
         <Field label={t('onboarding.steps.about_you.pronouns_label')}>

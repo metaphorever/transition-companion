@@ -489,6 +489,8 @@ export interface CustomItem {
 
 // ── Person ────────────────────────────────────────────────────────────────────
 
+export type OutToLevel = 'not_now_not_ever' | 'not_yet' | 'partially' | 'completely'
+
 export type SafetyLevel =
   | 'safe'
   | 'probably_safe'
@@ -518,7 +520,7 @@ export interface Person {
   id: string
   label: string
   relationship: string
-  out_to: boolean
+  out_to: OutToLevel
   out_status: string
   safety_level: SafetyLevel
   safety_note: string

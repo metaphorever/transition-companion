@@ -1,0 +1,78 @@
+{
+  "slug": "social-name-change",
+  "label": "Use Your Name Socially",
+  "category": "social-identity",
+  "track": "social",
+  "subcategory": null,
+  "description": "Using a different name with people in your life — friends, family, coworkers, online — is separate from a legal name change and does not require any official steps. It happens on your timeline, with the people you choose.",
+  "importance": "personal",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Social name change happens incrementally. Most people start with a trusted person or an online space before widening the circle. Workplace and family situations vary widely — there is no single right approach.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Start with the person or space where it feels safest — a close friend, an online community, or an anonymous platform.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Decide how and when to ask others to use your name. Some people send a message; others bring it up in conversation. Either is fine.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Update display names on accounts and platforms where you want your name to be used. Most platforms allow this without any verification.",
+        "modes": ["online"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["preparation", "online"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": null,
+    "url_official": null,
+    "url_info": "https://transequality.org/know-your-rights/everyday-life",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": null,
+    "walk_with_me": null
+  },
+  "last_verified": "2026-05-13",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://transequality.org/know-your-rights/everyday-life",
+      "label": "Trans Equality — Everyday Life",
+      "retrieved": "2026-05-13"
+    }
+  ]
+}

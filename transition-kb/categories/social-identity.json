@@ -1,0 +1,9 @@
+{
+  "slug": "social-identity",
+  "label": "Social Identity",
+  "description": "How you present yourself to people in your life — your name, how you are known, and who knows what.",
+  "track": "social",
+  "icon_key": "person",
+  "sort_order": 1,
+  "tags": ["social", "name", "identity", "coming-out"]
+}

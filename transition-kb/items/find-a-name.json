@@ -1,0 +1,83 @@
+{
+  "slug": "find-a-name",
+  "label": "Find a Name",
+  "category": "social-identity",
+  "track": "social",
+  "subcategory": null,
+  "description": "Deciding on a name — or living with uncertainty about one — is its own process. There is no required order of operations, and no timeline. This item is a place to start if you want to begin exploring.",
+  "importance": "personal",
+  "jurisdiction": { "country": null, "region": null },
+  "requires": [],
+  "required_by": [],
+  "immutable": false,
+  "immutable_note": null,
+  "immutable_compassion_note": null,
+  "workarounds": [],
+  "process": {
+    "summary": "Name exploration is personal. Some people know immediately; others try several names over time before one fits. Online name databases, community spaces, and trusted people in your life are useful starting points.",
+    "steps": [
+      {
+        "step": 1,
+        "description": "Browse name databases to find names that feel worth trying. Nameberry, Behind the Name, and similar sites let you filter by origin, sound, and meaning.",
+        "modes": ["online"],
+        "note": null
+      },
+      {
+        "step": 2,
+        "description": "Try a name on privately — write it, say it, sign it — and notice how it feels. There is no commitment involved.",
+        "modes": ["preparation"],
+        "note": null
+      },
+      {
+        "step": 3,
+        "description": "Try it with a trusted person first, then broaden from there if it feels right.",
+        "modes": ["preparation"],
+        "note": null
+      }
+    ],
+    "documents_required": [],
+    "modes_available": ["online", "preparation"],
+    "access_requirements": {
+      "internet": "optional",
+      "printer": false,
+      "phone": false,
+      "copies": false,
+      "notary": false,
+      "travel_required": false,
+      "travel_note": null
+    },
+    "cost": "Free",
+    "estimated_time_days": null,
+    "url_official": null,
+    "url_info": "https://www.behindthename.com",
+    "notes": null
+  },
+  "gender_marker_change": {
+    "applies": false,
+    "status": "unknown",
+    "status_note": null,
+    "status_date": null,
+    "markers_historically_available": [],
+    "markers_currently_available": [],
+    "advocacy_links": []
+  },
+  "discrimination_notes": null,
+  "presence_level_content": {
+    "some_guidance": null,
+    "walk_with_me": null
+  },
+  "last_verified": "2026-05-13",
+  "verified_by": "transition-kb-seed",
+  "sources": [
+    {
+      "url": "https://www.behindthename.com",
+      "label": "Behind the Name — name meanings and origins",
+      "retrieved": "2026-05-13"
+    },
+    {
+      "url": "https://nameberry.com",
+      "label": "Nameberry — name database",
+      "retrieved": "2026-05-13"
+    }
+  ]
+}

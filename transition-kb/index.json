@@ -25,7 +25,9 @@
     "hulu-account",
     "us-marriage-cert",
     "informed-consent",
-    "lgbtq-health-centers"
+    "lgbtq-health-centers",
+    "find-a-name",
+    "social-name-change"
   ],
   "categories": [
     "federal-id",
@@ -37,7 +39,8 @@
     "health-insurance",
     "mail-delivery",
     "digital-accounts",
-    "healthcare-access"
+    "healthcare-access",
+    "social-identity"
   ],
   "tracks": [
     "legal",

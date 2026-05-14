@@ -3,11 +3,27 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../store'
 import type {
+  OutToLevel,
   Person,
   SafetyLevel,
   SupportLevel,
   ContactFrequency,
 } from '../../types'
+
+const OUT_TO_LEVELS: OutToLevel[] = [
+  'not_now_not_ever',
+  'not_yet',
+  'partially',
+  'completely',
+]
+
+function isOutToSomeone(level: OutToLevel): boolean {
+  return level === 'partially' || level === 'completely'
+}
+
+function isNotOut(level: OutToLevel): boolean {
+  return level === 'not_now_not_ever' || level === 'not_yet'
+}
 
 const SAFETY_LEVELS: SafetyLevel[] = [
   'safe',
@@ -15,7 +31,6 @@ const SAFETY_LEVELS: SafetyLevel[] = [
   'unsure',
   'probably_unsafe',
   'unsafe',
-  'unknown',
 ]
 
 const SUPPORT_LEVELS: SupportLevel[] = [
@@ -40,7 +55,7 @@ const CONTACT_FREQUENCIES: ContactFrequency[] = [
 interface PersonDraft {
   label: string
   relationship: string
-  out_to: boolean
+  out_to: OutToLevel | ''
   out_status: string
   safety_level: SafetyLevel | ''
   safety_note: string
@@ -55,7 +70,7 @@ function emptyDraft(): PersonDraft {
   return {
     label: '',
     relationship: '',
-    out_to: false,
+    out_to: '',
     out_status: '',
     safety_level: '',
     safety_note: '',
@@ -87,9 +102,9 @@ function buildPersonPayload(draft: PersonDraft): Omit<Person, 'id'> {
   return {
     label: draft.label.trim(),
     relationship: draft.relationship.trim(),
-    out_to: draft.out_to,
+    out_to: draft.out_to || 'not_yet',
     out_status: draft.out_status.trim(),
-    safety_level: draft.safety_level || 'unknown',
+    safety_level: draft.safety_level || 'unsure',
     safety_note: draft.safety_note.trim(),
     support_level: draft.support_level || null,
     support_note: draft.support_note.trim() || null,
@@ -121,14 +136,12 @@ function PersonCard({
             <p className="text-sm font-medium text-neutral-900">{person.label}</p>
             <span
               className={`text-xs px-1.5 py-0.5 rounded ${
-                person.out_to
+                isOutToSomeone(person.out_to)
                   ? 'bg-neutral-100 text-neutral-600'
                   : 'text-neutral-400'
               }`}
             >
-              {person.out_to
-                ? t('people_map.out_badge_yes')
-                : t('people_map.out_badge_no')}
+              {t(`people_map.out_to_level.${person.out_to}`)}
             </span>
           </div>
           {person.relationship && (
@@ -251,42 +264,38 @@ function PersonForm({
       {/* Out to */}
       <div>
         <p className={labelClass}>{t('people_map.field_out_to')}</p>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
-            <input
-              type="radio"
-              name="out_to"
-              checked={draft.out_to}
-              onChange={() => update('out_to', true)}
-            />
-            {t('people_map.field_out_to_yes')}
-          </label>
-          <label className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
-            <input
-              type="radio"
-              name="out_to"
-              checked={!draft.out_to}
-              onChange={() => update('out_to', false)}
-            />
-            {t('people_map.field_out_to_no')}
-          </label>
+        <div className="space-y-1.5">
+          {OUT_TO_LEVELS.map((level) => (
+            <label key={level} className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
+              <input
+                type="radio"
+                name="out_to"
+                value={level}
+                checked={draft.out_to === level}
+                onChange={() => update('out_to', level)}
+              />
+              {t(`people_map.out_to_level.${level}`)}
+            </label>
+          ))}
         </div>
       </div>
 
-      {/* Out status */}
-      <div>
-        <label htmlFor="person-out-status" className={labelClass}>
-          {t('people_map.field_out_status')}
-        </label>
-        <input
-          id="person-out-status"
-          type="text"
-          value={draft.out_status}
-          onChange={(e) => update('out_status', e.target.value)}
-          placeholder={t('people_map.field_out_status_placeholder')}
-          className={inputClass}
-        />
-      </div>
+      {/* Out status — only shown when partially or completely out */}
+      {draft.out_to && isOutToSomeone(draft.out_to) && (
+        <div>
+          <label htmlFor="person-out-status" className={labelClass}>
+            {t('people_map.field_out_status')}
+          </label>
+          <input
+            id="person-out-status"
+            type="text"
+            value={draft.out_status}
+            onChange={(e) => update('out_status', e.target.value)}
+            placeholder={t('people_map.field_out_status_placeholder')}
+            className={inputClass}
+          />
+        </div>
+      )}
 
       {/* Safety level */}
       <div>
@@ -378,51 +387,61 @@ function PersonForm({
         </select>
       </div>
 
-      {/* Items they need to update */}
-      <div>
-        <p className={labelClass}>{t('people_map.field_items_to_update')}</p>
-        <p className="text-xs text-neutral-500 mb-2">
-          {t('people_map.field_items_to_update_hint')}
-        </p>
-        {draft.items_they_need_to_update.length > 0 && (
-          <ul className="mb-2 space-y-1">
-            {draft.items_they_need_to_update.map((item, i) => (
-              <li key={i} className="flex items-center justify-between gap-2 text-sm text-neutral-700">
-                <span>{item}</span>
-                <button
-                  type="button"
-                  onClick={() => removeUpdateItem(i)}
-                  className="text-xs text-neutral-400 hover:text-neutral-700 underline underline-offset-2 shrink-0"
-                >
-                  {t('people_map.field_items_to_update_remove')}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newUpdateItem}
-            onChange={(e) => setNewUpdateItem(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                addUpdateItem()
-              }
-            }}
-            placeholder={t('people_map.field_items_to_update_placeholder')}
-            className="flex-1 px-3 py-2 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
-          />
-          <button
-            type="button"
-            onClick={addUpdateItem}
-            className="px-3 py-2 text-sm text-neutral-600 border border-neutral-300 rounded hover:border-neutral-500"
-          >
-            {t('people_map.field_items_to_update_add')}
-          </button>
+      {/* Items they need to update — hidden for not-out or unsupportive people */}
+      {draft.out_to && isNotOut(draft.out_to) ? (
+        <div className="px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded text-xs text-neutral-500">
+          {t('people_map.field_items_to_update_not_out_note')}
         </div>
-      </div>
+      ) : draft.support_level === 'resistant' || draft.support_level === 'actively_hostile' ? (
+        <div className="px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded text-xs text-neutral-500">
+          {t('people_map.field_items_to_update_unsupportive_note')}
+        </div>
+      ) : (
+        <div>
+          <p className={labelClass}>{t('people_map.field_items_to_update')}</p>
+          <p className="text-xs text-neutral-500 mb-2">
+            {t('people_map.field_items_to_update_hint')}
+          </p>
+          {draft.items_they_need_to_update.length > 0 && (
+            <ul className="mb-2 space-y-1">
+              {draft.items_they_need_to_update.map((item, i) => (
+                <li key={i} className="flex items-center justify-between gap-2 text-sm text-neutral-700">
+                  <span>{item}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeUpdateItem(i)}
+                    className="text-xs text-neutral-400 hover:text-neutral-700 underline underline-offset-2 shrink-0"
+                  >
+                    {t('people_map.field_items_to_update_remove')}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newUpdateItem}
+              onChange={(e) => setNewUpdateItem(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addUpdateItem()
+                }
+              }}
+              placeholder={t('people_map.field_items_to_update_placeholder')}
+              className="flex-1 px-3 py-2 text-sm border border-neutral-300 rounded focus:outline-none focus:border-neutral-600"
+            />
+            <button
+              type="button"
+              onClick={addUpdateItem}
+              className="px-3 py-2 text-sm text-neutral-600 border border-neutral-300 rounded hover:border-neutral-500"
+            >
+              {t('people_map.field_items_to_update_add')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* User notes */}
       <div>
@@ -464,7 +483,9 @@ function PersonForm({
 function ThingsToUpdateSection({ people }: { people: Person[] }) {
   const { t } = useTranslation()
 
-  const withItems = people.filter((p) => p.items_they_need_to_update.length > 0)
+  const withItems = people.filter(
+    (p) => p.items_they_need_to_update.length > 0 && isOutToSomeone(p.out_to)
+  )
 
   return (
     <section className="mt-10" aria-labelledby="things-to-update-heading">
@@ -495,6 +516,57 @@ function ThingsToUpdateSection({ people }: { people: Person[] }) {
             </li>
           ))}
         </ul>
+      )}
+    </section>
+  )
+}
+
+// ── Who Can Know What ─────────────────────────────────────────────────────────
+
+function WhoCanKnowSection({ people }: { people: Person[] }) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+
+  const outPeople = people.filter((p) => isOutToSomeone(p.out_to))
+  if (outPeople.length === 0) return null
+
+  return (
+    <section className="mt-10" aria-labelledby="who-can-know-heading">
+      <button
+        type="button"
+        id="who-can-know-heading"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center justify-between w-full text-xs font-medium uppercase tracking-wider text-neutral-500 hover:text-neutral-700 mb-1"
+        aria-expanded={open}
+      >
+        <span>{t('people_map.who_can_know_heading')}</span>
+        <span className="normal-case tracking-normal font-normal text-xs">
+          {open ? t('people_map.who_can_know_hide') : t('people_map.who_can_know_show')}
+        </span>
+      </button>
+
+      {open && (
+        <>
+          <p className="text-xs text-neutral-500 mb-4">{t('people_map.who_can_know_intro')}</p>
+          <ul className="space-y-3">
+            {outPeople.map((p) => (
+              <li key={p.id} className="px-3 py-2.5 border border-neutral-200 rounded-lg">
+                <div className="flex items-baseline justify-between gap-2 mb-0.5">
+                  <p className="text-sm font-medium text-neutral-900">{p.label}</p>
+                  <span className="text-xs text-neutral-400 shrink-0">
+                    {t(`people_map.out_to_level.${p.out_to}`)}
+                  </span>
+                </div>
+                {p.relationship && (
+                  <p className="text-xs text-neutral-500">{p.relationship}</p>
+                )}
+                {p.out_status && (
+                  <p className="text-xs text-neutral-500 mt-0.5 italic">{p.out_status}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </section>
   )
@@ -594,6 +666,7 @@ export default function PeopleMap() {
         )}
 
         <ThingsToUpdateSection people={peopleList} />
+        <WhoCanKnowSection people={peopleList} />
       </main>
     </div>
   )

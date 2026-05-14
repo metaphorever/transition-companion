@@ -995,6 +995,87 @@ function DocumentStateSection({
   )
 }
 
+// ── Walkthrough section (process + context — collapsed by default) ────────────
+
+function WalkthroughSection({
+  item,
+  kb,
+  presenceContent,
+  presenceLevel,
+}: {
+  item: KBItem
+  kb: { items: Record<string, KBItem> }
+  presenceContent: string | null
+  presenceLevel: PresenceLevel
+}) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+
+  const hasContent = !!presenceContent || !!item.discrimination_notes || !!item.process
+  if (!hasContent) return null
+
+  return (
+    <section className="mb-8" aria-labelledby="walkthrough-heading">
+      <button
+        type="button"
+        id="walkthrough-heading"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center justify-between w-full text-xs font-medium uppercase tracking-wider text-neutral-500 hover:text-neutral-700 mb-2"
+        aria-expanded={open}
+      >
+        <span>{t('item_detail.walkthrough_heading')}</span>
+        <span className="normal-case tracking-normal font-normal text-xs">
+          {open ? t('item_detail.walkthrough_hide') : t('item_detail.walkthrough_show')}
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-3">
+          {presenceContent && (
+            <div className="mb-6 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+              <p className="text-xs font-medium text-neutral-500 mb-1">
+                {t('item_detail.about_this_step')}
+              </p>
+              <p className="text-sm text-neutral-700 leading-relaxed">{presenceContent}</p>
+            </div>
+          )}
+          {item.discrimination_notes && (
+            <div className="mb-6 px-4 py-3 border-l-2 border-neutral-400">
+              <p className="text-xs font-medium text-neutral-500 mb-1">
+                {t('item_detail.rights_heading')}
+              </p>
+              <p className="text-sm text-neutral-700 leading-relaxed">{item.discrimination_notes}</p>
+            </div>
+          )}
+          {item.process && <ProcessSection item={item} />}
+          <UnlocksHint item={item} kb={kb} presenceLevel={presenceLevel} />
+        </div>
+      )}
+    </section>
+  )
+}
+
+// ── Completion acknowledgment ─────────────────────────────────────────────────
+
+function CompletionAck({ completedAt }: { completedAt: string | null }) {
+  const { t } = useTranslation()
+  return (
+    <div className="mb-6 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg flex items-center justify-between gap-4">
+      <p className="text-sm text-neutral-700">
+        {completedAt
+          ? t('item_detail.complete_ack_dated', { date: fmtDate(completedAt) })
+          : t('item_detail.complete_ack')}
+      </p>
+      <Link
+        to="/dashboard"
+        className="text-sm text-neutral-600 underline underline-offset-2 hover:text-neutral-900 shrink-0"
+      >
+        {t('item_detail.complete_ack_back')}
+      </Link>
+    </div>
+  )
+}
+
 // ── Custom Item Detail ────────────────────────────────────────────────────────
 
 function CustomItemDetail({ item }: { item: CustomItem }) {
@@ -1197,8 +1278,8 @@ function CustomItemDetail({ item }: { item: CustomItem }) {
         </div>
       </section>
 
-      {/* Sub-tasks */}
-      <SubTasksSection slug={item.id} entry={entry} />
+      {/* Completion acknowledgment */}
+      {currentStatus === 'complete' && <CompletionAck completedAt={entry.completed_at} />}
 
       {/* Blockers */}
       <BlockersSection
@@ -1209,8 +1290,8 @@ function CustomItemDetail({ item }: { item: CustomItem }) {
         parentTrack={item.track}
       />
 
-      {/* Dates */}
-      <DatesSection slug={item.id} entry={entry} />
+      {/* Sub-tasks */}
+      <SubTasksSection slug={item.id} entry={entry} />
 
       {/* Notes */}
       <section className="mb-8" aria-labelledby="notes-heading">
@@ -1231,6 +1312,9 @@ function CustomItemDetail({ item }: { item: CustomItem }) {
         />
         <p className="text-xs text-neutral-400 mt-1">{t('item_detail.notes_private_note')}</p>
       </section>
+
+      {/* Dates */}
+      <DatesSection slug={item.id} entry={entry} />
 
       {/* Status history */}
       {statusLog.length > 1 && (
@@ -1399,11 +1483,9 @@ export default function ItemDetail() {
 
   return (
     <PageShell>
-      {/* User item status alerts — above fold */}
+      {/* Alerts — above fold */}
       {currentStatus === 'at_risk' && <AtRiskAlert entry={entry} item={item} />}
       {currentStatus === 'revoked' && <RevokedAlert entry={entry} />}
-
-      {/* Recovery path items */}
       {(currentStatus === 'at_risk' || currentStatus === 'revoked') && kb && (
         <RecoveryItemsSection
           item={item}
@@ -1411,11 +1493,7 @@ export default function ItemDetail() {
           onAddToChecklist={addItemToChecklist}
         />
       )}
-
-      {/* KB-level danger/caution/unknown/unavailable banner */}
       {showGmcBanner && gmc && <GmcBanner gmc={gmc} />}
-
-      {/* Immutable notice */}
       {item.immutable && <ImmutableNotice item={item} />}
 
       {/* Item header */}
@@ -1434,31 +1512,8 @@ export default function ItemDetail() {
         )}
       </div>
 
-      {/* Presence-level content */}
-      {presenceContent && (
-        <div className="mb-6 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
-          <p className="text-xs font-medium text-neutral-500 mb-1">
-            {t('item_detail.about_this_step')}
-          </p>
-          <p className="text-sm text-neutral-700 leading-relaxed">{presenceContent}</p>
-        </div>
-      )}
-
-      {/* Discrimination notes */}
-      {item.discrimination_notes && (
-        <div className="mb-6 px-4 py-3 border-l-2 border-neutral-400">
-          <p className="text-xs font-medium text-neutral-500 mb-1">
-            {t('item_detail.rights_heading')}
-          </p>
-          <p className="text-sm text-neutral-700 leading-relaxed">{item.discrimination_notes}</p>
-        </div>
-      )}
-
-      {/* Process */}
-      {item.process && <ProcessSection item={item} />}
-
       {/* Status selector */}
-      <section className="mb-8" aria-labelledby="status-heading">
+      <section className="mb-6" aria-labelledby="status-heading">
         <h2
           id="status-heading"
           className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
@@ -1512,11 +1567,8 @@ export default function ItemDetail() {
         </div>
       </section>
 
-      {/* Unlocks hint */}
-      {kb && <UnlocksHint item={item} kb={kb} presenceLevel={presenceLevel} />}
-
-      {/* Sub-tasks */}
-      {slug && <SubTasksSection slug={slug} entry={entry} />}
+      {/* Completion acknowledgment */}
+      {currentStatus === 'complete' && <CompletionAck completedAt={entry.completed_at} />}
 
       {/* Blockers */}
       {slug && (
@@ -1529,18 +1581,18 @@ export default function ItemDetail() {
         />
       )}
 
-      {/* Dates (C5) */}
-      {slug && <DatesSection slug={slug} entry={entry} />}
+      {/* Sub-tasks */}
+      {slug && <SubTasksSection slug={slug} entry={entry} />}
 
-      {/* Document state (Phase 14) — only for items in the doc-state registry
-          or that already have document_state captured. */}
-      {slug &&
-        (() => {
-          const config = ONBOARDING_DOC_STATE_ITEMS.find((c) => c.slug === slug)
-          const kind = entry.document_state?.kind ?? config?.kind
-          if (!kind) return null
-          return <DocumentStateSection slug={slug} entry={entry} kind={kind} />
-        })()}
+      {/* Walkthrough: process steps, context notes, rights info — collapsed by default */}
+      {kb && (
+        <WalkthroughSection
+          item={item}
+          kb={kb}
+          presenceContent={presenceContent}
+          presenceLevel={presenceLevel}
+        />
+      )}
 
       {/* Notes */}
       <section className="mb-8" aria-labelledby="notes-heading">
@@ -1561,6 +1613,18 @@ export default function ItemDetail() {
         />
         <p className="text-xs text-neutral-400 mt-1">{t('item_detail.notes_private_note')}</p>
       </section>
+
+      {/* Document state (Phase 14) */}
+      {slug &&
+        (() => {
+          const config = ONBOARDING_DOC_STATE_ITEMS.find((c) => c.slug === slug)
+          const kind = entry.document_state?.kind ?? config?.kind
+          if (!kind) return null
+          return <DocumentStateSection slug={slug} entry={entry} kind={kind} />
+        })()}
+
+      {/* Dates */}
+      {slug && <DatesSection slug={slug} entry={entry} />}
 
       {/* Status history */}
       {statusLog.length > 1 && (

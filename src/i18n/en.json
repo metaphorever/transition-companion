@@ -35,6 +35,7 @@
         "subtitle": "All of this is optional. You can change anything later.",
         "name_label": "What would you like to be called in this app?",
         "name_placeholder": "Your name or whatever feels right",
+        "find_a_name_opt_in": "Not sure yet — add a name-finding starting point to my list",
         "pronouns_label": "Pronouns",
         "pronouns_options": {
           "she_her": "she/her",
@@ -582,7 +583,13 @@
     "custom_item_track": "Track",
     "convert_to_recurring_prompt": "Want to set a recurring reminder for this?",
     "convert_to_recurring_yes": "Yes, set one up",
-    "convert_to_recurring_dismiss": "No thanks"
+    "convert_to_recurring_dismiss": "No thanks",
+    "walkthrough_heading": "Details",
+    "walkthrough_show": "Show",
+    "walkthrough_hide": "Hide",
+    "complete_ack": "Marked complete.",
+    "complete_ack_dated": "Marked complete on {{date}}.",
+    "complete_ack_back": "Back to dashboard"
   },
   "people_map": {
     "title": "People",
@@ -609,6 +616,12 @@
     "field_out_to": "Are you out to this person?",
     "field_out_to_yes": "Yes",
     "field_out_to_no": "Not yet",
+    "out_to_level": {
+      "not_now_not_ever": "Not out — and not planning to be",
+      "not_yet": "Not out yet",
+      "partially": "Partially out",
+      "completely": "Fully out"
+    },
     "field_out_status": "How it went, or what they know",
     "field_out_status_placeholder": "Optional",
     "field_safety_level": "Safety level",
@@ -653,9 +666,15 @@
       "rarely": "Rarely",
       "estranged": "Estranged"
     },
+    "field_items_to_update_not_out_note": "You have not come out to this person yet — items they need to update are not shown. You can add them once you are out.",
+    "field_items_to_update_unsupportive_note": "Items they need to update are not shown for people marked as resistant or hostile.",
     "things_to_update_heading": "Things others need to update",
-    "things_to_update_intro": "People in your list who have records or information that will need to change.",
-    "things_to_update_empty": "No one has any pending items."
+    "things_to_update_intro": "People you are out to who have records or information that will need to change.",
+    "things_to_update_empty": "No one has any pending items.",
+    "who_can_know_heading": "Who can know what",
+    "who_can_know_show": "Show",
+    "who_can_know_hide": "Hide",
+    "who_can_know_intro": "People in your list who you are at least partially out to. Generated from your list — not stored separately."
   },
   "contribute": {
     "title": "Contribute",

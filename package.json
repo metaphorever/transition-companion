@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "python3 scripts/generate_dependency_map.py || python scripts/generate_dependency_map.py",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate-deps": "python3 scripts/validate_dependency_map.py || python scripts/validate_dependency_map.py"
   },
   "dependencies": {
     "i18next": "^26.0.10",

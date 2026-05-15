@@ -40,10 +40,17 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 18C — KB Dependency Map**
+**PHASE: 18D — Document State Unification**
 **Status: NOT STARTED.**
-**Model: Sonnet · Effort: medium**
-**Previous phase (18B — Display/Correctness Fixes): COMPLETE. Shipped 2026-05-14.**
+**Model: Sonnet · Effort: high**
+**Previous phase (18C — KB Dependency Map): COMPLETE. Shipped 2026-05-15.**
+
+**Phase 18C carryover notes:**
+- **Three-file cycle is live.** Generator (`scripts/generate_dependency_map.py`) → canonical (`transition-kb/_dependency-map.mmd`) → validator (`scripts/validate_dependency_map.py`). Generator runs as `prebuild` hook; validator runs via `npm run validate-deps`.
+- **Canonical bootstrapped.** `_dependency-map.mmd` is a copy of the generated file. It is the hand-editable working model — add soft edges (`-.->`) and wire intentionally-standalone items to `_standalone` here. The generator never overwrites it.
+- **Bucket 4 has 16 unclassified isolated items.** These are items with no hard edges in either direction that have not yet been wired to `_standalone` in the canonical. The list: `amazon-account`, `apple-id`, `find-a-name`, `google-account`, `health-insurance-generic`, `hulu-account`, `il-birth-cert`, `informed-consent`, `lgbtq-health-centers`, `netflix-account`, `social-name-change`, `ssa-marker`, `us-marriage-cert`, `us-passport-card-marker`, `us-passport-marker`, `usps-informed-delivery`. Wire each to `_standalone` (intentional) or add a `requires` edge in JSON as edges become clear. This is an ongoing editorial task, not a blocker.
+- **Soft edges are canonical-only and design-only.** They never go in JSON `requires`. Phase 16 carryover noted that `find-a-name -.-> social-name-change -.-> ssa-name` is a plausible soft chain — add these to the canonical when the time feels right.
+- **Node IDs use underscores; slugs use hyphens.** The generator converts `ssa-name` → `ssa_name` in Mermaid. The validator converts back. This mapping is consistent and reversible — no ambiguity.
 
 **Phase 18B carryover notes:**
 - **B18-1 jurisdiction stub spawning** — `diffBirthJurisdictionStubs()` in `src/utils/onboarding.ts` and `syncBirthJurisdictionStubs()` store action are complete. `groupItemsByTrackAndCategory` now accepts a `birthJurisdiction` parameter and uses it for items with `jurisdiction_scope: 'birth'`. Currently only `il-birth-cert` has `jurisdiction_scope: 'birth'`. As new birth-cert KB items are added for other regions, they should also carry `jurisdiction_scope: 'birth'`.

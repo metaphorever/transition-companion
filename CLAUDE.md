@@ -40,10 +40,21 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 17 — Wave 6: Contribution Surfacing + Completion-Moment Hooks**
-**Status: COMPLETE.**
-**Model: Sonnet · Effort: medium**
-**Last session: Phase 17 — Contribution surfacing wired up end-to-end. Build clean, 78 tests passing.**
+**PHASE: 19 — Second Dogfood Review (spec pass)**
+**Status: PARTIAL. Spec deliverable shipped for Phases 18B / 18C / 18D; the real Phase 19 review (against real daily-use data) still needs to run after those three ship and a 2–3 week dogfood window has actually happened.**
+**Model: Opus · Effort: high**
+**Last session: Phase 19 triage pass on 2026-05-14. Phase 18's deploy shipped but the dogfood window was thin — basic correctness issues (B18-1 birth-jurisdiction filter; B18-3 policy-blocked presentation; B18-6 document-state labels) hit before daily use was viable. Six bugs and one design artifact logged in `dogfooding-phase18.md`. Three pre-dogfood phases inserted into the phase map: 18B (display/correctness fixes), 18C (KB dependency map), 18D (document state unification). No code merged this session — spec only.**
+
+**Phase 19 carryover notes:**
+- **Phase 18B (display/correctness, Sonnet medium)** — six fixes: B18-1 birth-jurisdiction filter + stub spawning for unmodeled jurisdictions (mirrors aspiration_skeleton; new provenance value `'jurisdiction_stub'`, new optional field `jurisdiction_stub_for?: { kb_slug: string; jurisdiction: Jurisdiction }`); B18-2 Step 8 BulkIntentEditor card layout; B18-3 policy_blocked visual treatment + intent label "Update when possible" (UI/copy only, no enum change); B18-4 Step 10 review uses real custom-item titles, not internal IDs; B18-5 dashboard "waiting on [X]" stacks vertically and wraps; B18-6 parts 1+2 — aspect-correct DocumentState picker labels (driven by entry `kind`) and new optional `never_expires?: boolean` on KB items that hides the expiration_date picker (birth cert, SSA card, marriage cert).
+- **Phase 18C (KB dependency map, Sonnet medium)** — generator `scripts/generate_dependency_map.py` emits `transition-kb/_dependency-map.generated.mmd` (per-track subgraphs, edges from `requires`, hard edges solid `-->`). Canonical hand-edited file at `transition-kb/_dependency-map.mmd`. Validator `scripts/validate_dependency_map.py` reports drift but never fails the build. Generator wired into `npm run build` as a pre-build step. Soft Mermaid edges (`-.->`) are design-only and never encoded into JSON `requires` — future surfacing of soft relationships into `walk_with_me` suggestions is plausible but out of scope for 18C.
+- **Phase 18D (document state unification, Sonnet high)** — B18-6 part 3. Split items like `ssa-name` and `ssa-marker` collapse into one physical-document entry on the document-state UI while staying separate checklist entries. Architectural pick at session start: (a) add `physical_document_id?: string` to KB items, UI coalesces; or (b) move DocumentState out of `ChecklistEntry` into `Profile.documents` keyed by physical document. Affects Settings, onboarding Step 4, and any reader of `ChecklistEntry.document_state`.
+- **D18-1 (visual dependency map)** is satisfied by Phase 18C.
+- **Pronouns/names model expansion moved from v2 to pre-beta-tester sequence.** Not a personal-dogfood blocker (developer's own situation is fine); a real concern only when external testers come through with multi-name, multi-pronoun, or plural-system contexts. Slotted for after Phase 19 and before Phase 21, no firm phase number yet.
+- **Phase 18 never wrote its own carryover block.** Deploy shipped in commits 15378f6 (`.htaccess` + first-person-plural copy fixes) and acb3f34 (privacy posture guidelines + dogfooding-phase18.md). The dogfooding notes file is the de-facto Phase 18 carryover. Phase 18 is COMPLETE for the deploy portion; the dogfood portion remains thin and is what Phase 18B/C/D + a real dogfood window are unblocking.
+- **Open questions not resolved this session** — quick-exit/privacy mode (re-evaluate as beta-tester blocker before Phase 20) and dark mode/D1 (same). Both recorded under Open design questions; both not personal-dogfood blockers.
+
+**Previous phase (17 — Wave 6: Contribution Surfacing + Completion-Moment Hooks): COMPLETE.**
 
 **Phase 17 carryover notes:**
 - **New `/contribute-review/:slug` route** (`src/components/contribute/ContributeReview.tsx`) — the "share what I learned" flow, distinct from the existing "report an issue" form at `/contribute/:slug`. Handles both KB items and custom items (`isCustom` flag derived from whether slug matches a custom item vs. KB item). Builds a pre-filled GitHub issue or JSON snippet. Two zones: shareable fields (process notes, links, time, cost — all optional) and a private zone showing personal notes read-only, clearly labeled as never-included.
@@ -490,15 +501,63 @@ Dogfooding period (no Claude Code session needed):
 - Keep a running note (a simple text file, not in the app) of friction points, missing things, things that feel wrong, and things that work well
 - The goal is first-person evidence, not a feature wish list
 
+*The first attempt at the dogfood window (May 2026) was thin — basic correctness issues hit before daily use was viable. Phases 18B, 18C, and 18D below are the unblocking sprint. The real dogfood window happens after they ship.*
+
+### Phase 18B — Display/Correctness Fixes
+**Model: Sonnet · Effort: medium**
+
+Pre-dogfood fix sprint surfaced by the brief Phase 18 dogfood window. All UI / data-correctness; no architectural decisions.
+
+- **B18-1 — Birth-jurisdiction-scoped items + stub spawning.** Add `jurisdiction_scope: 'residence' | 'birth'` to KB item schema (default `'residence'`). Birth certificate items declare `'birth'`. Filter logic reads `profile.birth_jurisdiction` when scope is `'birth'`, else `profile.jurisdiction`. `ChecklistEntry.jurisdiction_override` takes precedence over both. When no KB item exists for the user's birth jurisdiction (unmodeled state/country), spawn a stub custom item with `provenance: 'jurisdiction_stub'` and new optional field `jurisdiction_stub_for?: { kb_slug: string; jurisdiction: Jurisdiction }`. Mirrors Phase 14's `aspiration_skeleton`. Placeholder description: "No birth certificate item exists for [jurisdiction] yet. Fill in steps and resources here as you find them." Contribution nudge appears only after edits AND only when contributor settings opt in — never on creation.
+
+- **B18-2 — Step 8 bulk intent card layout.** CSS-only fix in `BulkIntentEditor`. Description text fills available horizontal width; mark-as controls sit alongside or below description, not in a narrow column. Verify desktop + mobile.
+
+- **B18-3 — Policy-blocked visual treatment + intent copy.** UI/copy only; no schema change. Distinct status chip styling for `status === 'policy_blocked'` (clearly "currently not possible", not "actionable"). Intent selector renders the existing `update` value with a contextual label "Update when possible" when status is `policy_blocked`. Same enum value stored. Apply across item detail and bulk intent picker.
+
+- **B18-4 — Step 10 review uses real titles for custom items.** Find the renderer (`Step10Summary` or equivalent); render `item.label` / `item.description` instead of `item.id`. Single grep for `Custom-` or item-id rendering should surface any other callsites with the same fallback (item detail header, dashboard cards). Fix all in one pass.
+
+- **B18-5 — Dashboard "waiting on [X]" overflow.** Title (top) + blocker label (below), stacked, not in columns. Blocker label wraps; muted color/smaller font. Verify across Active / Working on blockers / Waiting / Currently not possible sections.
+
+- **B18-6 (parts 1 + 2) — DocumentState aspect-correct labels + `never_expires`.** Picker labels reflect entry `kind`: `'name'` shows "Name status" only with the four `DocFieldStatus` options; `'marker'` shows "Marker status" only; `'full'` shows both, each with the four options. New optional KB field `never_expires?: boolean`; when true, the document state UI hides the `expiration_date` picker. Audit and set on birth certificates, SSA card, marriage certificate. Migration is a no-op (existing `expiration_date` values stay in storage and become available again if the flag flips). Part 3 (unification) is Phase 18D.
+
+### Phase 18C — KB Dependency Map
+**Model: Sonnet · Effort: medium**
+
+Generator → canonical → validator cycle. Lets the developer hold the dependency graph in mind as the KB grows.
+
+- **Generator** (`scripts/generate_dependency_map.py`) — reads `transition-kb/items/*.json`, emits `transition-kb/_dependency-map.generated.mmd`. Per-track subgraphs (Mermaid `subgraph` blocks). Edges derived from `requires`. Hard edges as solid arrows (`-->`).
+
+- **Canonical hand-edited map** (`transition-kb/_dependency-map.mmd`) — bootstrap by copying the generated file; then edit by hand to add soft relationships, rearrange, annotate. This is the developer's working model.
+
+- **Validator** (`scripts/validate_dependency_map.py`) — reads both files, reports drift in three buckets: in JSON missing from canonical / in canonical missing from JSON (only checks hard `-->` edges; soft `-.->` edges are design-only and never reported as drift) / edges differ. Output is a report, never a build failure.
+
+- **npm wiring** — generator runs as a pre-build step in `package.json`. Validator runs on demand (`npm run validate-deps` and shell). Underscore prefix on `.mmd` filenames signals "meta-file, not a KB item."
+
+- **Soft edges stay in Mermaid only.** They are *not* encoded into KB JSON `requires`. The runtime dependency graph only obeys hard relationships. A future surfacing layer (walk_with_me suggestions consuming soft edges as hints) is plausible but explicitly out of scope for 18C.
+
+### Phase 18D — Document State Unification
+**Model: Sonnet · Effort: high**
+
+B18-6 part 3. Architectural choice: how should split federal items (e.g. `ssa-name` + `ssa-marker`) present as a single physical-document entry on the document-state UI while remaining separate checklist entries?
+
+Pick at session start:
+- **(a)** Add `physical_document_id?: string` to KB items. UI coalesces entries with the same `physical_document_id` into a single row. Storage stays per-`ChecklistEntry`. Smaller schema change.
+- **(b)** Move `DocumentState` out of `ChecklistEntry` into a separate `Profile.documents` collection keyed by physical document. `ChecklistEntry` references back if needed. Cleaner separation; bigger migration.
+
+Decide before implementing. Affects Settings `DocumentStateSection`, onboarding Step 4 (per-item document state capture), and anywhere `ChecklistEntry.document_state` is read.
+
 ### Phase 19 — Second Dogfood Review
 **Model: Opus · Effort: high**
 
 *Same shape as Phase 13. Planning and analysis only — no code merged.*
 
-- Review the notes collected during dogfooding after Phase 18
+*A spec-only triage pass against the brief Phase 18 dogfood window happened on 2026-05-14 and produced Phases 18B / 18C / 18D plus this charter update. The full Phase 19 review — against real daily-use data — still needs to run after those three phases ship and a 2–3 week dogfood window has actually happened.*
+
+- Review the notes collected during the real (post-18B/C/D) dogfooding period
 - Categorize: (a) bugs, (b) copy/UX friction, (c) missing features that genuinely block beta, (d) defer
 - Update CLAUDE.md with any new fix phases needed before Phase 21
 - Update the blocking-beta list with anything new that surfaced from real use
+- Decide where the pronouns/names model expansion lands in the pre-beta sequence (currently slated for "before Phase 21" with no firm phase number)
 
 ### Phase 20 — MVP to Public Beta Roadmap
 **Model: Opus · Effort: high**
@@ -622,13 +681,25 @@ Every item below must be addressed before public beta (Phase 21) opens. Pulled f
 - C11 — People map expansion (Phase 16)
 - C12 — Contribute-level surfacing verified and working (Phase 17)
 
+**Bugs and design artifacts from Phase 18 dogfood (2026-05-14 triage):**
+- B18-1 — Birth-jurisdiction filter + stub spawning for unmodeled jurisdictions (Phase 18B)
+- B18-2 — Step 8 bulk intent card layout (Phase 18B)
+- B18-3 — Policy-blocked visual treatment + "Update when possible" intent copy (Phase 18B)
+- B18-4 — Step 10 review uses real titles for custom items (Phase 18B)
+- B18-5 — Dashboard "waiting on [X]" overflow (Phase 18B)
+- B18-6 — DocumentState aspect-correct labels + `never_expires` flag (parts 1+2 in Phase 18B; part 3 — physical-document unification — in Phase 18D)
+- D18-1 — Generated + canonical + validated KB dependency map (Phase 18C)
+
+**Pre-beta-tester (not personal-dogfood) blockers:**
+- D2 — Pronouns/names model expansion: multiple names with context labels; multi-pronoun sets with priority + per-context labels; "any pronouns" / "any except" flags; plural-system not-hostile copy review. Phase TBD; slotted after Phase 19 / before Phase 21. (Moved from v2 — not personal-dogfood-blocking, but real once external testers come through with multi-name / multi-pronoun / plural-system contexts.)
+
 **Explicitly deferred to v2 (Phase 23), not blocking beta:**
-- D1 — Dark mode + OS preference detection
-- D2 — "How I like to be referred to" rider (pronouns/names model expansion beyond what's already in the existing future-design notes)
+- D1 — Dark mode + OS preference detection [OPEN: re-evaluate as beta-blocking before Phase 20 — accessibility/eye-strain in stressful contexts]
 - D3 — Onboarding priority/ranking capture
 - D4 — Per-reminder surfacing window (day-of / day-before / week-before)
 - D5 — Multi-time-per-day recurring + calendar-based recurrence patterns
 - D6 — User-story-driven test suite (ongoing practice, not a feature)
+- Quick-exit / privacy mode [OPEN: re-evaluate as beta-tester safety blocker before Phase 20 — shared-device / surveillance contexts]
 
 ---
 
@@ -691,7 +762,11 @@ Why: keeps the DB small, keeps content fresh by deferring to a source we don't h
 
   Critically: completing a required item makes dependent items *available*, not *complete*. SSA complete → driver's license moves from "unavailable" to "available now" on the dashboard. The driver's license status remains `not_started` (or whatever the user last set it to) until the user explicitly completes it. The app never changes an item's status automatically based on another item's completion. Having the key does not open the door — it means the door can now be opened. What happens next involves steps the user has to take, and may involve other blockers (safety, relationship, readiness) that exist independently of the document dependency. Do not implement any cascade or auto-complete behavior.
 
-- **Quick-exit / privacy mode** (noted out of scope for v1 but architecture must not preclude it — keep in mind during Phase 4 and Phase 9)
+- **Quick-exit / privacy mode** (noted out of scope for v1 but architecture must not preclude it — keep in mind during Phase 4 and Phase 9). **Re-evaluate before Phase 20**: is this actually a beta-tester safety blocker rather than a v2 candidate? Real question — are users likely to be in shared-device or surveillance situations where a panic-close button matters? Not personal-dogfood-blocking. Decision affects whether it gets a phase number before Phase 21.
+
+- **Dark mode + OS preference detection (D1)** — currently sits in v2. **Re-evaluate before Phase 20**: is this beta-blocking on accessibility/eye-strain grounds for users navigating stressful situations, or genuinely fine as v2 polish? Not personal-dogfood-blocking.
+
+- **Phase 18D — Document state unification approach** (resolve at Phase 18D session start, not before): how should split federal items present as a single physical document on the document-state UI while remaining separate checklist entries? Option (a) `physical_document_id?: string` on KB items + UI coalesces; option (b) move `DocumentState` out of `ChecklistEntry` into a separate `Profile.documents` collection. Decide before implementing — both have downstream effects on Settings, onboarding Step 4, and any reader of `ChecklistEntry.document_state`.
 
 ---
 

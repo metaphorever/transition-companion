@@ -16,11 +16,15 @@ export default function Step10Summary({ step, onBack, onFinish }: StepProps) {
   // Items the user has put on their list. KB-backed items use the KB label
   // when we have it; otherwise fall back to the slug so they aren't lost.
   const listedItems = useMemo(() => {
-    const kbItems = Object.keys(checklist).map((slug) => ({
-      key: slug,
-      label: kb?.items[slug]?.label ?? slug,
-      isCustom: false,
-    }))
+    // Only include checklist keys that are real KB slugs — custom item IDs also
+    // appear in the checklist but are handled separately via the customs array.
+    const kbItems = Object.keys(checklist)
+      .filter((slug) => Boolean(kb?.items[slug]))
+      .map((slug) => ({
+        key: slug,
+        label: kb!.items[slug].label,
+        isCustom: false,
+      }))
     const customs = customItems.map((c) => ({
       key: c.id,
       label: c.label,

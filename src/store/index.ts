@@ -9,6 +9,7 @@ import {
 } from '../utils/storage'
 import { loadKB, refreshKB } from '../utils/kb'
 import { localDateString } from '../utils/recurring'
+import { diffBirthJurisdictionStubs } from '../utils/onboarding'
 
 type ProfilePatch = Partial<UserProfile> | ((profile: UserProfile) => Partial<UserProfile>)
 
@@ -91,6 +92,12 @@ interface AppState {
   updateSubTask: (slug: string, taskId: string, patch: Partial<Omit<SubTask, 'id'>>) => void
   removeSubTask: (slug: string, taskId: string) => void
   toggleSubTask: (slug: string, taskId: string) => void
+
+  // Jurisdiction stub management (B18-1)
+  // Computes and applies the diff between what stubs should exist for the
+  // user's birth_jurisdiction vs. what's actually in custom_items. Safe to
+  // call any time birth_jurisdiction changes — it's idempotent.
+  syncBirthJurisdictionStubs: () => void
 
   // KB actions
   initKB: () => Promise<void>
@@ -416,6 +423,41 @@ export const useAppStore = create<AppState>((set, get) => ({
     get().patchUserData((data) => {
       data.custom_items = data.custom_items.filter((c) => c.id !== id)
       delete data.checklist[id]
+    })
+  },
+
+  syncBirthJurisdictionStubs: () => {
+    const kb = get().kb
+    if (!kb) return
+    const { profile, custom_items } = get().userData
+    const diff = diffBirthJurisdictionStubs(kb, profile.birth_jurisdiction ?? null, custom_items)
+    if (diff.toRemoveIds.length === 0 && diff.toSpawn.length === 0) return
+    get().patchUserData((data) => {
+      // Remove stale stubs and their checklist entries.
+      const removeSet = new Set(diff.toRemoveIds)
+      data.custom_items = data.custom_items.filter((c) => !removeSet.has(c.id))
+      for (const id of removeSet) delete data.checklist[id]
+      // Spawn new stubs.
+      for (const stub of diff.toSpawn) {
+        const id = `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+        data.custom_items = [
+          ...data.custom_items,
+          {
+            id,
+            label: stub.label,
+            description: stub.description,
+            category: stub.category,
+            track: stub.track,
+            status: 'not_started' as const,
+            notes: '',
+            provenance: 'jurisdiction_stub' as const,
+            jurisdiction_stub_for: stub.jurisdiction_stub_for,
+          },
+        ]
+        if (!data.checklist[id]) {
+          data.checklist[id] = { ...DEFAULT_ENTRY }
+        }
+      }
     })
   },
 

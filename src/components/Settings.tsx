@@ -442,52 +442,112 @@ function LocationSection() {
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
   const patchProfile = useAppStore((s) => s.patchProfile)
+  const syncStubs = useAppStore((s) => s.syncBirthJurisdictionStubs)
 
   const country = profile.jurisdiction.country
   const region = profile.jurisdiction.region
   const regions = useMemo(() => getRegionsForCountry(country), [country])
 
+  // When the user changes their current jurisdiction, we ask whether they're
+  // correcting a mistake (replace only) or moved (archive old → other_jurisdictions).
+  const [pending, setPending] = useState<{ country: string | null; region: string | null } | null>(null)
+
+  const hasExisting = Boolean(country || region)
+
+  const applyChange = (next: { country: string | null; region: string | null }) => {
+    if (hasExisting) {
+      setPending(next)
+    } else {
+      patchProfile({ jurisdiction: next })
+    }
+  }
+
+  const confirmCorrection = () => {
+    if (!pending) return
+    patchProfile({ jurisdiction: pending })
+    setPending(null)
+  }
+
+  const confirmMove = () => {
+    if (!pending) return
+    const others = [...(profile.other_jurisdictions ?? []), profile.jurisdiction]
+    patchProfile({ jurisdiction: pending, other_jurisdictions: others })
+    setPending(null)
+    syncStubs()
+  }
+
   return (
     <Section title={t('settings.section_location')}>
-      <Field label={t('onboarding.steps.location.country_label')} htmlFor="settings-country">
-        <CountryCombobox
-          value={country}
-          onChange={(code) => patchProfile({ jurisdiction: { country: code, region: null } })}
-          placeholder={t('onboarding.steps.location.country_placeholder')}
-        />
-      </Field>
-
-      {country && (
-        <Field label={t('onboarding.steps.location.region_label')} htmlFor="settings-region">
-          {regions ? (
-            <select
-              id="settings-region"
-              value={region ?? ''}
-              onChange={(e) =>
-                patchProfile({ jurisdiction: { country, region: e.target.value || null } })
-              }
-              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
+      {pending ? (
+        <div className="border border-neutral-200 rounded-md p-3 space-y-3">
+          <p className="text-sm text-neutral-800">{t('settings.location_change_prompt')}</p>
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={confirmCorrection}
+              className="px-3 py-2 text-sm bg-neutral-900 text-white rounded-md text-left"
             >
-              <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
-              {regions.map((r) => (
-                <option key={r.code} value={r.code}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              id="settings-region"
-              type="text"
-              value={region ?? ''}
-              onChange={(e) =>
-                patchProfile({ jurisdiction: { country, region: e.target.value || null } })
-              }
-              placeholder={t('onboarding.steps.location.region_placeholder')}
-              className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+              {t('settings.location_change_correction')}
+            </button>
+            <button
+              type="button"
+              onClick={confirmMove}
+              className="px-3 py-2 text-sm border border-neutral-300 rounded-md text-left text-neutral-800 hover:bg-neutral-50"
+            >
+              {t('settings.location_change_move')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setPending(null)}
+              className="text-xs text-neutral-500 underline-offset-2 hover:underline text-left"
+            >
+              {t('settings.location_change_cancel')}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <Field label={t('onboarding.steps.location.country_label')} htmlFor="settings-country">
+            <CountryCombobox
+              value={country}
+              onChange={(code) => applyChange({ country: code, region: null })}
+              placeholder={t('onboarding.steps.location.country_placeholder')}
             />
+          </Field>
+
+          {country && (
+            <Field label={t('onboarding.steps.location.region_label')} htmlFor="settings-region">
+              {regions ? (
+                <select
+                  id="settings-region"
+                  value={region ?? ''}
+                  onChange={(e) =>
+                    applyChange({ country, region: e.target.value || null })
+                  }
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm bg-white"
+                >
+                  <option value="">{t('onboarding.steps.location.region_placeholder')}</option>
+                  {regions.map((r) => (
+                    <option key={r.code} value={r.code}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id="settings-region"
+                  type="text"
+                  value={region ?? ''}
+                  onChange={(e) =>
+                    applyChange({ country, region: e.target.value || null })
+                  }
+                  placeholder={t('onboarding.steps.location.region_placeholder')}
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
+                />
+              )}
+            </Field>
           )}
-        </Field>
+        </>
       )}
     </Section>
   )
@@ -499,14 +559,17 @@ function BirthJurisdictionSection() {
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
   const patchProfile = useAppStore((s) => s.patchProfile)
+  const syncStubs = useAppStore((s) => s.syncBirthJurisdictionStubs)
 
   const birth = profile.birth_jurisdiction ?? null
   const country = birth?.country ?? null
   const region = birth?.region ?? null
   const regions = useMemo(() => getRegionsForCountry(country), [country])
 
+  // Birth jurisdiction is always a correction — you can't move where you were born.
   const setBirth = (next: { country: string | null; region: string | null } | null) => {
     patchProfile({ birth_jurisdiction: next })
+    syncStubs()
   }
 
   return (

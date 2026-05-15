@@ -112,7 +112,8 @@
           "label": "SSA: Change Your Name",
           "retrieved": "2025-05-01"
         }
-      ]
+      ],
+      "never_expires": true
     },
     "ssa-marker": {
       "slug": "ssa-marker",
@@ -211,7 +212,8 @@
           "retrieved": "2026-05-11"
         }
       ],
-      "kb_condition_ref": "federal-marker-policy"
+      "kb_condition_ref": "federal-marker-policy",
+      "never_expires": true
     },
     "il-birth-cert": {
       "slug": "il-birth-cert",
@@ -336,7 +338,9 @@
           "label": "IDPH: Amendment of Birth Records",
           "retrieved": "2025-05-01"
         }
-      ]
+      ],
+      "never_expires": true,
+      "jurisdiction_scope": "birth"
     },
     "il-dl": {
       "slug": "il-dl",
@@ -2289,7 +2293,8 @@
       "last_verified": "2025-05-01",
       "verified_by": "transition-kb-seed",
       "sources": [],
-      "kb_condition_ref": "us-marriage-policy"
+      "kb_condition_ref": "us-marriage-policy",
+      "never_expires": true
     },
     "informed-consent": {
       "slug": "informed-consent",

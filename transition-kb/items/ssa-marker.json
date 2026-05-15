@@ -72,5 +72,6 @@
       "retrieved": "2026-05-11"
     }
   ],
-  "kb_condition_ref": "federal-marker-policy"
+  "kb_condition_ref": "federal-marker-policy",
+  "never_expires": true
 }

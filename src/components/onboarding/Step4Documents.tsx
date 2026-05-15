@@ -155,7 +155,7 @@ function DocStateRow({ config, item, value, onChange }: DocStateRowProps) {
               value={value.issued}
               onChange={setIssued}
             />
-            {(value.kind === 'name' || value.kind === 'full') && (
+            {!item.never_expires && (value.kind === 'name' || value.kind === 'full') && (
               <DateInput
                 label={t('onboarding.steps.documents.expiration_label')}
                 value={value.expiration_date}

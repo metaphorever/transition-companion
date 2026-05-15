@@ -11,6 +11,7 @@ export default function Step3Location({ step, onBack, onSkip, onNext }: StepProp
   const { t } = useTranslation()
   const profile = useAppStore((s) => s.userData.profile)
   const patchProfile = useAppStore((s) => s.patchProfile)
+  const syncStubs = useAppStore((s) => s.syncBirthJurisdictionStubs)
   const kb = useAppStore((s) => s.kb)
 
   const country = profile.jurisdiction.country
@@ -32,6 +33,7 @@ export default function Step3Location({ step, onBack, onSkip, onNext }: StepProp
   )
   const setBirth = (next: JLike | null) => {
     patchProfile({ birth_jurisdiction: next })
+    syncStubs()
   }
 
   const others = profile.other_jurisdictions ?? []

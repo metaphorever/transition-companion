@@ -383,6 +383,7 @@
     },
     "intent": {
       "update": "Want to do this",
+      "update_policy_blocked": "Update when possible",
       "not_applicable": "Does not apply to me",
       "not_wanted": "Choosing not to do this",
       "unknown": "Not sure yet"
@@ -398,6 +399,8 @@
     "priority_clear": "Clear",
     "doc_state": {
       "heading": "Document state",
+      "heading_name": "Name on this document",
+      "heading_marker": "Marker on this document",
       "intro": "What the current document looks like — separate from how far you are with the paperwork to change it.",
       "name_status_label": "Name on the document",
       "marker_status_label": "Gender marker on the document",
@@ -458,6 +461,10 @@
     "back": "Back to dashboard",
     "section_profile": "Your profile",
     "section_location": "Location",
+    "location_change_prompt": "Are you correcting a mistake, or did you move?",
+    "location_change_correction": "Correcting a mistake",
+    "location_change_move": "I moved — keep the old one as a prior jurisdiction",
+    "location_change_cancel": "Cancel",
     "section_birth_jurisdiction": "Where you were born",
     "section_other_jurisdictions": "Other places with documents",
     "section_aspirations": "Your broad direction",

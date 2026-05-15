@@ -1,7 +1,7 @@
 // Helpers used by the onboarding wizard. Pure read-only logic — no store
 // access. The store calls these and applies the results.
 
-import type { DocumentState, ItemPriority, KBCache, KBItem, UserData } from '../types'
+import type { CustomItem, DocumentState, ItemPriority, KBCache, KBItem, UserData } from '../types'
 
 export const TOTAL_STEPS = 10
 export const FIRST_STEP = 1
@@ -323,15 +323,21 @@ export interface CategoryGroup {
 export function groupItemsByTrackAndCategory(
   kb: KBCache,
   activeTracks: string[],
-  jurisdiction: { country: string | null; region: string | null }
+  jurisdiction: { country: string | null; region: string | null },
+  birthJurisdiction?: { country: string | null; region: string | null } | null
 ): CategoryGroup[] {
   const trackFilter = activeTracks.length > 0 ? new Set(activeTracks) : null
 
   const matchesJurisdiction = (item: KBItem): boolean => {
     const itemCountry = item.jurisdiction?.country
     if (!itemCountry) return true
-    if (!jurisdiction.country) return true
-    return itemCountry === jurisdiction.country
+    // Birth-scoped items match against birth jurisdiction (fall back to residence
+    // if birth not set — defensive default for users who skipped that step).
+    const scope = item.jurisdiction_scope ?? 'residence'
+    const effectiveJurisdiction =
+      scope === 'birth' ? (birthJurisdiction ?? jurisdiction) : jurisdiction
+    if (!effectiveJurisdiction.country) return true
+    return itemCountry === effectiveJurisdiction.country
   }
 
   const itemsByCategory = new Map<string, KBItem[]>()
@@ -378,6 +384,97 @@ export function groupItemsByTrackAndCategory(
   groups.sort((a, b) => a.trackSortOrder - b.trackSortOrder)
 
   return groups
+}
+
+// ── Birth-jurisdiction stub management ────────────────────────────────────────
+//
+// When the user's birth_jurisdiction has no KB item with jurisdiction_scope:
+// 'birth' covering that jurisdiction, we spawn a stub custom item they can fill
+// in and (optionally) contribute back. This utility computes what needs to
+// happen — it never writes to the store directly.
+
+export interface JurisdictionStubDiff {
+  toSpawn: {
+    label: string
+    description: string
+    category: string
+    track: string
+    jurisdiction_stub_for: { kb_slug: string; jurisdiction: { country: string | null; region: string | null } }
+  }[]
+  toRemoveIds: string[]
+}
+
+export function diffBirthJurisdictionStubs(
+  kb: KBCache,
+  birthJurisdiction: { country: string | null; region: string | null } | null | undefined,
+  customItems: CustomItem[]
+): JurisdictionStubDiff {
+  const existingStubs = customItems.filter((c) => c.provenance === 'jurisdiction_stub')
+
+  // If no birth jurisdiction is set, remove all existing stubs.
+  if (!birthJurisdiction?.country) {
+    return { toSpawn: [], toRemoveIds: existingStubs.map((c) => c.id) }
+  }
+
+  // Find all birth-scoped KB items.
+  const birthScopedItems = Object.values(kb.items).filter(
+    (item) => item.jurisdiction_scope === 'birth'
+  )
+
+  // Does any birth-scoped item cover the user's birth jurisdiction?
+  const hasKBMatch = birthScopedItems.some((item) => {
+    if (!item.jurisdiction?.country) return false
+    if (item.jurisdiction.country !== birthJurisdiction.country) return false
+    // If the item is region-scoped, birth jurisdiction region must match too.
+    if (item.jurisdiction.region && item.jurisdiction.region !== birthJurisdiction.region) {
+      return false
+    }
+    return true
+  })
+
+  // Remove stubs that no longer match the current birth jurisdiction.
+  const staleStubs = existingStubs.filter(
+    (c) =>
+      c.jurisdiction_stub_for?.jurisdiction.country !== birthJurisdiction.country ||
+      c.jurisdiction_stub_for?.jurisdiction.region !== birthJurisdiction.region
+  )
+  const staleIds = staleStubs.map((c) => c.id)
+
+  if (hasKBMatch) {
+    // KB covers this jurisdiction — remove any stubs we spawned previously.
+    return { toSpawn: [], toRemoveIds: [...staleIds, ...existingStubs.filter((c) => !staleStubs.includes(c)).map((c) => c.id)] }
+  }
+
+  // Check if an up-to-date stub already exists for this jurisdiction.
+  const alreadyHasStub = existingStubs.some(
+    (c) =>
+      c.jurisdiction_stub_for?.jurisdiction.country === birthJurisdiction.country &&
+      c.jurisdiction_stub_for?.jurisdiction.region === birthJurisdiction.region
+  )
+
+  if (alreadyHasStub) {
+    return { toSpawn: [], toRemoveIds: staleIds }
+  }
+
+  // Use the first birth-scoped KB item as the template slug reference.
+  const templateSlug = birthScopedItems[0]?.slug ?? 'birth-cert'
+  const regionLabel =
+    birthJurisdiction.region
+      ? `${birthJurisdiction.region}, ${birthJurisdiction.country}`
+      : birthJurisdiction.country!
+
+  return {
+    toSpawn: [
+      {
+        label: `Birth Certificate (${regionLabel})`,
+        description: `No birth certificate item exists for ${regionLabel} yet. Fill in steps and resources as you find them.`,
+        category: 'vital-records',
+        track: 'legal',
+        jurisdiction_stub_for: { kb_slug: templateSlug, jurisdiction: birthJurisdiction },
+      },
+    ],
+    toRemoveIds: staleIds,
+  }
 }
 
 // ── Step 9 danger flag scan ───────────────────────────────────────────────────

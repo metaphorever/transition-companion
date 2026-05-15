@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo, useState } from 'react'
 import { useAppStore } from '../../store'
 import { groupItemsByTrackAndCategory } from '../../utils/onboarding'
-import type { CustomItem, ItemIntent, KBItem } from '../../types'
+import type { CustomItem, ItemIntent, ItemStatus, KBItem } from '../../types'
 
 // Reusable grouped + searchable + bulk-mark item editor. Used by:
 //   - Onboarding Step 8 (with aspiration prefill applied by its container)
@@ -32,8 +32,13 @@ export default function BulkIntentEditor() {
 
   const groups = useMemo(() => {
     if (!kb) return []
-    return groupItemsByTrackAndCategory(kb, profile.active_tracks, profile.jurisdiction)
-  }, [kb, profile.active_tracks, profile.jurisdiction])
+    return groupItemsByTrackAndCategory(
+      kb,
+      profile.active_tracks,
+      profile.jurisdiction,
+      profile.birth_jurisdiction ?? null
+    )
+  }, [kb, profile.active_tracks, profile.jurisdiction, profile.birth_jurisdiction])
 
   const trimmedQuery = query.trim().toLowerCase()
   const matchesQuery = (label: string) =>
@@ -41,6 +46,7 @@ export default function BulkIntentEditor() {
 
   const isOnList = (slug: string) => Boolean(checklist[slug])
   const currentIntent = (slug: string): ItemIntent | null => checklist[slug]?.intent ?? null
+  const currentStatus = (slug: string): ItemStatus | null => checklist[slug]?.status ?? null
 
   const setSlugIntent = (slug: string, intent: ItemIntent) => {
     if (!isOnList(slug)) addItem(slug)
@@ -156,6 +162,7 @@ export default function BulkIntentEditor() {
                             label={item.label}
                             description={item.description}
                             intent={currentIntent(item.slug)}
+                            status={currentStatus(item.slug)}
                             onSetIntent={(i) => setSlugIntent(item.slug, i)}
                             onRemove={() => removeItem(item.slug)}
                           />
@@ -221,21 +228,23 @@ interface ItemRowProps {
   label: string
   description: string | null
   intent: ItemIntent | null
+  status?: ItemStatus | null
   onSetIntent: (i: ItemIntent) => void
   onRemove: () => void
 }
 
-function ItemRow({ label, description, intent, onSetIntent, onRemove }: ItemRowProps) {
+function ItemRow({ label, description, intent, status, onSetIntent, onRemove }: ItemRowProps) {
   const { t } = useTranslation()
+  const isPolicyBlocked = status === 'policy_blocked'
   return (
-    <div className="flex items-start justify-between gap-3 px-2 py-2 rounded hover:bg-neutral-50">
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 px-2 py-2 rounded hover:bg-neutral-50">
       <div className="flex-1 min-w-0">
         <div className="text-sm text-neutral-900">{label}</div>
         {description && (
           <div className="text-xs text-neutral-500 mt-0.5 leading-relaxed">{description}</div>
         )}
       </div>
-      <div className="flex items-center gap-1.5 flex-wrap justify-end">
+      <div className="flex items-center gap-1.5 flex-wrap">
         {INTENT_VALUES.map((iv) => (
           <button
             key={iv}
@@ -247,7 +256,9 @@ function ItemRow({ label, description, intent, onSetIntent, onRemove }: ItemRowP
                 : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
             }`}
           >
-            {t(`onboarding.steps.bulk_intent.intent_short.${iv}`)}
+            {iv === 'update' && isPolicyBlocked
+              ? t('item.intent.update_policy_blocked')
+              : t(`onboarding.steps.bulk_intent.intent_short.${iv}`)}
           </button>
         ))}
         {intent !== null && (

@@ -148,13 +148,30 @@ function BucketItemRow({
   const expDays = daysUntil(row.expirationDate)
   const linkClass =
     variant === 'waiting'
-      ? 'flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-60 hover:opacity-100 transition-opacity'
-      : 'flex items-center justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors'
+      ? 'flex items-start justify-between px-4 py-3 border border-neutral-200 rounded-lg opacity-60 hover:opacity-100 transition-opacity'
+      : 'flex items-start justify-between px-4 py-3 border border-neutral-200 rounded-lg hover:border-neutral-400 transition-colors'
   const labelClass = variant === 'active' ? 'text-sm text-neutral-900' : 'text-sm text-neutral-700'
+
+  // Blocker/status label shown below the item title for working and waiting rows.
+  const subLabel =
+    variant === 'working' && row.primaryBlockerLabel
+      ? t('dashboard.blocked', { blocker: row.primaryBlockerLabel })
+      : variant === 'waiting'
+        ? row.immutable
+          ? t('item_detail.immutable_heading')
+          : row.primaryBlockerLabel
+            ? t('dashboard.blocked', { blocker: row.primaryBlockerLabel })
+            : t(`item.status.${row.status}`)
+        : null
 
   return (
     <Link to={`/item/${row.id}`} className={linkClass}>
-      <span className={labelClass}>{row.label}</span>
+      <div className="flex-1 min-w-0">
+        <div className={labelClass}>{row.label}</div>
+        {subLabel && (
+          <div className="text-xs text-neutral-400 mt-0.5 leading-snug">{subLabel}</div>
+        )}
+      </div>
       <div className="flex items-center gap-2 ml-3 flex-shrink-0 flex-wrap justify-end">
         {variant === 'active' && row.priority === 'now' && (
           <span className="text-xs px-1.5 py-0.5 rounded bg-neutral-900 text-white">
@@ -164,20 +181,6 @@ function BucketItemRow({
         {variant === 'active' && row.priority === 'soon' && (
           <span className="text-xs px-1.5 py-0.5 rounded border border-neutral-400 text-neutral-700">
             {t('dashboard.priority_soon')}
-          </span>
-        )}
-        {variant === 'working' && row.primaryBlockerLabel && (
-          <span className="text-xs text-neutral-500">
-            {t('dashboard.blocked', { blocker: row.primaryBlockerLabel })}
-          </span>
-        )}
-        {variant === 'waiting' && (
-          <span className="text-xs text-neutral-400">
-            {row.immutable
-              ? t('item_detail.immutable_heading')
-              : row.primaryBlockerLabel
-                ? t('dashboard.blocked', { blocker: row.primaryBlockerLabel })
-                : t(`item.status.${row.status}`)}
           </span>
         )}
         {row.expirationDate && expDays !== null && expDays <= EXPIRY_WARNING_DAYS && (

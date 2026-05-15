@@ -858,10 +858,12 @@ function DocumentStateSection({
   slug,
   entry,
   kind,
+  neverExpires,
 }: {
   slug: string
   entry: ChecklistEntry
   kind: DocumentState['kind']
+  neverExpires: boolean
 }) {
   const { t } = useTranslation()
   const setDocState = useAppStore((s) => s.setItemDocumentState)
@@ -891,13 +893,20 @@ function DocumentStateSection({
 
   const fieldStatuses: DocFieldStatus[] = ['old', 'new', 'in_progress', 'unknown']
 
+  const headingKey =
+    kind === 'name'
+      ? 'item.doc_state.heading_name'
+      : kind === 'marker'
+        ? 'item.doc_state.heading_marker'
+        : 'item.doc_state.heading'
+
   return (
     <section className="mb-8" aria-labelledby="doc-state-heading">
       <h2
         id="doc-state-heading"
         className="text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3"
       >
-        {t('item.doc_state.heading')}
+        {t(headingKey)}
       </h2>
       <p className="text-xs text-neutral-500 mb-3 leading-relaxed">{t('item.doc_state.intro')}</p>
 
@@ -969,7 +978,7 @@ function DocumentStateSection({
                 className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg"
               />
             </div>
-            {(value.kind === 'name' || value.kind === 'full') && (
+            {!neverExpires && (value.kind === 'name' || value.kind === 'full') && (
               <div>
                 <label className="block text-xs text-neutral-500 mb-1">
                   {t('item.doc_state.expiration_label')}
@@ -1562,7 +1571,9 @@ export default function ItemDetail() {
               onClick={() => slug && setItemStatus(slug, status)}
               className={`px-3 py-1.5 rounded text-sm transition-colors ${
                 status === currentStatus
-                  ? 'bg-neutral-900 text-white'
+                  ? status === 'policy_blocked'
+                    ? 'bg-neutral-100 text-neutral-500 border border-neutral-400'
+                    : 'bg-neutral-900 text-white'
                   : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
               }`}
               aria-pressed={status === currentStatus}
@@ -1595,7 +1606,9 @@ export default function ItemDetail() {
               }`}
               aria-pressed={intent === currentIntent}
             >
-              {t(`item.intent.${intent}`)}
+              {intent === 'update' && currentStatus === 'policy_blocked'
+                ? t('item.intent.update_policy_blocked')
+                : t(`item.intent.${intent}`)}
             </button>
           ))}
         </div>
@@ -1660,7 +1673,14 @@ export default function ItemDetail() {
           const config = ONBOARDING_DOC_STATE_ITEMS.find((c) => c.slug === slug)
           const kind = entry.document_state?.kind ?? config?.kind
           if (!kind) return null
-          return <DocumentStateSection slug={slug} entry={entry} kind={kind} />
+          return (
+            <DocumentStateSection
+              slug={slug}
+              entry={entry}
+              kind={kind}
+              neverExpires={item.never_expires ?? false}
+            />
+          )
         })()}
 
       {/* Dates */}

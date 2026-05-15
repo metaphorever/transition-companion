@@ -35,5 +35,6 @@
   "last_verified": "2025-05-01",
   "verified_by": "transition-kb-seed",
   "sources": [],
-  "kb_condition_ref": "us-marriage-policy"
+  "kb_condition_ref": "us-marriage-policy",
+  "never_expires": true
 }

@@ -40,10 +40,20 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 19 — Second Dogfood Review (spec pass)**
-**Status: PARTIAL. Spec deliverable shipped for Phases 18B / 18C / 18D; the real Phase 19 review (against real daily-use data) still needs to run after those three ship and a 2–3 week dogfood window has actually happened.**
-**Model: Opus · Effort: high**
-**Last session: Phase 19 triage pass on 2026-05-14. Phase 18's deploy shipped but the dogfood window was thin — basic correctness issues (B18-1 birth-jurisdiction filter; B18-3 policy-blocked presentation; B18-6 document-state labels) hit before daily use was viable. Six bugs and one design artifact logged in `dogfooding-phase18.md`. Three pre-dogfood phases inserted into the phase map: 18B (display/correctness fixes), 18C (KB dependency map), 18D (document state unification). No code merged this session — spec only.**
+**PHASE: 18C — KB Dependency Map**
+**Status: NOT STARTED.**
+**Model: Sonnet · Effort: medium**
+**Previous phase (18B — Display/Correctness Fixes): COMPLETE. Shipped 2026-05-14.**
+
+**Phase 18B carryover notes:**
+- **B18-1 jurisdiction stub spawning** — `diffBirthJurisdictionStubs()` in `src/utils/onboarding.ts` and `syncBirthJurisdictionStubs()` store action are complete. `groupItemsByTrackAndCategory` now accepts a `birthJurisdiction` parameter and uses it for items with `jurisdiction_scope: 'birth'`. Currently only `il-birth-cert` has `jurisdiction_scope: 'birth'`. As new birth-cert KB items are added for other regions, they should also carry `jurisdiction_scope: 'birth'`.
+- **Correction-vs-move dialog (Settings → Location)** — The dialog intercepts any change to `profile.jurisdiction` when an existing value is present. "Correcting a mistake" replaces cleanly; "I moved" archives the old jurisdiction to `other_jurisdictions` and calls `syncBirthJurisdictionStubs`. The dialog is inline (no modal) — it replaces the pickers temporarily then restores them.
+- **`never_expires` on KB items** — Set on `il-birth-cert`, `ssa-name`, `ssa-marker`, `us-marriage-cert`. When true, the expiration_date picker is hidden in both `DocumentStateSection` (ItemDetail) and `DocStateRow` (Step4Documents). New items that don't expire should carry this flag.
+- **B18-3 "Update when possible"** — UI-only label for the `update` intent button when `status === 'policy_blocked'`. The stored enum value is still `'update'`. Applied in ItemDetail and BulkIntentEditor (ItemRow now accepts optional `status` prop).
+- **B18-5 blocker label stacking** — All four dashboard sections (Active/Working/Waiting/Someday) now stack the blocker/status sublabel below the item title. The right-side flex cluster retains priority badges, expiry warnings, and track labels only.
+- **Phase 19 review** — Still needs to run after Phases 18B/18C/18D ship and a real 2–3 week dogfood window has happened.
+
+**Phase 19 carryover notes (from 2026-05-14 triage):**
 
 **Phase 19 carryover notes:**
 - **Phase 18B (display/correctness, Sonnet medium)** — six fixes: B18-1 birth-jurisdiction filter + stub spawning for unmodeled jurisdictions (mirrors aspiration_skeleton; new provenance value `'jurisdiction_stub'`, new optional field `jurisdiction_stub_for?: { kb_slug: string; jurisdiction: Jurisdiction }`); B18-2 Step 8 BulkIntentEditor card layout; B18-3 policy_blocked visual treatment + intent label "Update when possible" (UI/copy only, no enum change); B18-4 Step 10 review uses real custom-item titles, not internal IDs; B18-5 dashboard "waiting on [X]" stacks vertically and wraps; B18-6 parts 1+2 — aspect-correct DocumentState picker labels (driven by entry `kind`) and new optional `never_expires?: boolean` on KB items that hides the expiration_date picker (birth cert, SSA card, marriage cert).

@@ -108,6 +108,14 @@ export interface KBItem {
   // user to revisit. Primarily used on immutable items so they're not stuck
   // marked policy_blocked forever once policy changes.
   kb_condition_ref?: string
+  // When true, the document state UI hides the expiration_date picker — the
+  // document does not expire (birth certificates, SSA cards, marriage certs).
+  never_expires?: boolean
+  // Controls which jurisdiction context to use when filtering this item.
+  // 'residence' (default) uses profile.jurisdiction; 'birth' uses
+  // profile.birth_jurisdiction. ChecklistEntry.jurisdiction_override always
+  // takes precedence over both.
+  jurisdiction_scope?: 'residence' | 'birth'
 }
 
 // ── KB Conditions ─────────────────────────────────────────────────────────────
@@ -472,7 +480,7 @@ export interface ChecklistEntry {
 // the user expressed broad intent (e.g. "legal name change") but the KB had
 // no jurisdiction-matched pathway — so the app dropped in a generic skeleton
 // the user fills in and (optionally) contributes back.
-export type CustomItemProvenance = 'user_created' | 'aspiration_skeleton'
+export type CustomItemProvenance = 'user_created' | 'aspiration_skeleton' | 'jurisdiction_stub'
 
 export interface CustomItem {
   id: string
@@ -486,6 +494,13 @@ export interface CustomItem {
   // For aspiration_skeleton items: the aspiration slug that spawned it.
   // Lets us group them and offer contribution hooks per-aspiration later.
   aspiration_slug?: string
+  // For jurisdiction_stub items: which KB concept this proxies for and which
+  // jurisdiction it covers. Lets us clean up stale stubs on jurisdiction change
+  // and offer contribution nudges after the user fills in details.
+  jurisdiction_stub_for?: {
+    kb_slug: string
+    jurisdiction: { country: string | null; region: string | null }
+  }
 }
 
 // ── Person ────────────────────────────────────────────────────────────────────

@@ -93,5 +93,7 @@
       "label": "IDPH: Amendment of Birth Records",
       "retrieved": "2025-05-01"
     }
-  ]
+  ],
+  "never_expires": true,
+  "jurisdiction_scope": "birth"
 }

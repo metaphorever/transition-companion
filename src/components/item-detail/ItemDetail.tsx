@@ -859,11 +859,15 @@ function DocumentStateSection({
   entry,
   kind,
   neverExpires,
+  partnerSlug,
+  partnerLabel,
 }: {
   slug: string
   entry: ChecklistEntry
   kind: DocumentState['kind']
   neverExpires: boolean
+  partnerSlug?: string
+  partnerLabel?: string
 }) {
   const { t } = useTranslation()
   const setDocState = useAppStore((s) => s.setItemDocumentState)
@@ -909,6 +913,14 @@ function DocumentStateSection({
         {t(headingKey)}
       </h2>
       <p className="text-xs text-neutral-500 mb-3 leading-relaxed">{t('item.doc_state.intro')}</p>
+      {partnerSlug && partnerLabel && (
+        <p className="text-xs text-neutral-500 mb-3 leading-relaxed">
+          {t('item.doc_state.partner_note')}{' '}
+          <Link to={`/item/${partnerSlug}`} className="underline underline-offset-2 hover:text-neutral-700">
+            {partnerLabel}
+          </Link>
+        </p>
+      )}
 
       {value === null ? (
         <button
@@ -1667,18 +1679,29 @@ export default function ItemDetail() {
         <p className="text-xs text-neutral-400 mt-1">{t('item_detail.notes_private_note')}</p>
       </section>
 
-      {/* Document state (Phase 14) */}
+      {/* Document state (Phase 14 / 18D) */}
       {slug &&
         (() => {
           const config = ONBOARDING_DOC_STATE_ITEMS.find((c) => c.slug === slug)
           const kind = entry.document_state?.kind ?? config?.kind
           if (!kind) return null
+          // If this item shares a physical document with a partner KB item,
+          // surface a link to the partner so the user can update both aspects.
+          const physicalId = item.physical_document_id
+          const partnerItem = physicalId && kb
+            ? Object.values(kb.items).find(
+                (i) => i.physical_document_id === physicalId && i.slug !== slug
+              ) ?? null
+            : null
+          const partnerLabel = partnerItem?.label
           return (
             <DocumentStateSection
               slug={slug}
               entry={entry}
               kind={kind}
               neverExpires={item.never_expires ?? false}
+              partnerSlug={partnerItem?.slug}
+              partnerLabel={partnerLabel}
             />
           )
         })()}

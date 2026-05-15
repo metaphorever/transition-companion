@@ -73,5 +73,6 @@
     }
   ],
   "kb_condition_ref": "federal-marker-policy",
-  "never_expires": true
+  "never_expires": true,
+  "physical_document_id": "social-security-card"
 }

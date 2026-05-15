@@ -98,6 +98,77 @@ export function getApplicableDocStateItems(
   return matches
 }
 
+// Display labels for physical documents that have split KB items (e.g. the
+// Social Security Card has ssa-name + ssa-marker). Keyed by physical_document_id.
+export const PHYSICAL_DOCUMENT_LABELS: Record<string, string> = {
+  'social-security-card': 'Social Security Card',
+  'us-passport': 'U.S. Passport',
+  'us-passport-card': 'U.S. Passport Card',
+}
+
+// A resolved grouping of applicable doc-state items — either a single item row
+// or a coalesced pair (name + marker aspects of the same physical document).
+export type DocStateGroup =
+  | { kind: 'singleton'; config: DocStateItemConfig; item: KBItem }
+  | {
+      kind: 'pair'
+      physical_document_id: string
+      label: string
+      nameConfig: DocStateItemConfig
+      nameItem: KBItem
+      markerConfig: DocStateItemConfig
+      markerItem: KBItem
+    }
+
+// Returns applicable doc-state items grouped by physical_document_id. Items
+// that share a physical_document_id are returned as a single 'pair' group so
+// the UI can render one row per physical document instead of one per KB item.
+export function getApplicableDocStateGroups(
+  kb: KBCache | null,
+  jurisdiction: { country: string | null; region: string | null },
+  birth_jurisdiction?: { country: string | null; region: string | null } | null
+): DocStateGroup[] {
+  const matches = getApplicableDocStateItems(kb, jurisdiction, birth_jurisdiction)
+  const groups: DocStateGroup[] = []
+  const seen = new Set<string>()
+
+  for (const { config, item } of matches) {
+    if (seen.has(config.slug)) continue
+    const physicalId = item.physical_document_id
+
+    if (!physicalId) {
+      groups.push({ kind: 'singleton', config, item })
+      seen.add(config.slug)
+      continue
+    }
+
+    const partner = matches.find(
+      (m) => m.item.physical_document_id === physicalId && m.config.slug !== config.slug
+    )
+    if (!partner) {
+      groups.push({ kind: 'singleton', config, item })
+      seen.add(config.slug)
+      continue
+    }
+
+    const nameEntry = config.kind === 'name' ? { config, item } : partner
+    const markerEntry = config.kind === 'marker' ? { config, item } : partner
+    groups.push({
+      kind: 'pair',
+      physical_document_id: physicalId,
+      label: PHYSICAL_DOCUMENT_LABELS[physicalId] ?? physicalId,
+      nameConfig: nameEntry.config,
+      nameItem: nameEntry.item,
+      markerConfig: markerEntry.config,
+      markerItem: markerEntry.item,
+    })
+    seen.add(config.slug)
+    seen.add(partner.config.slug)
+  }
+
+  return groups
+}
+
 // Default document_state for an item kind — everything `unknown`, no dates.
 // Used when the user opts in to capturing state but hasn't filled anything yet.
 export function defaultDocumentState(kind: DocumentState['kind']): DocumentState {

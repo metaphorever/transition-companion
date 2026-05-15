@@ -4,9 +4,10 @@ import WizardLayout from './WizardLayout'
 import type { StepProps } from './OnboardingWizard'
 import { useAppStore } from '../../store'
 import {
-  getApplicableDocStateItems,
+  getApplicableDocStateGroups,
   defaultDocumentState,
   type DocStateItemConfig,
+  type DocStateGroup,
 } from '../../utils/onboarding'
 import type { DocFieldStatus, DocumentState, KBItem } from '../../types'
 
@@ -20,7 +21,7 @@ export default function Step4Documents({ step, onBack, onSkip, onNext }: StepPro
   const setItemDocumentState = useAppStore((s) => s.setItemDocumentState)
 
   const applicable = useMemo(
-    () => getApplicableDocStateItems(kb, profile.jurisdiction, profile.birth_jurisdiction),
+    () => getApplicableDocStateGroups(kb, profile.jurisdiction, profile.birth_jurisdiction),
     [kb, profile.jurisdiction, profile.birth_jurisdiction]
   )
 
@@ -54,15 +55,27 @@ export default function Step4Documents({ step, onBack, onSkip, onNext }: StepPro
         {t('onboarding.steps.documents.skip_hint')}
       </p>
       <div className="space-y-3">
-        {applicable.map(({ config, item }) => {
-          const current = checklist[config.slug]?.document_state ?? null
+        {applicable.map((group) => {
+          if (group.kind === 'pair') {
+            return (
+              <DocStatePairRow
+                key={group.physical_document_id}
+                group={group}
+                nameValue={checklist[group.nameConfig.slug]?.document_state ?? null}
+                markerValue={checklist[group.markerConfig.slug]?.document_state ?? null}
+                onNameChange={(v) => setItemDocumentState(group.nameConfig.slug, v)}
+                onMarkerChange={(v) => setItemDocumentState(group.markerConfig.slug, v)}
+              />
+            )
+          }
+          const current = checklist[group.config.slug]?.document_state ?? null
           return (
             <DocStateRow
-              key={config.slug}
-              config={config}
-              item={item}
+              key={group.config.slug}
+              config={group.config}
+              item={group.item}
               value={current}
-              onChange={(v) => setItemDocumentState(config.slug, v)}
+              onChange={(v) => setItemDocumentState(group.config.slug, v)}
             />
           )
         })}
@@ -159,6 +172,122 @@ function DocStateRow({ config, item, value, onChange }: DocStateRowProps) {
               <DateInput
                 label={t('onboarding.steps.documents.expiration_label')}
                 value={value.expiration_date}
+                onChange={setExpiration}
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+interface DocStatePairRowProps {
+  group: Extract<DocStateGroup, { kind: 'pair' }>
+  nameValue: DocumentState | null
+  markerValue: DocumentState | null
+  onNameChange: (v: DocumentState | null) => void
+  onMarkerChange: (v: DocumentState | null) => void
+}
+
+function DocStatePairRow({
+  group,
+  nameValue,
+  markerValue,
+  onNameChange,
+  onMarkerChange,
+}: DocStatePairRowProps) {
+  const { t } = useTranslation()
+  // Opted-in if either entry has captured state.
+  const filled = nameValue !== null || markerValue !== null
+
+  const enable = () => {
+    onNameChange(defaultDocumentState('name'))
+    onMarkerChange(defaultDocumentState('marker'))
+  }
+  const clear = () => {
+    onNameChange(null)
+    onMarkerChange(null)
+  }
+
+  // Defensive helpers: if one entry is null when the user edits, initialize it.
+  const effectiveName = (): Extract<DocumentState, { kind: 'name' }> => {
+    const d = nameValue ?? defaultDocumentState('name')
+    return d as Extract<DocumentState, { kind: 'name' }>
+  }
+  const effectiveMarker = (): Extract<DocumentState, { kind: 'marker' }> => {
+    const d = markerValue ?? defaultDocumentState('marker')
+    return d as Extract<DocumentState, { kind: 'marker' }>
+  }
+
+  const setNameStatus = (s: DocFieldStatus) => onNameChange({ ...effectiveName(), name_status: s })
+  const setMarkerStatus = (s: DocFieldStatus) =>
+    onMarkerChange({ ...effectiveMarker(), marker_status: s })
+
+  // Issued is shared — written to both entries simultaneously.
+  const issuedValue = nameValue?.issued ?? markerValue?.issued ?? null
+  const setIssued = (d: string | null) => {
+    onNameChange({ ...effectiveName(), issued: d })
+    onMarkerChange({ ...effectiveMarker(), issued: d })
+  }
+
+  // Expiration lives on the name entry only (marker kind has no expiration_date).
+  const showExpiration = !group.nameItem.never_expires
+  const expirationValue =
+    nameValue && 'expiration_date' in nameValue ? nameValue.expiration_date : null
+  const setExpiration = (d: string | null) => {
+    onNameChange({ ...effectiveName(), expiration_date: d })
+  }
+
+  const nameStatus =
+    nameValue && nameValue.kind === 'name' ? nameValue.name_status : 'unknown'
+  const markerStatus =
+    markerValue && markerValue.kind === 'marker' ? markerValue.marker_status : 'unknown'
+
+  return (
+    <div className="border border-neutral-200 rounded-md">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-100">
+        <div className="text-sm font-medium text-neutral-800">{group.label}</div>
+        {!filled ? (
+          <button
+            type="button"
+            onClick={enable}
+            className="text-xs text-neutral-700 underline-offset-2 hover:underline"
+          >
+            {t('onboarding.steps.documents.tell_us')}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={clear}
+            className="text-xs text-neutral-500 underline-offset-2 hover:underline"
+          >
+            {t('onboarding.steps.documents.decide_later')}
+          </button>
+        )}
+      </div>
+      {filled && (
+        <div className="px-3 py-3 space-y-3">
+          <StatusPicker
+            label={t('onboarding.steps.documents.name_status_label')}
+            value={nameStatus}
+            onChange={setNameStatus}
+          />
+          <StatusPicker
+            label={t('onboarding.steps.documents.marker_status_label')}
+            value={markerStatus}
+            onChange={setMarkerStatus}
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <DateInput
+              label={t('onboarding.steps.documents.issued_label')}
+              value={issuedValue}
+              onChange={setIssued}
+            />
+            {showExpiration && (
+              <DateInput
+                label={t('onboarding.steps.documents.expiration_label')}
+                value={expirationValue}
                 onChange={setExpiration}
               />
             )}

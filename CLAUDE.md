@@ -40,9 +40,19 @@ Check the current build phase below. The phase determines which model should be 
 
 ## Current Phase
 
-**PHASE: 18D — Document State Unification**
-**Status: NOT STARTED.**
-**Model: Sonnet · Effort: high**
+**PHASE: 19 — Second Dogfood Review**
+**Status: NOT STARTED. Awaits real dogfood window after 18B/18C/18D ship.**
+**Model: Opus · Effort: high**
+**Previous phase (18D — Document State Unification): COMPLETE. Shipped 2026-05-15.**
+
+**Phase 18D carryover notes:**
+- **Architectural choice made: Option (a).** `physical_document_id?: string` added to `KBItem` type and to 6 KB JSON files (`ssa-name`, `ssa-marker`, `us-passport-name`, `us-passport-marker`, `us-passport-card-name`, `us-passport-card-marker`). KB snapshot rebuilt. Storage stays per-`ChecklistEntry` — no migration needed.
+- **Three physical document groups:** `social-security-card` (ssa-name + ssa-marker), `us-passport` (us-passport-name + us-passport-marker), `us-passport-card` (us-passport-card-name + us-passport-card-marker).
+- **Step 4 coalescing:** `getApplicableDocStateGroups()` in `src/utils/onboarding.ts` groups items by `physical_document_id` into `DocStateGroup` (either `'singleton'` or `'pair'`). `Step4Documents.tsx` renders `DocStatePairRow` for pairs — one card per physical document with name_status + marker_status pickers, shared issued date (written to both entries), and expiration only if `!nameItem.never_expires`. Opt-in is all-or-nothing: enable activates both entries, clear removes both.
+- **ItemDetail cross-reference:** `DocumentStateSection` accepts optional `partnerSlug`/`partnerLabel` props. When present, shows an inline note with a link to the partner item ("The other aspect of this document is tracked separately: [partner link]"). Call site scans `kb.items` for a partner by `physical_document_id`. The section itself still edits only the current entry's own fields.
+- **`PHYSICAL_DOCUMENT_LABELS` in `onboarding.ts`:** 3-entry lookup keyed by `physical_document_id`. Labels live in code (not KB data) — fine given there are only 3 groups, all standard US documents.
+- **Snapshot rebuild:** No dedicated script exists. The one-liner in Phase 13's notes works: `python -c "import json, os, glob, subprocess; ..."` — preserve all non-items keys (`categories`, `tracks`, `sequences`, `jurisdictions`, `conditions`) from `git show HEAD:public/kb-snapshot/index.json`, not from the current on-disk file (which may have already lost them).
+
 **Previous phase (18C — KB Dependency Map): COMPLETE. Shipped 2026-05-15.**
 
 **Phase 18C carryover notes:**

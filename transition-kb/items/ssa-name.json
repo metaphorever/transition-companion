@@ -91,5 +91,6 @@
       "retrieved": "2025-05-01"
     }
   ],
-  "never_expires": true
+  "never_expires": true,
+  "physical_document_id": "social-security-card"
 }

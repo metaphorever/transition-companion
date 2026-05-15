@@ -416,7 +416,8 @@
       "capture": "Add document state",
       "clear": "Clear document state",
       "expiring_soon": "Expires {{date}}",
-      "expired": "Expired {{date}}"
+      "expired": "Expired {{date}}",
+      "partner_note": "The other aspect of this document is tracked separately:"
     },
     "jurisdiction_override": {
       "label": "Jurisdiction for this item",

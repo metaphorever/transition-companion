@@ -116,6 +116,10 @@ export interface KBItem {
   // profile.birth_jurisdiction. ChecklistEntry.jurisdiction_override always
   // takes precedence over both.
   jurisdiction_scope?: 'residence' | 'birth'
+  // Groups this item with others that share the same physical document (e.g.
+  // 'ssa-name' and 'ssa-marker' both live on the Social Security card).
+  // The document-state list UI coalesces items with the same id into one row.
+  physical_document_id?: string
 }
 
 // ── KB Conditions ─────────────────────────────────────────────────────────────
